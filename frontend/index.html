@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF AI Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar for Setup -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fa-solid fa-file-pdf"></i> PDF Chatbot</h2>
+            </div>
+            
+
+
+            <div class="setup-section" id="upload-section">
+                <h3><i class="fa-solid fa-upload"></i> Upload Document</h3>
+                <div class="limit-info"><i class="fa-solid fa-circle-info"></i> Max Limit: ~150 Pages or 15MB</div>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="pdfUpload" accept=".pdf,.docx,.txt" multiple>
+                    <label for="pdfUpload" class="file-upload-btn">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Choose Documents
+                    </label>
+                    <span id="file-name">No files selected</span>
+                </div>
+                <button id="processBtn" class="primary-btn">
+                    <i class="fa-solid fa-microchip"></i> Process Document
+                </button>
+            </div>
+            
+            <div class="setup-section hidden" id="success-section">
+                <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <h3>Document Ready</h3>
+                <p class="success-desc">Your document has been processed and vectorized. You can now chat with it!</p>
+                <button id="uploadAnotherBtn" class="secondary-btn">
+                    <i class="fa-solid fa-rotate-left"></i> Upload Another
+                </button>
+            </div>
+
+            <div id="status-indicator" class="status-hidden">
+                <div class="spinner"></div>
+                <span id="status-text">Processing...</span>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <div class="glow-dot"></div>
+                <h2>AI Assistant Ready</h2>
+            </header>
+
+            <div class="chat-window" id="chatWindow">
+                <div class="message system-msg">
+                    <div class="msg-content">Welcome! Upload a PDF, Word, or Text document on the left and ask me questions about it.</div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Ask a question about your document..." disabled>
+                <button id="sendBtn" disabled>
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
