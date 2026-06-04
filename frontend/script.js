@@ -13,7 +13,7 @@ const sendBtn = document.getElementById('sendBtn');
 const chatWindow = document.getElementById('chatWindow');
 
 // API Base URL (FastAPI)
-const API_URL = 'http://127.0.0.1:8002';
+const API_URL = 'https://pdf-analizing-and-answering-bot.onrender.com';
 
 // Handle File Selection
 fileInput.addEventListener('change', () => {
