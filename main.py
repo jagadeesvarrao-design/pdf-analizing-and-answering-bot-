@@ -39,8 +39,8 @@ async def upload_document(
         os.makedirs(TEMP_PDF_DIR, exist_ok=True)
         
         # Clear the old database so we don't mix old vectors with new documents
-        if os.path.exists("./chroma_db"):
-            shutil.rmtree("./chroma_db")
+        if os.path.exists("./faiss_index"):
+            shutil.rmtree("./faiss_index")
         
         file_paths = []
         for file in files:

@@ -5,7 +5,7 @@ import base64
 import json
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import PromptTemplate
 from langchain_core.documents import Document
 
@@ -77,12 +77,9 @@ def get_vector_store(documents):
     api_key = get_api_key()
     embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-2", google_api_key=api_key)
     
-    # Store vectors in a local directory
-    vector_store = Chroma.from_documents(
-        documents, 
-        embedding=embeddings, 
-        persist_directory="./chroma_db"
-    )
+    # Store vectors in local FAISS index
+    vector_store = FAISS.from_documents(documents, embedding=embeddings)
+    vector_store.save_local("./faiss_index")
     return vector_store
 
 def get_conversational_chain():
@@ -167,10 +164,10 @@ def process_user_query(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-2", google_api_key=api_key)
     
     # Load the existing database
-    if not os.path.exists("./chroma_db"):
+    if not os.path.exists("./faiss_index"):
         return {"answer": "Please upload and process a PDF first.", "source_image": None, "page": None}
         
-    db = Chroma(persist_directory="./chroma_db", embedding_function=embeddings)
+    db = FAISS.load_local("./faiss_index", embeddings, allow_dangerous_deserialization=True)
     
     # Retrieve relevant chunks
     docs = db.similarity_search(user_question, k=4)
