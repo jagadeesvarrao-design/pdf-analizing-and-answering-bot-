@@ -70,10 +70,10 @@ graph TD
     RAG -->|7. Vector Query| Faiss
     Faiss -->|8. Fetch Context Chunks| RAG
     RAG -->|9. Send Question & Context| LLM
-    LLM -->|10. Return JSON Response<br/>(Answer + Exact Quote)| RAG
+    LLM -->|10. Return JSON Response - Answer and Exact Quote| RAG
     RAG -->|11. Locate Quote in PDF| Cropper
     TempPDF -->|12. Load PDF Page| Cropper
-    Cropper -->|13. Render Cropped Snippet<br/>(Base64 PNG)| RAG
+    Cropper -->|13. Render Cropped Snippet - Base64 PNG| RAG
     RAG -->|14. Complete JSON Response| UI
 
     class UI client;
