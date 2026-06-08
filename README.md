@@ -2,7 +2,7 @@
 
 A full-stack, AI-powered conversational assistant that allows you to upload, analyze, and chat with your documents (PDF, Word, Text). Built with FastAPI, LangChain, Google Gemini, and vanilla HTML/CSS/JS.
 
-![UI Preview](https://via.placeholder.com/1000x500?text=Intellidoc+AI+Document+Assistant)
+![UI Preview](./preview.png)
 
 ## 🌟 Key Features
 
@@ -21,9 +21,66 @@ This application is split into two layers:
 ### Tech Stack
 - **Backend Framework**: FastAPI & Uvicorn
 - **AI & Orchestration**: LangChain, Google Gemini Pro 2.5 Flash, Gemini Embeddings
-- **Vector Database**: ChromaDB (Local Persisted)
+- **Vector Database**: FAISS (Local Persisted)
 - **Document Processing**: PyMuPDF (`fitz`), `python-docx`
 - **Frontend**: Vanilla JS, Vanilla CSS, FontAwesome
+
+## 🔄 System Workflow
+
+The following flowchart details how Intellidoc processes documents, indexes vector embeddings, handles user queries, and crops precise bounding box image snippets:
+
+```mermaid
+graph TD
+    %% Styling
+    classDef client fill:#eef2f7,stroke:#3b82f6,stroke-width:2px,color:#1e3a8a;
+    classDef server fill:#f5f3ff,stroke:#8b5cf6,stroke-width:2px,color:#4c1d95;
+    classDef storage fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#064e3b;
+    classDef model fill:#fffbeb,stroke:#f59e0b,stroke-width:2px,color:#78350f;
+
+    subgraph Client ["Client Layer (HTML/CSS/JS)"]
+        UI["💻 User Interface<br/>(Glassmorphism Web Page)"]
+    end
+
+    subgraph Server ["Server Layer (FastAPI API)"]
+        Parser["📄 PyMuPDF & python-docx<br/>(Document Parser)"]
+        Splitter["✂️ Text Splitter<br/>(RecursiveCharacterTextSplitter)"]
+        Embedder["🔢 Gemini Embeddings API<br/>(models/gemini-embedding-2)"]
+        RAG["🧠 RAG Orchestrator<br/>(LangChain Chain)"]
+        Cropper["📷 Snippet Cropper<br/>(PyMuPDF get_pixmap)"]
+    end
+
+    subgraph Storage ["Storage Layer"]
+        Faiss["🗄️ FAISS Vector Index<br/>(Local Persisted DB)"]
+        TempPDF["📁 Temp Storage<br/>(Uploaded Documents)"]
+    end
+
+    subgraph Gemini ["Google Gemini AI"]
+        LLM["🤖 Gemini 2.5 Flash<br/>(JSON Output Mode)"]
+    end
+
+    %% Document Upload Flow
+    UI -->|1. Upload Files| Parser
+    Parser -->|2. Store Temp Copies| TempPDF
+    Parser -->|3. Extract Text & Hyperlinks| Splitter
+    Splitter -->|4. Chunked Text| Embedder
+    Embedder -->|5. Generate Vectors| Faiss
+
+    %% Query Flow
+    UI -->|6. Ask Question| RAG
+    RAG -->|7. Vector Query| Faiss
+    Faiss -->|8. Fetch Context Chunks| RAG
+    RAG -->|9. Send Question & Context| LLM
+    LLM -->|10. Return JSON Response<br/>(Answer + Exact Quote)| RAG
+    RAG -->|11. Locate Quote in PDF| Cropper
+    TempPDF -->|12. Load PDF Page| Cropper
+    Cropper -->|13. Render Cropped Snippet<br/>(Base64 PNG)| RAG
+    RAG -->|14. Complete JSON Response| UI
+
+    class UI client;
+    class Parser,Splitter,Embedder,RAG,Cropper server;
+    class Faiss,TempPDF storage;
+    class LLM model;
+```
 
 ## 🛠️ Local Setup Instructions
 
