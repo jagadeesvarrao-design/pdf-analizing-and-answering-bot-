@@ -1,0 +1,11 @@
+langchain
+langchain-google-genai
+langchain-community
+faiss-cpu
+langchain-text-splitters
+PyMuPDF
+python-docx
+python-dotenv
+fastapi
+uvicorn
+python-multipart

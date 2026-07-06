@@ -13,6 +13,7 @@ chroma_db/
 *.pdf
 *.docx
 *.txt
+!requirements.txt
 
 # Python
 __pycache__/
