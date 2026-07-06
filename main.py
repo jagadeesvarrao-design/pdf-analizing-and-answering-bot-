@@ -57,6 +57,8 @@ async def upload_document(
         get_vector_store(documents)
         
         return {"status": "success", "message": "Documents processed and indexed successfully."}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

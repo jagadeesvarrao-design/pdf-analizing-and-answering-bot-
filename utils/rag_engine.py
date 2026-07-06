@@ -70,7 +70,11 @@ def process_documents(file_paths):
                         
         except Exception as e:
             print(f"Error processing {file_path}: {e}")
+            raise ValueError(f"Failed to process {os.path.basename(file_path)}: {str(e)}")
             
+    if not documents:
+        raise ValueError("The uploaded document is either empty or consists entirely of scanned images. No text could be extracted.")
+        
     return documents
 
 def get_vector_store(documents):
