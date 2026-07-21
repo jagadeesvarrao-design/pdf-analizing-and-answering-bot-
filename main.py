@@ -25,6 +25,11 @@ app.add_middleware(
 class ChatRequest(BaseModel):
     question: str
 
+@app.get("/")
+async def root():
+    return {"status": "Backend API is Live! Please use the Vercel Frontend to upload PDFs and chat."}
+
+
 @app.post("/api/upload")
 async def upload_document(
     files: List[UploadFile] = File(...)
