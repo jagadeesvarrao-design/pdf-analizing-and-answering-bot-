@@ -176,13 +176,10 @@ async def upload_document(files: List[UploadFile] = File(...)):
         raise HTTPException(status_code=400, detail="No files uploaded.")
         
     try:
-        # Recreate the temp directory to clean up previous session artifacts
-        if os.path.exists(TEMP_PDF_DIR):
-            shutil.rmtree(TEMP_PDF_DIR)
+        # Clean previous session artifacts safely
         os.makedirs(TEMP_PDF_DIR, exist_ok=True)
-        
-        if os.path.exists("./faiss_index"):
-            shutil.rmtree("./faiss_index")
+        safe_clean_dir(TEMP_PDF_DIR)
+        safe_clean_dir("./faiss_index")
         
         file_paths = []
         file_names = []
@@ -281,14 +278,26 @@ async def chat_with_document(request: ChatRequest):
             detail=f"An error occurred while reasoning with Gemini. (ID: {correlation_id})"
         )
 
+def safe_clean_dir(dir_path: str):
+    """Safely empties a directory without triggering OS lock errors."""
+    if not os.path.exists(dir_path):
+        return
+    for item in os.listdir(dir_path):
+        item_path = os.path.join(dir_path, item)
+        try:
+            if os.path.isdir(item_path):
+                shutil.rmtree(item_path, ignore_errors=True)
+            else:
+                os.remove(item_path)
+        except Exception as e:
+            logger.debug(f"Could not remove {item_path}: {e}")
+
 @app.post("/api/session/clear")
 async def clear_active_session():
     """Cleans up in-memory vector indexes and temporary files."""
     try:
-        if os.path.exists(TEMP_PDF_DIR):
-            shutil.rmtree(TEMP_PDF_DIR)
-        if os.path.exists("./faiss_index"):
-            shutil.rmtree("./faiss_index")
+        safe_clean_dir(TEMP_PDF_DIR)
+        safe_clean_dir("./faiss_index")
         return {"status": "success", "message": "Session cleared."}
     except Exception as e:
         logger.error(f"Error clearing session: {e}")
