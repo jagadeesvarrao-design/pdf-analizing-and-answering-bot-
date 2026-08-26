@@ -26,6 +26,12 @@ RUN pip install --no-cache-dir -U pip && \
 # Copy application files (FastAPI backend + Static Frontend)
 COPY . .
 
+# Create non-root user for container security hardening
+RUN useradd -m -u 1000 appuser && \
+    mkdir -p temp_pdfs faiss_index && \
+    chown -R appuser:appuser /app
+USER appuser
+
 # Expose Cloud Run default port
 EXPOSE 8080
 
