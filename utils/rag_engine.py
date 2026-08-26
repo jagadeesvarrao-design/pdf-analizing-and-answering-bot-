@@ -1,23 +1,50 @@
 import os
+import re
 import fitz  # PyMuPDF
-import docx
 import base64
 import json
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+try:
+    import docx
+except ImportError:
+    docx = None
+try:
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
+except ImportError:
+    try:
+        from langchain.text_splitter import RecursiveCharacterTextSplitter
+    except ImportError:
+        RecursiveCharacterTextSplitter = None
+
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import PromptTemplate
 from langchain_core.documents import Document
+
+MAX_PAGES_PER_DOC = 150
 
 def get_api_key():
     """Retrieve Google Gemini API Key from environment."""
     key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY", "")
     return key.strip('"').strip("'").strip()
 
+def sanitize_html_output(raw_html: str) -> str:
+    """Sanitizes AI-generated HTML to prevent XSS payloads while preserving clean formatting."""
+    if not raw_html:
+        return ""
+    # Strip script tags, iframes, object/embeds, and inline event handlers
+    cleaned = re.sub(r'<\s*script[^>]*>.*?<\s*/\s*script\s*>', '', raw_html, flags=re.DOTALL | re.IGNORECASE)
+    cleaned = re.sub(r'<\s*iframe[^>]*>.*?<\s*/\s*iframe\s*>', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
+    cleaned = re.sub(r'<\s*object[^>]*>.*?<\s*/\s*object\s*>', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
+    cleaned = re.sub(r'<\s*embed[^>]*>.*?', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
+    cleaned = re.sub(r'on\w+\s*=\s*["\'][^"\']*["\']', '', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r'javascript\s*:', '', cleaned, flags=re.IGNORECASE)
+    return cleaned
+
 def process_documents(file_paths):
     """
     Extracts text and embedded links from PDFs, Word docs, and text files.
-    Splits text into chunks for vector indexing.
+    Splits text into chunks for vector indexing with DoS/Bomb protections.
     """
     documents = []
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=400)
@@ -28,7 +55,9 @@ def process_documents(file_paths):
             
             if ext == '.pdf':
                 doc = fitz.open(file_path)
-                for page_num in range(len(doc)):
+                total_pages = min(len(doc), MAX_PAGES_PER_DOC)
+                
+                for page_num in range(total_pages):
                     page = doc.load_page(page_num)
                     text = page.get_text("text")
                     
@@ -53,6 +82,8 @@ def process_documents(file_paths):
                 doc.close()
                 
             elif ext == '.docx':
+                if not docx:
+                    raise ValueError("DOCX parsing library is not installed on this host. Please upload a PDF or TXT file, or install python-docx.")
                 doc = docx.Document(file_path)
                 text = "\n".join([para.text for para in doc.paragraphs if para.text.strip()])
                 if text.strip():
@@ -257,7 +288,7 @@ def process_user_query(user_question):
         source_image = get_base64_image(source_file, page_num, exact_quote)
     
     return {
-        "answer": answer,
+        "answer": sanitize_html_output(answer),
         "source_image": source_image,
         "page": page_num,
         "file_type": file_ext,
