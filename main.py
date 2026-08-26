@@ -2,6 +2,7 @@ import os
 import shutil
 from typing import List
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -101,6 +102,13 @@ async def chat_with_document(request: ChatRequest):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/app")
+async def serve_app():
+    """Serves the AI Document Assistant workspace."""
+    if os.path.exists("frontend/app.html"):
+        return FileResponse("frontend/app.html")
+    return FileResponse("frontend/index.html")
 
 # Mount Static Frontend for unified single-container Cloud Run deployment
 if os.path.exists("frontend"):
