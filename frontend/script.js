@@ -507,13 +507,13 @@ function applyTheme(theme) {
             themeIcon.className = 'fa-solid fa-sun';
             themeIcon.style.color = '#F59E0B';
         }
-        if (themeLabel) themeLabel.textContent = 'Light';
+        if (themeLabel) themeLabel.textContent = 'Light Mode';
     } else {
         if (themeIcon) {
             themeIcon.className = 'fa-solid fa-moon';
             themeIcon.style.color = '#476550';
         }
-        if (themeLabel) themeLabel.textContent = 'Dark';
+        if (themeLabel) themeLabel.textContent = 'Dark Mode';
     }
 }
 
