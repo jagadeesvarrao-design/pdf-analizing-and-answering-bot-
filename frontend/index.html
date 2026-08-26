@@ -43,6 +43,37 @@
                     <span id="landingThemeLabel">Dark Mode</span>
                 </button>
 
+                <!-- Google Sign-In Button (Landing Page) -->
+                <button id="landingGoogleSignInBtn" class="google-auth-btn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                    <span>Sign In</span>
+                </button>
+
+                <!-- User Profile Dropdown (when logged in) -->
+                <div id="landingUserProfile" class="user-profile hidden">
+                    <div class="profile-avatar-wrapper" id="landingProfileTrigger">
+                        <img id="landingUserAvatar" src="https://lh3.googleusercontent.com/a/default-user=s96-c" alt="Profile" class="user-avatar">
+                        <div class="online-badge"></div>
+                    </div>
+                    
+                    <div class="profile-dropdown hidden" id="landingProfileDropdown">
+                        <div class="dropdown-header">
+                            <p class="dropdown-name" id="landingDropdownUserName">Google Cloud User</p>
+                            <p class="dropdown-email" id="landingDropdownUserEmail">user@googlecloud.apac</p>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item">
+                            <i class="fa-solid fa-database"></i>
+                            <span>Firestore Synced</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-logout-btn" id="landingLogoutBtn">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+
                 <a href="https://aneevarpsolutions.vercel.app/" target="_blank" class="parent-portal-link" title="Visit Parent Holding Company">
                     <i class="fa-solid fa-building-columns"></i>
                     <span>Parent Portal</span>
@@ -65,6 +96,10 @@
         <!-- Mobile Slide-Out Navigation Drawer -->
         <div class="mobile-drawer" id="mobileDrawer">
             <div class="mobile-drawer-content">
+                <button id="mobileGoogleSignInBtn" class="google-auth-btn" style="width:100%; justify-content:center; margin-bottom:8px;">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                    <span>Sign in with Google</span>
+                </button>
                 <a href="#features" class="mobile-nav-item"><i class="fa-solid fa-layer-group"></i> Features</a>
                 <a href="#pipeline" class="mobile-nav-item"><i class="fa-solid fa-diagram-project"></i> How It Works</a>
                 <a href="#demo" class="mobile-nav-item"><i class="fa-solid fa-play"></i> Live Sandbox</a>
@@ -430,11 +465,115 @@
                 <a href="app.html"><i class="fa-solid fa-arrow-up-right-from-square"></i> App</a>
             </div>
         </div>
-    </footer>
+    </footer>    <!-- Interactive Landing Page & Auth Controller Script -->
+    <script type="module">
+        import { 
+            loginWithGoogle, 
+            logoutUser, 
+            onUserAuthStateChanged 
+        } from './firebase-config.js';
 
-    <!-- Interactive Landing Page Script -->
-    <script>
-        // Interactive Sandbox Scenarios
+        // ==========================================================================
+        // 1. FIREBASE AUTH CONTROLLER (LANDING PAGE)
+        // ==========================================================================
+        const landingGoogleSignInBtn = document.getElementById('landingGoogleSignInBtn');
+        const mobileGoogleSignInBtn = document.getElementById('mobileGoogleSignInBtn');
+        const landingUserProfile = document.getElementById('landingUserProfile');
+        const landingProfileTrigger = document.getElementById('landingProfileTrigger');
+        const landingProfileDropdown = document.getElementById('landingProfileDropdown');
+        const landingUserAvatar = document.getElementById('landingUserAvatar');
+        const landingDropdownUserName = document.getElementById('landingDropdownUserName');
+        const landingDropdownUserEmail = document.getElementById('landingDropdownUserEmail');
+        const landingLogoutBtn = document.getElementById('landingLogoutBtn');
+
+        onUserAuthStateChanged((user) => {
+            if (user) {
+                if (landingGoogleSignInBtn) landingGoogleSignInBtn.classList.add('hidden');
+                if (mobileGoogleSignInBtn) mobileGoogleSignInBtn.classList.add('hidden');
+                if (landingUserProfile) landingUserProfile.classList.remove('hidden');
+                if (landingUserAvatar) landingUserAvatar.src = user.photoURL || "https://lh3.googleusercontent.com/a/default-user=s96-c";
+                if (landingDropdownUserName) landingDropdownUserName.textContent = user.displayName || "Google Cloud User";
+                if (landingDropdownUserEmail) landingDropdownUserEmail.textContent = user.email || "user@googlecloud.apac";
+            } else {
+                if (landingGoogleSignInBtn) landingGoogleSignInBtn.classList.remove('hidden');
+                if (mobileGoogleSignInBtn) mobileGoogleSignInBtn.classList.remove('hidden');
+                if (landingUserProfile) landingUserProfile.classList.add('hidden');
+                if (landingProfileDropdown) landingProfileDropdown.classList.add('hidden');
+            }
+        });
+
+        async function handleGoogleLogin() {
+            try {
+                await loginWithGoogle();
+            } catch (err) {
+                alert("Google Sign-In failed: " + err.message);
+            }
+        }
+
+        if (landingGoogleSignInBtn) {
+            landingGoogleSignInBtn.addEventListener('click', handleGoogleLogin);
+        }
+        if (mobileGoogleSignInBtn) {
+            mobileGoogleSignInBtn.addEventListener('click', handleGoogleLogin);
+        }
+
+        if (landingProfileTrigger && landingProfileDropdown) {
+            landingProfileTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                landingProfileDropdown.classList.toggle('hidden');
+            });
+            document.addEventListener('click', (e) => {
+                if (!landingProfileDropdown.contains(e.target) && !landingProfileTrigger.contains(e.target)) {
+                    landingProfileDropdown.classList.add('hidden');
+                }
+            });
+        }
+
+        if (landingLogoutBtn) {
+            landingLogoutBtn.addEventListener('click', async () => {
+                await logoutUser();
+                if (landingProfileDropdown) landingProfileDropdown.classList.add('hidden');
+            });
+        }
+
+        // ==========================================================================
+        // 2. THEME ENGINE (LIGHT & DARK MODE TOGGLE)
+        // ==========================================================================
+        const landingThemeToggleBtn = document.getElementById('landingThemeToggleBtn');
+        const landingThemeIcon = document.getElementById('landingThemeIcon');
+        const landingThemeLabel = document.getElementById('landingThemeLabel');
+
+        function applyLandingTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('aneevarp_theme', theme);
+            if (theme === 'dark') {
+                if (landingThemeIcon) {
+                    landingThemeIcon.className = 'fa-solid fa-sun';
+                    landingThemeIcon.style.color = '#F59E0B';
+                }
+                if (landingThemeLabel) landingThemeLabel.textContent = 'Light Mode';
+            } else {
+                if (landingThemeIcon) {
+                    landingThemeIcon.className = 'fa-solid fa-moon';
+                    landingThemeIcon.style.color = 'var(--primary)';
+                }
+                if (landingThemeLabel) landingThemeLabel.textContent = 'Dark Mode';
+            }
+        }
+
+        applyLandingTheme(localStorage.getItem('aneevarp_theme') || 'light');
+
+        if (landingThemeToggleBtn) {
+            landingThemeToggleBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme') || 'light';
+                const next = current === 'dark' ? 'light' : 'dark';
+                applyLandingTheme(next);
+            });
+        }
+
+        // ==========================================================================
+        // 3. INTERACTIVE LIVE SIMULATOR SCENARIOS
+        // ==========================================================================
         const scenarios = {
             finance: {
                 docType: '<i class="fa-solid fa-file-pdf"></i> Annual_Report_2025.pdf',
@@ -469,8 +608,8 @@
                 ]
             },
             medical: {
-                docType: '<i class="fa-solid fa-notes-medical"></i> Clinical_Trial_Protocol_Phase3.pdf',
-                excerpt: '"Inclusion Criteria: Patients aged 18 to 65 with confirmed Stage II hypertension. Primary endpoint: Mean reduction in systolic blood pressure at Week 12 compared to placebo baseline."',
+                docType: '<i class="fa-solid fa-notes-medical"></i> Phase3_Clinical_Protocol.pdf',
+                excerpt: '"Primary Endpoint: Proportion of patients achieving complete remission at Week 24. Key secondary endpoints include duration of overall response and safety tolerability markers."',
                 questions: [
                     {
                         q: "What is the patient age eligibility?",
@@ -479,17 +618,14 @@
                     },
                     {
                         q: "What is the primary endpoint of the trial?",
-                        a: "The primary study endpoint is the <b>mean reduction in systolic blood pressure at Week 12</b> compared to the placebo baseline measurement.",
-                        snippet: "Primary endpoint: Mean reduction in systolic blood pressure at Week 12 compared to placebo baseline."
+                        a: "As defined in the protocol summary, the primary endpoint is the <b>proportion of patients achieving complete remission at Week 24</b>.",
+                        snippet: "Primary Endpoint: Proportion of patients achieving complete remission at Week 24."
                     }
                 ]
             }
         };
 
-        let currentScenario = 'finance';
-
         function loadScenario(key) {
-            currentScenario = key;
             const data = scenarios[key];
             document.getElementById('demoDocType').innerHTML = data.docType;
             document.getElementById('demoDocExcerpt').textContent = data.excerpt;
@@ -509,7 +645,6 @@
                 qContainer.appendChild(btn);
             });
 
-            // Run first question by default
             runSimulation(data.questions[0]);
         }
 
@@ -537,32 +672,9 @@
         // Initialize default scenario
         loadScenario('finance');
 
-        // Theme Toggle for Landing Page
-        const landingThemeToggleBtn = document.getElementById('landingThemeToggleBtn');
-        const landingThemeIcon = document.getElementById('landingThemeIcon');
-        const landingThemeLabel = document.getElementById('landingThemeLabel');
-
-        function applyLandingTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('aneevarp_theme', theme);
-            if (theme === 'dark') {
-                if (landingThemeIcon) {
-                    landingThemeIcon.className = 'fa-solid fa-sun';
-                    landingThemeIcon.style.color = '#F59E0B';
-                }
-                if (landingThemeLabel) landingThemeLabel.textContent = 'Light Mode';
-            } else {
-                if (landingThemeIcon) {
-                    landingThemeIcon.className = 'fa-solid fa-moon';
-                    landingThemeIcon.style.color = 'var(--primary)';
-                }
-                if (landingThemeLabel) landingThemeLabel.textContent = 'Dark Mode';
-            }
-        }
-
-        applyLandingTheme(localStorage.getItem('aneevarp_theme') || 'light');
-
-        // Mobile Navigation Drawer Toggle
+        // ==========================================================================
+        // 4. MOBILE NAVIGATION DRAWER TOGGLE
+        // ==========================================================================
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileMenuIcon = document.getElementById('mobileMenuIcon');
         const mobileDrawer = document.getElementById('mobileDrawer');
@@ -577,7 +689,6 @@
                 }
             });
 
-            // Close drawer when a link is clicked
             document.querySelectorAll('.mobile-nav-item, .mobile-drawer-cta').forEach(link => {
                 link.addEventListener('click', () => {
                     mobileDrawer.classList.remove('open');

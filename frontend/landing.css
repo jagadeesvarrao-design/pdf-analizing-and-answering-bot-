@@ -329,6 +329,155 @@ h1, h2, h3, h4, .font-headline {
     box-shadow: 0 8px 25px rgba(71, 101, 80, 0.35);
 }
 
+/* Google Sign-In Button */
+.google-auth-btn {
+    background: var(--surface-bright, #FFFFFF);
+    color: var(--slate-deep);
+    border: 1px solid rgba(162, 188, 168, 0.45);
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.google-auth-btn img {
+    width: 16px;
+    height: 16px;
+}
+
+.google-auth-btn:hover {
+    background: white;
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(71, 101, 80, 0.15);
+}
+
+/* User Profile */
+.user-profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profile-avatar-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    border: 2px solid var(--primary);
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.profile-avatar-wrapper:hover .user-avatar {
+    transform: scale(1.05);
+}
+
+.online-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    background: #059669;
+    border-radius: 50%;
+    border: 2px solid var(--ivory-base, #FCFAF5);
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 240px;
+    background: var(--surface-bright, #FFFFFF);
+    border: 1px solid rgba(162, 188, 168, 0.4);
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    z-index: 1000;
+}
+
+[data-theme="dark"] .profile-dropdown {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.25);
+}
+
+.dropdown-header {
+    padding: 8px 10px;
+}
+
+.dropdown-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--slate-deep);
+}
+
+.dropdown-email {
+    font-size: 0.78rem;
+    color: var(--secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 2px;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: rgba(162, 188, 168, 0.25);
+    margin: 8px 0;
+}
+
+.dropdown-item {
+    padding: 8px 10px;
+    font-size: 0.82rem;
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+
+.dropdown-logout-btn {
+    width: 100%;
+    background: rgba(220, 38, 38, 0.08);
+    color: #DC2626;
+    border: 1px solid rgba(220, 38, 38, 0.25);
+    padding: 9px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.dropdown-logout-btn:hover {
+    background: rgba(220, 38, 38, 0.16);
+}
+
+.hidden {
+    display: none !important;
+}
+
 /* Mobile Hamburger Menu Button */
 .mobile-menu-btn {
     display: none;

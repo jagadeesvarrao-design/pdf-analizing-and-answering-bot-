@@ -68,26 +68,28 @@ const API_BASE = (window.location.hostname === "localhost" || window.location.ho
 onUserAuthStateChanged((user) => {
     currentUser = user;
     if (user) {
-        googleSignInBtn.classList.add('hidden');
-        userProfile.classList.remove('hidden');
-        userAvatar.src = user.photoURL || "https://lh3.googleusercontent.com/a/default-user=s96-c";
-        dropdownUserName.textContent = user.displayName || "Google Cloud User";
-        dropdownUserEmail.textContent = user.email || "user@googlecloud.apac";
+        if (googleSignInBtn) googleSignInBtn.classList.add('hidden');
+        if (userProfile) userProfile.classList.remove('hidden');
+        if (userAvatar) userAvatar.src = user.photoURL || "https://lh3.googleusercontent.com/a/default-user=s96-c";
+        if (dropdownUserName) dropdownUserName.textContent = user.displayName || "Google Cloud User";
+        if (dropdownUserEmail) dropdownUserEmail.textContent = user.email || "user@googlecloud.apac";
         loadHistoryList();
     } else {
-        googleSignInBtn.classList.remove('hidden');
-        userProfile.classList.add('hidden');
-        profileDropdown.classList.add('hidden');
+        if (googleSignInBtn) googleSignInBtn.classList.remove('hidden');
+        if (userProfile) userProfile.classList.add('hidden');
+        if (profileDropdown) profileDropdown.classList.add('hidden');
     }
 });
 
-googleSignInBtn.addEventListener('click', async () => {
-    try {
-        await loginWithGoogle();
-    } catch (e) {
-        alert("Google Sign-In failed: " + e.message);
-    }
-});
+if (googleSignInBtn) {
+    googleSignInBtn.addEventListener('click', async () => {
+        try {
+            await loginWithGoogle();
+        } catch (e) {
+            alert("Google Sign-In failed: " + e.message);
+        }
+    });
+}
 
 profileTrigger.addEventListener('click', (e) => {
     e.stopPropagation();
