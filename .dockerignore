@@ -1,0 +1,29 @@
+# Git & IDE
+.git
+.gitignore
+.vscode
+.idea
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Local cache & temp files
+temp_pdfs/
+faiss_index/
+chroma_db/
+.DS_Store
+Thumbs.db
+*.log
+
+# Environment variables
+.env
+.env.*
+!.env.example

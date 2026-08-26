@@ -3,72 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF AI Chatbot</title>
+    <title>Aneevalp DocAI - Enterprise Document Intelligence</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar for Setup -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2><i class="fa-solid fa-file-pdf"></i> PDF Chatbot</h2>
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar">
+        <div class="brand-container">
+            <div class="brand-logo">
+                <i class="fa-solid fa-brain-circuit"></i>
             </div>
-            
-
-
-            <div class="setup-section" id="upload-section">
-                <h3><i class="fa-solid fa-upload"></i> Upload Document</h3>
-                <div class="limit-info"><i class="fa-solid fa-circle-info"></i> Max Limit: ~150 Pages or 15MB</div>
-                <div class="file-upload-wrapper">
-                    <input type="file" id="pdfUpload" accept=".pdf,.docx,.txt" multiple>
-                    <label for="pdfUpload" class="file-upload-btn">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Choose Documents
-                    </label>
-                    <span id="file-name">No files selected</span>
+            <div class="brand-text">
+                <div class="brand-title-row">
+                    <span class="brand-title">Aneevalp DocAI</span>
+                    <span class="badge badge-gcp"><i class="fa-brands fa-google"></i> Cloud Run</span>
+                    <span class="badge badge-gemini"><i class="fa-solid fa-bolt"></i> Gemini 1.5</span>
+                    <span class="badge badge-firebase"><i class="fa-solid fa-fire"></i> Firestore</span>
                 </div>
-                <button id="processBtn" class="primary-btn">
-                    <i class="fa-solid fa-microchip"></i> Process Document
-                </button>
+                <div class="brand-subtitle">Built by <strong>Aneevalp Solutions</strong> | Accelerated by Google Cloud Run & Gemini</div>
             </div>
-            
-            <div class="setup-section hidden" id="success-section">
-                <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
-                <h3>Document Ready</h3>
-                <p class="success-desc">Your document has been processed and vectorized. You can now chat with it!</p>
-                <button id="uploadAnotherBtn" class="secondary-btn">
-                    <i class="fa-solid fa-rotate-left"></i> Upload Another
+        </div>
+
+        <div class="nav-right">
+            <!-- Logged Out Auth State -->
+            <button id="googleSignInBtn" class="google-auth-btn">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                <span>Sign in with Google</span>
+            </button>
+
+            <!-- Logged In User Profile -->
+            <div id="userProfile" class="user-profile hidden">
+                <div class="profile-avatar-wrapper" id="profileTrigger">
+                    <img id="userAvatar" src="https://lh3.googleusercontent.com/a/default-user=s96-c" alt="Profile" class="user-avatar">
+                    <div class="online-badge"></div>
+                </div>
+                
+                <!-- Dropdown Menu -->
+                <div class="profile-dropdown hidden" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <p class="dropdown-name" id="dropdownUserName">Google Cloud User</p>
+                        <p class="dropdown-email" id="dropdownUserEmail">user@googlecloud.apac</p>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" id="statsItem">
+                        <i class="fa-solid fa-database"></i>
+                        <span>Firestore Synced</span>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-logout-btn" id="logoutBtn">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Sidebar Navigation Tabs -->
+            <div class="sidebar-tabs">
+                <button class="tab-btn active" id="tabUpload">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Document
+                </button>
+                <button class="tab-btn" id="tabHistory">
+                    <i class="fa-solid fa-clock-rotate-left"></i> History <span class="history-count" id="historyCount">0</span>
                 </button>
             </div>
 
-            <div id="status-indicator" class="status-hidden">
-                <div class="spinner"></div>
-                <span id="status-text">Processing...</span>
+            <!-- TAB 1: Document Upload & Setup -->
+            <div class="tab-content" id="uploadTabContent">
+                <div class="setup-section" id="upload-section">
+                    <div class="section-label">
+                        <i class="fa-solid fa-file-circle-plus"></i> Ingest Document
+                    </div>
+                    <div class="limit-info">
+                        <i class="fa-solid fa-shield-halved"></i> Max ~150 Pages or 20MB (PDF, DOCX, TXT)
+                    </div>
+                    <div class="file-upload-wrapper" id="dropZone">
+                        <input type="file" id="pdfUpload" accept=".pdf,.docx,.txt" multiple>
+                        <label for="pdfUpload" class="file-upload-btn">
+                            <div class="upload-icon-pulse"><i class="fa-solid fa-file-arrow-up"></i></div>
+                            <span class="upload-prompt">Click or drag & drop files</span>
+                            <span class="upload-sub">Supports PDF, Word & Text</span>
+                        </label>
+                        <div id="file-name-container" class="file-name-container hidden">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span id="file-name">No file selected</span>
+                        </div>
+                    </div>
+                    <button id="processBtn" class="primary-btn">
+                        <i class="fa-solid fa-microchip"></i>
+                        <span>Vectorize & Index with Gemini</span>
+                    </button>
+                </div>
+                
+                <div class="setup-section hidden" id="success-section">
+                    <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <h3>Document Indexed</h3>
+                    <p class="success-desc" id="successDocName">Your document is vectorized and ready for multi-turn reasoning.</p>
+                    <button id="uploadAnotherBtn" class="secondary-btn">
+                        <i class="fa-solid fa-arrows-rotate"></i> Upload New Document
+                    </button>
+                </div>
+
+                <div id="status-indicator" class="status-hidden">
+                    <div class="spinner"></div>
+                    <span id="status-text">Embedding with Gemini...</span>
+                </div>
+            </div>
+
+            <!-- TAB 2: Firestore History -->
+            <div class="tab-content hidden" id="historyTabContent">
+                <div class="history-header">
+                    <span><i class="fa-solid fa-cloud"></i> Cloud Firestore History</span>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="history-empty">
+                        <i class="fa-solid fa-box-archive"></i>
+                        <p>No past sessions found. Upload a document to start a session.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Footer Tech Badges -->
+            <div class="sidebar-footer">
+                <div class="tech-pill"><i class="fa-brands fa-google"></i> Google Cloud Run</div>
+                <div class="tech-pill"><i class="fa-solid fa-layer-group"></i> FAISS Vector Search</div>
             </div>
         </aside>
 
         <!-- Main Chat Area -->
         <main class="chat-area">
             <header class="chat-header">
-                <div class="glow-dot"></div>
-                <h2>AI Assistant Ready</h2>
+                <div class="header-status">
+                    <div class="glow-dot"></div>
+                    <div class="chat-header-details">
+                        <h2 id="activeDocTitle">Aneevalp DocAI Workspace</h2>
+                        <span class="model-badge"><i class="fa-solid fa-sparkles"></i> Gemini 1.5 Flash Reasoning</span>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <button id="newChatBtn" class="icon-action-btn" title="Clear Conversation">
+                        <i class="fa-solid fa-trash-can"></i> <span>Clear Chat</span>
+                    </button>
+                </div>
             </header>
 
+            <!-- Chat Window Stream -->
             <div class="chat-window" id="chatWindow">
+                <!-- Welcome Banner -->
                 <div class="message system-msg">
-                    <div class="msg-content">Welcome! Upload a PDF, Word, or Text document on the left and ask me questions about it.</div>
+                    <div class="msg-content">
+                        <div class="system-welcome-title">
+                            <i class="fa-solid fa-hand-wave"></i> Welcome to Aneevalp DocAI
+                        </div>
+                        <p>Upload any PDF, Word document, or Text file on the left. Aneevalp DocAI uses <strong>Google Gemini</strong> and in-memory <strong>FAISS</strong> vector indexing to deliver instant, cited answers with visual page crops.</p>
+                    </div>
+                </div>
+
+                <!-- Empty State Suggested Prompts -->
+                <div class="suggested-prompts-container" id="suggestedPrompts">
+                    <div class="prompts-title"><i class="fa-solid fa-lightbulb"></i> Suggested Starter Prompts:</div>
+                    <div class="prompts-grid">
+                        <button class="prompt-chip" data-prompt="Summarize this document in 5 key executive takeaways.">
+                            <i class="fa-solid fa-list-check"></i>
+                            <span>Summarize key takeaways</span>
+                        </button>
+                        <button class="prompt-chip" data-prompt="Extract all numerical data, statistics, and financial metrics from this document.">
+                            <i class="fa-solid fa-chart-column"></i>
+                            <span>Extract key metrics & data</span>
+                        </button>
+                        <button class="prompt-chip" data-prompt="What are the critical action items, risks, and recommendations outlined in this document?">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>Identify risks & action items</span>
+                        </button>
+                        <button class="prompt-chip" data-prompt="List the main entities, organizations, and defined terms mentioned in this document.">
+                            <i class="fa-solid fa-tags"></i>
+                            <span>List key terms & entities</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
+            <!-- Chat Input Area -->
             <div class="chat-input-area">
-                <input type="text" id="chatInput" placeholder="Ask a question about your document..." disabled>
-                <button id="sendBtn" disabled>
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
+                <div class="input-wrapper">
+                    <input type="text" id="chatInput" placeholder="Ask any question about your document..." disabled>
+                    <button id="sendBtn" class="send-btn" disabled title="Send message">
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </button>
+                </div>
             </div>
         </main>
     </div>
-    <script src="script.js"></script>
+
+    <!-- Scripts -->
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
