@@ -365,6 +365,30 @@ function resetChatUI() {
     resetUploadUI();
 }
 
+const purgeDataBtn = document.getElementById('purgeDataBtn');
+
+if (purgeDataBtn) {
+    purgeDataBtn.addEventListener('click', async () => {
+        if (confirm("🇮🇳 DPDP Act Right to Erasure:\n\nAre you sure you want to permanently purge and erase all document vectors, temporary files, and active session history?")) {
+            try {
+                await fetch(`${API_BASE}/api/session/clear`, { method: 'POST' });
+            } catch (e) {
+                console.warn("Backend session purge error:", e);
+            }
+            if (currentUser && currentSessionId) {
+                try {
+                    await deleteSessionFromFirestore(currentUser.uid, currentSessionId);
+                    loadHistoryList();
+                } catch (e) {
+                    console.warn(e);
+                }
+            }
+            resetChatUI();
+            alert("Document data, in-memory embeddings, and session history have been permanently erased.");
+        }
+    });
+}
+
 newChatBtn.addEventListener('click', () => {
     if (confirm("Start a new conversation?")) {
         resetChatUI();
@@ -389,33 +413,36 @@ async function sendMessage() {
     const question = chatInput.value.trim();
     if (!question || isProcessing) return;
 
-    // Remove starter chips if present
-    if (suggestedPrompts && suggestedPrompts.parentElement === chatWindow) {
-        suggestedPrompts.remove();
-    }
-
-    // Render User Message
-    renderUserMessage(question);
+    isProcessing = true;
     chatInput.value = '';
-
-    // Save to Firestore
-    if (currentUser && currentSessionId) {
-        await saveMessageToFirestore(currentUser.uid, currentSessionId, {
-            role: 'user',
-            content: question
-        });
-    }
-
-    // Disable inputs & add loading spinner
     chatInput.disabled = true;
     sendBtn.disabled = true;
 
-    const loadingId = 'loading-' + Date.now();
-    const loadingMsg = document.createElement('div');
-    loadingMsg.classList.add('message', 'ai-msg');
-    loadingMsg.id = loadingId;
-    loadingMsg.innerHTML = '<div class="msg-content"><i class="fa-solid fa-sparkles fa-spin"></i> Reasoning with Gemini 1.5 Flash...</div>';
-    chatWindow.appendChild(loadingMsg);
+    // Render User Message
+    renderUserMessage(question);
+    
+    // Save User Msg to Firestore
+    if (currentUser && currentSessionId) {
+        await saveMessageToFirestore(currentUser.uid, currentSessionId, {
+            sender: "user",
+            text: question
+        });
+    }
+
+    // Render Loading Shimmer
+    const loadingMsgId = `loading_${Date.now()}`;
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = loadingMsgId;
+    loadingDiv.classList.add('message', 'ai-msg');
+    loadingDiv.innerHTML = `
+        <div class="ai-statutory-label"><i class="fa-solid fa-microchip fa-spin"></i> Synthesizing Answer with Gemini 2.5 Flash...</div>
+        <div class="msg-content shimmer-box">
+            <div class="shimmer-line line-1"></div>
+            <div class="shimmer-line line-2"></div>
+            <div class="shimmer-line line-3"></div>
+        </div>
+    `;
+    chatWindow.appendChild(loadingDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
     try {
@@ -426,27 +453,37 @@ async function sendMessage() {
         });
 
         const data = await response.json();
-        document.getElementById(loadingId)?.remove();
+        
+        // Remove loading shimmer
+        const loadElem = document.getElementById(loadingMsgId);
+        if (loadElem) loadElem.remove();
 
-        if (response.ok) {
+        if (response.ok && data.status === 'success') {
             renderAiMessage(data.answer, data.source_image, data.page, data.file_type);
 
-            // Save AI Response to Firestore
+            // Save AI Msg to Firestore
             if (currentUser && currentSessionId) {
                 await saveMessageToFirestore(currentUser.uid, currentSessionId, {
-                    role: 'assistant',
-                    content: data.answer,
-                    sourceImage: data.source_image || null,
-                    page: data.page !== undefined ? data.page : null,
-                    fileType: data.file_type || null
+                    sender: "ai",
+                    text: data.answer,
+                    sourceImage: data.source_image,
+                    page: data.page,
+                    fileType: data.file_type
                 });
             }
         } else {
-            throw new Error(data.detail || "Failed to generate answer");
+            throw new Error(data.message || data.detail || "Query reasoning failed");
         }
     } catch (error) {
-        document.getElementById(loadingId)?.remove();
-        addSystemMessage(`Error: ${error.message}`);
+        const loadElem = document.getElementById(loadingMsgId);
+        if (loadElem) loadElem.remove();
+
+        renderAiMessage(`
+            <div class="error-bubble">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>${escapeHTML(error.message)}</span>
+            </div>
+        `, null, null, null);
     } finally {
         chatInput.disabled = false;
         sendBtn.disabled = false;
@@ -472,7 +509,12 @@ function renderAiMessage(htmlContent, sourceImage, pageNum, fileType) {
     const msg = document.createElement('div');
     msg.classList.add('message', 'ai-msg');
     
-    let fullHtml = `<div class="msg-content">${htmlContent}`;
+    let fullHtml = `
+        <div class="ai-statutory-label">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> AI-Synthesized (Gemini 2.5 Flash) • Grounded in Context
+        </div>
+        <div class="msg-content">${htmlContent}
+    `;
     if (fileType === '.pdf' && sourceImage && pageNum !== null && pageNum !== undefined) {
         fullHtml += `
             <div class="source-image-wrapper">

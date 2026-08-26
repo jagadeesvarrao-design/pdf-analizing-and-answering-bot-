@@ -447,7 +447,7 @@
         </div>
     </section>
 
-    <!-- FOOTER -->
+    <!-- FOOTER (with Indian Regulatory Compliance) -->
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-brand">
@@ -464,8 +464,127 @@
                 <a href="https://github.com/jagadeesvarrao-design/pdf-analizing-and-answering-bot-" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
                 <a href="app.html"><i class="fa-solid fa-arrow-up-right-from-square"></i> App</a>
             </div>
+
+            <!-- Indian Statutory Compliance Row -->
+            <div class="footer-compliance-row">
+                <div>
+                    <span>🇮🇳 Compliant with <strong>Digital Personal Data Protection (DPDP) Act, 2023</strong> & <strong>IT Rules 2021</strong></span>
+                </div>
+                <div class="compliance-links">
+                    <button id="openPrivacyBtn">Privacy Policy (DPDP 2023)</button>
+                    <button id="openTermsBtn">Terms & AI Ethics</button>
+                    <button id="openGrievanceBtn">Grievance Officer</button>
+                </div>
+            </div>
         </div>
-    </footer>    <!-- Interactive Landing Page & Auth Controller Script -->
+    </footer>
+
+    <!-- DPDP ACT 2023 STATUTORY CONSENT & NOTICE BANNER -->
+    <div id="dpdpConsentBanner" class="dpdp-banner hidden">
+        <div class="dpdp-banner-content">
+            <i class="fa-solid fa-shield-halved dpdp-icon"></i>
+            <div>
+                <strong>DPDP Act, 2023 & IT Rules Notice:</strong> Aneevarp DocAI processes your uploaded files strictly in-memory during your session. We never train foundation models on your private documents. You have full Right to Erasure at any time.
+            </div>
+        </div>
+        <div class="dpdp-banner-actions">
+            <button id="dpdpAcceptBtn" class="dpdp-btn-accept">Accept & Proceed</button>
+            <button id="dpdpDetailsBtn" class="dpdp-btn-info">View Policy</button>
+        </div>
+    </div>
+
+    <!-- 1. PRIVACY POLICY MODAL (DPDP ACT 2023 COMPLIANT) -->
+    <div id="privacyModal" class="legal-modal-backdrop">
+        <div class="legal-modal-card">
+            <div class="legal-modal-header">
+                <h3><i class="fa-solid fa-user-shield"></i> Privacy Policy (DPDP Act, 2023)</h3>
+                <button class="legal-modal-close-btn" data-close="privacyModal">&times;</button>
+            </div>
+            <div class="legal-modal-body">
+                <p><strong>Effective Date:</strong> August 2026 | <strong>Entity:</strong> Aneevarp Solutions (India)</p>
+                
+                <h4>1. Data Fiduciary & Purpose Limitation</h4>
+                <p>Aneevarp Solutions acts as the Data Fiduciary for <strong>Aneevarp DocAI</strong>. Personal data collected (Google Account email and display name for authentication) and document text are processed strictly for the purpose of vector-indexed search, question-answering, and visual citation rendering.</p>
+
+                <h4>2. Document Data Retention & Processing</h4>
+                <p>All document embeddings and text chunks are stored in ephemeral in-memory vectors. Document indexes are tied to your active reasoning session and are completely purged when you click <em>Clear Session</em> or upload a new file.</p>
+
+                <h4>3. Data Principal Rights (Section 11, 12, 13 & 14 of DPDP Act 2023)</h4>
+                <ul>
+                    <li><strong>Right to Access Information:</strong> You may review the active documents and chat history in your workspace.</li>
+                    <li><strong>Right to Correction and Erasure:</strong> You can purge your uploaded documents and delete all stored Firestore chat sessions instantly via the workspace UI.</li>
+                    <li><strong>Right of Grievance Redressal:</strong> You have the right to register grievances with our Grievance Officer and escalate to the Data Protection Board of India.</li>
+                    <li><strong>Right to Nominate:</strong> You have the right to nominate an individual to exercise your rights in event of death or incapacity.</li>
+                </ul>
+
+                <h4>4. Security & Cross-Border Data Storage</h4>
+                <p>All data in transit is encrypted using <strong>TLS 1.3 / HTTPS</strong>. In-cloud computation runs on <strong>Google Cloud Run</strong> in compliance with MeitY and CERT-In security standards.</p>
+            </div>
+            <div class="legal-modal-footer">
+                <button class="dpdp-btn-accept" data-close="privacyModal">Understood & Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. TERMS OF SERVICE & MEITY AI ADVISORY MODAL -->
+    <div id="termsModal" class="legal-modal-backdrop">
+        <div class="legal-modal-card">
+            <div class="legal-modal-header">
+                <h3><i class="fa-solid fa-scale-balanced"></i> Terms of Service & AI Advisory</h3>
+                <button class="legal-modal-close-btn" data-close="termsModal">&times;</button>
+            </div>
+            <div class="legal-modal-body">
+                <h4>1. Compliance with Information Technology (Intermediary Guidelines) Rules, 2021</h4>
+                <p>By accessing Aneevarp DocAI, you agree under Rule 3(1)(b) not to host, upload, modify, or transmit any document that:</p>
+                <ul>
+                    <li>Belongs to another person without authorization or infringes intellectual property;</li>
+                    <li>Threatens the unity, integrity, defense, security, or sovereignty of India;</li>
+                    <li>Contains malicious software, viruses, or harmful exploits.</li>
+                </ul>
+
+                <h4>2. MeitY Generative AI Advisory Compliance</h4>
+                <p>Aneevarp DocAI employs <strong>Google Gemini 2.5 Flash</strong> generative artificial intelligence models. Users are informed that:</p>
+                <ul>
+                    <li>All synthetic answers are generated algorithmically based on the extracted context.</li>
+                    <li>While our <em>Visual Grounding Engine</em> verifies source citations, AI responses should be independently validated for critical financial, legal, or medical decisions.</li>
+                </ul>
+
+                <h4>3. Document Ownership</h4>
+                <p>You retain 100% intellectual property and ownership rights over all documents uploaded to Aneevarp DocAI.</p>
+            </div>
+            <div class="legal-modal-footer">
+                <button class="dpdp-btn-accept" data-close="termsModal">I Agree</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. GRIEVANCE REDRESSAL OFFICER MODAL (RULE 3(2) IT RULES 2021) -->
+    <div id="grievanceModal" class="legal-modal-backdrop">
+        <div class="legal-modal-card">
+            <div class="legal-modal-header">
+                <h3><i class="fa-solid fa-building-shield"></i> Grievance Redressal Mechanism</h3>
+                <button class="legal-modal-close-btn" data-close="grievanceModal">&times;</button>
+            </div>
+            <div class="legal-modal-body">
+                <p>In accordance with the <strong>Information Technology Act, 2000</strong> and <strong>Rule 3(2) of IT Rules, 2021</strong>, the details of the Grievance & Data Protection Officer are published below:</p>
+                
+                <div class="grievance-box">
+                    <p><strong>Designation:</strong> Grievance Redressal & Data Protection Officer</p>
+                    <p><strong>Entity:</strong> Aneevarp Solutions</p>
+                    <p><strong>Email:</strong> <a href="mailto:grievance@aneevarpsolutions.com" style="color:var(--primary); font-weight:700;">grievance@aneevarpsolutions.com</a></p>
+                    <p><strong>Physical Jurisdiction:</strong> Andhra Pradesh & Telangana, India</p>
+                    <p><strong>Statutory Timelines:</strong></p>
+                    <ul>
+                        <li><strong>Acknowledgment of Grievance:</strong> Within 24 hours of receipt.</li>
+                        <li><strong>Resolution & Disposal:</strong> Within 15 days from date of receipt.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="legal-modal-footer">
+                <button class="dpdp-btn-accept" data-close="grievanceModal">Close</button>
+            </div>
+        </div>
+    </div>    <!-- Interactive Landing Page & Auth Controller Script -->
     <script type="module">
         import { 
             loginWithGoogle, 
@@ -669,11 +788,64 @@
             });
         });
 
-        // Initialize default scenario
-        loadScenario('finance');
+        // ==========================================================================
+        // 4. DPDP ACT 2023 STATUTORY BANNER & LEGAL MODALS CONTROLLER
+        // ==========================================================================
+        const dpdpBanner = document.getElementById('dpdpConsentBanner');
+        const dpdpAcceptBtn = document.getElementById('dpdpAcceptBtn');
+        const dpdpDetailsBtn = document.getElementById('dpdpDetailsBtn');
+
+        const openPrivacyBtn = document.getElementById('openPrivacyBtn');
+        const openTermsBtn = document.getElementById('openTermsBtn');
+        const openGrievanceBtn = document.getElementById('openGrievanceBtn');
+
+        const privacyModal = document.getElementById('privacyModal');
+        const termsModal = document.getElementById('termsModal');
+        const grievanceModal = document.getElementById('grievanceModal');
+
+        // Check if user has consented
+        if (dpdpBanner && !localStorage.getItem('aneevarp_dpdp_consent')) {
+            setTimeout(() => {
+                dpdpBanner.classList.remove('hidden');
+            }, 600);
+        }
+
+        if (dpdpAcceptBtn && dpdpBanner) {
+            dpdpAcceptBtn.addEventListener('click', () => {
+                localStorage.setItem('aneevarp_dpdp_consent', 'accepted');
+                dpdpBanner.classList.add('hidden');
+            });
+        }
+
+        function openModal(modal) {
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeModal(modal) {
+            if (modal) modal.classList.remove('active');
+        }
+
+        if (dpdpDetailsBtn) dpdpDetailsBtn.addEventListener('click', () => openModal(privacyModal));
+        if (openPrivacyBtn) openPrivacyBtn.addEventListener('click', () => openModal(privacyModal));
+        if (openTermsBtn) openTermsBtn.addEventListener('click', () => openModal(termsModal));
+        if (openGrievanceBtn) openGrievanceBtn.addEventListener('click', () => openModal(grievanceModal));
+
+        // Close on close button or backdrop click
+        document.querySelectorAll('[data-close]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-close');
+                closeModal(document.getElementById(targetId));
+            });
+        });
+
+        document.querySelectorAll('.legal-modal-backdrop').forEach(backdrop => {
+            backdrop.addEventListener('click', (e) => {
+                if (e.target === backdrop) closeModal(backdrop);
+            });
+        });
 
         // ==========================================================================
-        // 4. MOBILE NAVIGATION DRAWER TOGGLE
+        // 5. MOBILE NAVIGATION DRAWER TOGGLE
         // ==========================================================================
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileMenuIcon = document.getElementById('mobileMenuIcon');

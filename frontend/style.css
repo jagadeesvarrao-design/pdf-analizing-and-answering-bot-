@@ -927,6 +927,76 @@ body {
     border-color: var(--danger-color);
 }
 
+.icon-action-btn.purge-btn {
+    border-color: rgba(220, 38, 38, 0.3);
+    color: var(--danger-color);
+}
+
+.icon-action-btn.purge-btn:hover {
+    background: rgba(220, 38, 38, 0.12);
+    border-color: var(--danger-color);
+}
+
+.sidebar-compliance-note {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.85;
+}
+
+/* AI STATUTORY LABELS (MeitY AI Compliance) */
+.ai-statutory-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.shimmer-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 280px;
+}
+
+.shimmer-line {
+    height: 12px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(162, 188, 168, 0.2) 25%, rgba(162, 188, 168, 0.45) 50%, rgba(162, 188, 168, 0.2) 75%);
+    background-size: 200% 100%;
+    animation: shimmerAnim 1.4s infinite;
+}
+
+.line-1 { width: 90%; }
+.line-2 { width: 75%; }
+.line-3 { width: 50%; }
+
+@keyframes shimmerAnim {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.error-bubble {
+    color: var(--danger-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
 /* CHAT WINDOW STREAM */
 .chat-window {
     flex: 1;
