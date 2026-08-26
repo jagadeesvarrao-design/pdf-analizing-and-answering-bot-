@@ -303,6 +303,106 @@ h1, h2, h3, h4, .font-headline {
     box-shadow: 0 8px 25px rgba(71, 101, 80, 0.35);
 }
 
+/* Mobile Hamburger Menu Button */
+.mobile-menu-btn {
+    display: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(71, 101, 80, 0.08);
+    border: 1px solid rgba(162, 188, 168, 0.4);
+    color: var(--primary);
+    font-size: 1.15rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(71, 101, 80, 0.15);
+}
+
+/* Mobile Slide-down Drawer */
+.mobile-drawer {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    background: var(--ivory-base, #FCFAF5);
+    border-bottom: 1px solid rgba(162, 188, 168, 0.3);
+    transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 999;
+}
+
+[data-theme="dark"] .mobile-drawer {
+    background: #0E1512;
+    border-bottom-color: rgba(162, 188, 168, 0.2);
+}
+
+.mobile-drawer.open {
+    max-height: 500px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-drawer-content {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mobile-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--slate-deep);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.mobile-nav-item i {
+    color: var(--primary);
+    width: 20px;
+    text-align: center;
+}
+
+.mobile-nav-item:hover {
+    background: rgba(71, 101, 80, 0.08);
+    color: var(--primary);
+}
+
+.mobile-drawer-divider {
+    height: 1px;
+    background: rgba(162, 188, 168, 0.25);
+    margin: 6px 0;
+}
+
+.mobile-drawer-cta {
+    background: var(--primary);
+    color: var(--on-primary);
+    padding: 14px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 800;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+    box-shadow: 0 4px 15px rgba(71, 101, 80, 0.25);
+}
+
 /* ==============================================================================
    HERO SECTION
    ============================================================================== */
@@ -1293,13 +1393,30 @@ section {
 }
 
 /* ==============================================================================
-   RESPONSIVE MEDIA QUERIES (Mobile, Tablet, and Narrow Desktop)
+   RESPONSIVE MEDIA QUERIES (Ultra-Wide, Desktop, Tablet, Mobile & Foldable)
    ============================================================================== */
 
-/* 1. Large Tablets & Narrow Desktop (< 1120px) */
+/* 1. Ultra-Wide & 4K Displays (>= 1440px) */
+@media (min-width: 1440px) {
+    .nav-container, 
+    .hero-container, 
+    .section-container, 
+    .cta-container, 
+    .footer-container {
+        max-width: 1360px;
+    }
+    .hero-title {
+        font-size: 3.8rem;
+    }
+}
+
+/* 2. Large Tablets & Compact Desktops (< 1120px) */
 @media (max-width: 1120px) {
     .nav-links {
-        display: none; /* Hide crowded links; keeps navbar clean */
+        display: none; /* Collapses into mobile drawer */
+    }
+    .mobile-menu-btn {
+        display: flex; /* Activate hamburger menu */
     }
     .brand-tagline {
         display: none; /* Clean single-line logo */
@@ -1307,9 +1424,15 @@ section {
     .hero-title {
         font-size: clamp(2.4rem, 5vw, 3.2rem);
     }
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .pipeline-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-/* 2. Tablets & Mobile (< 992px) */
+/* 3. Tablets & Phablets (< 992px) */
 @media (max-width: 992px) {
     .hero-section {
         padding: 40px 16px 70px;
@@ -1346,7 +1469,7 @@ section {
         padding: 5px 10px;
     }
 
-    /* FIX: Hero Visualizer Stream - NO 90 DEGREE ROTATION */
+    /* FIX: Hero Visualizer Stream - Horizontal Flow on Tablets */
     .visualizer-content {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -1384,11 +1507,13 @@ section {
         flex-wrap: nowrap;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        gap: 8px;
+        padding: 10px;
     }
     .sandbox-tab {
         flex-shrink: 0;
         font-size: 0.82rem;
-        padding: 12px 16px;
+        padding: 10px 14px;
     }
 
     /* Grids */
@@ -1424,7 +1549,7 @@ section {
     }
 }
 
-/* 3. Small Mobile Screens (< 768px) */
+/* 4. Standard Mobile (< 768px) */
 @media (max-width: 768px) {
     .navbar {
         height: auto;
@@ -1453,8 +1578,11 @@ section {
     .parent-portal-link {
         padding: 8px 10px;
     }
+    .parent-portal-link.github-icon-link {
+        display: none; /* Available inside mobile drawer */
+    }
     .cta-nav-btn {
-        padding: 8px 14px;
+        padding: 8px 12px;
         font-size: 0.78rem;
     }
     #landingThemeLabel {
@@ -1477,5 +1605,31 @@ section {
     }
     .footer-links {
         justify-content: center;
+    }
+}
+
+/* 5. Extra Small Mobile & Foldables (< 420px) */
+@media (max-width: 420px) {
+    .brand-name {
+        font-size: 0.92rem;
+    }
+    .cta-nav-btn span {
+        display: none; /* Just icon on very small screen */
+    }
+    .cta-nav-btn {
+        padding: 8px 10px;
+    }
+    .hero-title {
+        font-size: 1.85rem;
+    }
+    .hero-subtitle {
+        font-size: 0.92rem;
+    }
+    .mock-crop-header {
+        font-size: 0.7rem;
+    }
+    .quick-btn {
+        font-size: 0.82rem;
+        padding: 10px 12px;
     }
 }

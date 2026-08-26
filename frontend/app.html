@@ -77,9 +77,21 @@
         </div>
     </header>
 
+    <!-- Mobile Workspace View Switcher (< 768px devices) -->
+    <div class="mobile-view-switcher" id="mobileViewSwitcher">
+        <button class="view-switch-btn active" id="viewBtnDocs">
+            <i class="fa-solid fa-file-circle-plus"></i>
+            <span>Document</span>
+        </button>
+        <button class="view-switch-btn" id="viewBtnChat">
+            <i class="fa-solid fa-comments"></i>
+            <span>Chat</span>
+        </button>
+    </div>
+
     <div class="app-container">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="appSidebar">
             <!-- Sidebar Navigation Tabs -->
             <div class="sidebar-tabs">
                 <button class="tab-btn active" id="tabUpload">

@@ -38,22 +38,41 @@
 
             <div class="nav-actions">
                 <!-- Theme Toggle Button -->
-                <button id="landingThemeToggleBtn" class="theme-toggle-btn" title="Toggle Light / Dark Mode" aria-label="Toggle Theme" style="background: rgba(71,101,80,0.08); border: 1px solid rgba(162,188,168,0.4); padding: 8px 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.82rem; color: var(--on-surface);">
-                    <i class="fa-solid fa-moon" id="landingThemeIcon" style="color: var(--primary);"></i>
-                    <span id="landingThemeLabel">Dark</span>
+                <button id="landingThemeToggleBtn" class="theme-toggle-btn" title="Toggle Light / Dark Mode" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon" id="landingThemeIcon"></i>
+                    <span id="landingThemeLabel">Dark Mode</span>
                 </button>
 
                 <a href="https://aneevarpsolutions.vercel.app/" target="_blank" class="parent-portal-link" title="Visit Parent Holding Company">
                     <i class="fa-solid fa-building-columns"></i>
                     <span>Parent Portal</span>
                 </a>
-                <a href="https://github.com/jagadeesvarrao-design/pdf-analizing-and-answering-bot-" target="_blank" class="parent-portal-link" title="GitHub Repository">
+                <a href="https://github.com/jagadeesvarrao-design/pdf-analizing-and-answering-bot-" target="_blank" class="parent-portal-link github-icon-link" title="GitHub Repository">
                     <i class="fa-brands fa-github"></i>
                 </a>
                 <a href="app.html" class="cta-nav-btn">
                     <span>Launch DocAI</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
+
+                <!-- Mobile Menu Hamburger Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Navigation Menu">
+                    <i class="fa-solid fa-bars" id="mobileMenuIcon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Slide-Out Navigation Drawer -->
+        <div class="mobile-drawer" id="mobileDrawer">
+            <div class="mobile-drawer-content">
+                <a href="#features" class="mobile-nav-item"><i class="fa-solid fa-layer-group"></i> Features</a>
+                <a href="#pipeline" class="mobile-nav-item"><i class="fa-solid fa-diagram-project"></i> How It Works</a>
+                <a href="#demo" class="mobile-nav-item"><i class="fa-solid fa-play"></i> Live Sandbox</a>
+                <a href="#architecture" class="mobile-nav-item"><i class="fa-solid fa-server"></i> Architecture</a>
+                <div class="mobile-drawer-divider"></div>
+                <a href="https://aneevarpsolutions.vercel.app/" target="_blank" class="mobile-nav-item"><i class="fa-solid fa-building-columns"></i> Parent Holding Portal</a>
+                <a href="https://github.com/jagadeesvarrao-design/pdf-analizing-and-answering-bot-" target="_blank" class="mobile-nav-item"><i class="fa-brands fa-github"></i> GitHub Repository</a>
+                <a href="app.html" class="mobile-drawer-cta"><i class="fa-solid fa-bolt"></i> Launch Aneevarp DocAI</a>
             </div>
         </div>
     </nav>
@@ -543,10 +562,27 @@
 
         applyLandingTheme(localStorage.getItem('aneevarp_theme') || 'light');
 
-        if (landingThemeToggleBtn) {
-            landingThemeToggleBtn.addEventListener('click', () => {
-                const current = document.documentElement.getAttribute('data-theme') || 'light';
-                applyLandingTheme(current === 'dark' ? 'light' : 'dark');
+        // Mobile Navigation Drawer Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenuIcon = document.getElementById('mobileMenuIcon');
+        const mobileDrawer = document.getElementById('mobileDrawer');
+
+        if (mobileMenuBtn && mobileDrawer) {
+            mobileMenuBtn.addEventListener('click', () => {
+                const isOpen = mobileDrawer.classList.toggle('open');
+                if (isOpen) {
+                    mobileMenuIcon.className = 'fa-solid fa-xmark';
+                } else {
+                    mobileMenuIcon.className = 'fa-solid fa-bars';
+                }
+            });
+
+            // Close drawer when a link is clicked
+            document.querySelectorAll('.mobile-nav-item, .mobile-drawer-cta').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileDrawer.classList.remove('open');
+                    if (mobileMenuIcon) mobileMenuIcon.className = 'fa-solid fa-bars';
+                });
             });
         }
     </script>

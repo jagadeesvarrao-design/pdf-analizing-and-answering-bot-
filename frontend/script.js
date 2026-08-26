@@ -204,6 +204,10 @@ async function restoreSession(sess) {
             }
         });
     }
+
+    if (window.innerWidth <= 768) {
+        setMobileView('chat');
+    }
 }
 
 // ==========================================================================
@@ -312,6 +316,10 @@ processBtn.addEventListener('click', async () => {
             // Show starter prompts
             if (suggestedPrompts) {
                 chatWindow.appendChild(suggestedPrompts);
+            }
+
+            if (window.innerWidth <= 768) {
+                setMobileView('chat');
             }
         } else {
             throw new Error(data.detail || "Document extraction failed");
@@ -527,5 +535,37 @@ if (themeToggleBtn) {
         const next = current === 'dark' ? 'light' : 'dark';
         applyTheme(next);
     });
+}
+
+// ==========================================================================
+// MOBILE WORKSPACE VIEW SWITCHER (< 768px devices)
+// ==========================================================================
+const viewBtnDocs = document.getElementById('viewBtnDocs');
+const viewBtnChat = document.getElementById('viewBtnChat');
+
+function setMobileView(view) {
+    if (view === 'chat') {
+        document.body.classList.add('mobile-view-chat');
+        document.body.classList.remove('mobile-view-docs');
+        if (viewBtnChat) viewBtnChat.classList.add('active');
+        if (viewBtnDocs) viewBtnDocs.classList.remove('active');
+    } else {
+        document.body.classList.add('mobile-view-docs');
+        document.body.classList.remove('mobile-view-chat');
+        if (viewBtnDocs) viewBtnDocs.classList.add('active');
+        if (viewBtnChat) viewBtnChat.classList.remove('active');
+    }
+}
+
+if (viewBtnDocs) {
+    viewBtnDocs.addEventListener('click', () => setMobileView('docs'));
+}
+if (viewBtnChat) {
+    viewBtnChat.addEventListener('click', () => setMobileView('chat'));
+}
+
+// Default to Document view on small screens if no active document
+if (window.innerWidth <= 768) {
+    setMobileView('docs');
 }
 
