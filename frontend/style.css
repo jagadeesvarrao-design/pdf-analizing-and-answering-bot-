@@ -145,6 +145,27 @@ body {
     gap: 15px;
 }
 
+.nav-landing-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #93C5FD;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: rgba(66, 133, 244, 0.1);
+    border: 1px solid rgba(66, 133, 244, 0.25);
+    transition: all 0.2s ease;
+}
+
+.nav-landing-link:hover {
+    background: rgba(66, 133, 244, 0.2);
+    border-color: var(--gcp-blue);
+    transform: translateY(-1px);
+}
+
 .google-auth-btn {
     background: white;
     color: #1F2937;
