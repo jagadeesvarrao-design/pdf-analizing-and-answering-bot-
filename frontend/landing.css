@@ -1293,13 +1293,189 @@ section {
 }
 
 /* ==============================================================================
-   RESPONSIVE QUERIES
+   RESPONSIVE MEDIA QUERIES (Mobile, Tablet, and Narrow Desktop)
    ============================================================================== */
+
+/* 1. Large Tablets & Narrow Desktop (< 1120px) */
+@media (max-width: 1120px) {
+    .nav-links {
+        display: none; /* Hide crowded links; keeps navbar clean */
+    }
+    .brand-tagline {
+        display: none; /* Clean single-line logo */
+    }
+    .hero-title {
+        font-size: clamp(2.4rem, 5vw, 3.2rem);
+    }
+}
+
+/* 2. Tablets & Mobile (< 992px) */
 @media (max-width: 992px) {
-    .hero-title { font-size: 2.8rem; }
-    .visualizer-content { grid-template-columns: 1fr; gap: 30px; }
-    .viz-stream-col { transform: rotate(90deg); margin: 10px 0; }
-    .sandbox-window { grid-template-columns: 1fr; }
-    .arch-layers { flex-direction: column; }
-    .arch-connector { transform: rotate(90deg); }
+    .hero-section {
+        padding: 40px 16px 70px;
+    }
+    .hero-title {
+        font-size: clamp(2.1rem, 5.5vw, 2.8rem);
+        letter-spacing: -0.8px;
+        margin-bottom: 18px;
+    }
+    .hero-subtitle {
+        font-size: 1.02rem;
+        margin-bottom: 28px;
+        line-height: 1.6;
+    }
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto 32px;
+        gap: 12px;
+    }
+    .primary-hero-btn, 
+    .secondary-hero-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 20px;
+    }
+    .hero-tech-row {
+        gap: 8px;
+        margin-bottom: 36px;
+    }
+    .tech-tag {
+        font-size: 0.76rem;
+        padding: 5px 10px;
+    }
+
+    /* FIX: Hero Visualizer Stream - NO 90 DEGREE ROTATION */
+    .visualizer-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px 16px;
+    }
+    .viz-stream-col {
+        transform: none !important;
+        margin: 8px 0;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .particle-stream {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 4px;
+    }
+    .particle {
+        font-size: 0.74rem;
+        padding: 5px 10px;
+    }
+    .ai-brain-badge {
+        margin-top: 4px;
+    }
+
+    /* Sandbox Demo */
+    .sandbox-window {
+        grid-template-columns: 1fr;
+        padding: 16px;
+        gap: 20px;
+    }
+    .sandbox-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .sandbox-tab {
+        flex-shrink: 0;
+        font-size: 0.82rem;
+        padding: 12px 16px;
+    }
+
+    /* Grids */
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    .pipeline-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    /* Architecture Diagram */
+    .arch-diagram-card {
+        padding: 26px 18px;
+    }
+    .arch-layers {
+        flex-direction: column;
+        gap: 14px;
+    }
+    .arch-connector {
+        transform: rotate(90deg);
+        margin: 4px 0;
+        font-size: 1.2rem;
+    }
+
+    /* CTA Section */
+    .cta-container {
+        padding: 40px 20px;
+    }
+    .cta-container h2 {
+        font-size: 1.8rem;
+    }
+}
+
+/* 3. Small Mobile Screens (< 768px) */
+@media (max-width: 768px) {
+    .navbar {
+        height: auto;
+        min-height: 64px;
+        padding: 8px 0;
+    }
+    .nav-container {
+        width: 94%;
+        gap: 8px;
+    }
+    .nav-logo {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+        border-radius: 10px;
+    }
+    .brand-name {
+        font-size: 1.02rem;
+    }
+    .nav-actions {
+        gap: 6px;
+    }
+    .parent-portal-link span {
+        display: none;
+    }
+    .parent-portal-link {
+        padding: 8px 10px;
+    }
+    .cta-nav-btn {
+        padding: 8px 14px;
+        font-size: 0.78rem;
+    }
+    #landingThemeLabel {
+        display: none;
+    }
+    .theme-toggle-btn {
+        padding: 8px 10px !important;
+    }
+    .hero-badge {
+        padding: 6px 14px;
+        font-size: 0.72rem;
+    }
+    .badge-text {
+        font-size: 0.72rem;
+    }
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    .footer-links {
+        justify-content: center;
+    }
 }
