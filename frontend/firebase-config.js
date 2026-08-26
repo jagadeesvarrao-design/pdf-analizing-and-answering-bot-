@@ -1,4 +1,4 @@
-// Firebase Configuration & Service Layer for Aneevalp DocAI
+// Firebase Configuration & Service Layer for Aneevarp DocAI
 // Built for Google Cloud Gen AI Ideathon
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -25,9 +25,9 @@ import {
 // Default or Injected Firebase Config
 const defaultFirebaseConfig = {
     apiKey: "AIzaSyDemoKeyForGoogleCloudGenAIIdeathon",
-    authDomain: "aneevalp-docai.firebaseapp.com",
-    projectId: "aneevalp-docai",
-    storageBucket: "aneevalp-docai.appspot.com",
+    authDomain: "aneevarp-docai.firebaseapp.com",
+    projectId: "aneevarp-docai",
+    storageBucket: "aneevarp-docai.appspot.com",
     messagingSenderId: "123456789012",
     appId: "1:123456789012:web:abcdef1234567890"
 };
@@ -47,9 +47,9 @@ try {
     googleProvider = new GoogleAuthProvider();
     googleProvider.setCustomParameters({ prompt: 'select_account' });
     isFirebaseAvailable = true;
-    console.log("Aneevalp DocAI: Firebase initialized successfully.");
+    console.log("Aneevarp DocAI: Firebase initialized successfully.");
 } catch (err) {
-    console.warn("Aneevalp DocAI: Firebase running in demo-ready mode.", err.message);
+    console.warn("Aneevarp DocAI: Firebase running in demo-ready mode.", err.message);
 }
 
 // Google Sign-In
@@ -62,12 +62,12 @@ export async function loginWithGoogle() {
             email: "judge@googlecloud.apac",
             photoURL: "https://lh3.googleusercontent.com/a/default-user=s96-c"
         };
-        localStorage.setItem("aneevalp_auth_user", JSON.stringify(mockUser));
+        localStorage.setItem("aneevarp_auth_user", JSON.stringify(mockUser));
         return mockUser;
     }
     try {
         const result = await signInWithPopup(auth, googleProvider);
-        localStorage.setItem("aneevalp_auth_user", JSON.stringify({
+        localStorage.setItem("aneevarp_auth_user", JSON.stringify({
             uid: result.user.uid,
             displayName: result.user.displayName,
             email: result.user.email,
@@ -82,7 +82,7 @@ export async function loginWithGoogle() {
 
 // Logout
 export async function logoutUser() {
-    localStorage.removeItem("aneevalp_auth_user");
+    localStorage.removeItem("aneevarp_auth_user");
     if (auth && isFirebaseAvailable) {
         try {
             await signOut(auth);
@@ -94,7 +94,7 @@ export async function logoutUser() {
 
 // Get Cached Auth User
 export function getCachedUser() {
-    const cached = localStorage.getItem("aneevalp_auth_user");
+    const cached = localStorage.getItem("aneevarp_auth_user");
     return cached ? JSON.parse(cached) : null;
 }
 
@@ -107,14 +107,14 @@ export function onUserAuthStateChanged(callback) {
     }
     return onAuthStateChanged(auth, (user) => {
         if (user) {
-            localStorage.setItem("aneevalp_auth_user", JSON.stringify({
+            localStorage.setItem("aneevarp_auth_user", JSON.stringify({
                 uid: user.uid,
                 displayName: user.displayName,
                 email: user.email,
                 photoURL: user.photoURL
             }));
         } else {
-            localStorage.removeItem("aneevalp_auth_user");
+            localStorage.removeItem("aneevarp_auth_user");
         }
         callback(user);
     });
@@ -125,7 +125,7 @@ export async function saveSessionToFirestore(userId, sessionId, sessionData) {
     if (!userId) return;
     
     // Save to Local Storage for instant offline cache
-    const key = `aneevalp_sessions_${userId}`;
+    const key = `aneevarp_sessions_${userId}`;
     let list = JSON.parse(localStorage.getItem(key) || "[]");
     const existingIndex = list.findIndex(s => s.id === sessionId);
     const newEntry = { id: sessionId, ...sessionData, updatedAt: new Date().toISOString() };
@@ -154,7 +154,7 @@ export async function saveMessageToFirestore(userId, sessionId, message) {
     if (!userId) return;
     
     // Cache locally
-    const msgKey = `aneevalp_msgs_${sessionId}`;
+    const msgKey = `aneevarp_msgs_${sessionId}`;
     let msgs = JSON.parse(localStorage.getItem(msgKey) || "[]");
     msgs.push({ ...message, createdAt: new Date().toISOString() });
     localStorage.setItem(msgKey, JSON.stringify(msgs));
@@ -191,7 +191,7 @@ export async function fetchUserSessions(userId) {
         }
     }
     
-    const local = localStorage.getItem(`aneevalp_sessions_${userId}`);
+    const local = localStorage.getItem(`aneevarp_sessions_${userId}`);
     return local ? JSON.parse(local) : [];
 }
 
@@ -214,7 +214,7 @@ export async function fetchSessionMessages(userId, sessionId) {
         }
     }
     
-    const localMsgs = localStorage.getItem(`aneevalp_msgs_${sessionId}`);
+    const localMsgs = localStorage.getItem(`aneevarp_msgs_${sessionId}`);
     return localMsgs ? JSON.parse(localMsgs) : [];
 }
 
@@ -222,10 +222,10 @@ export async function fetchSessionMessages(userId, sessionId) {
 export async function deleteSessionFromFirestore(userId, sessionId) {
     if (!userId || !sessionId) return;
     
-    const key = `aneevalp_sessions_${userId}`;
+    const key = `aneevarp_sessions_${userId}`;
     const list = JSON.parse(localStorage.getItem(key) || "[]").filter(s => s.id !== sessionId);
     localStorage.setItem(key, JSON.stringify(list));
-    localStorage.removeItem(`aneevalp_msgs_${sessionId}`);
+    localStorage.removeItem(`aneevarp_msgs_${sessionId}`);
 
     if (db && isFirebaseAvailable && !firebaseConfig.apiKey.startsWith("AIzaSyDemoKey")) {
         try {

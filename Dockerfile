@@ -1,6 +1,6 @@
 # ==============================================================================
-# Aneevalp DocAI - Google Cloud Run Production Dockerfile
-# Built by Aneevalp Solutions for Google Cloud Gen AI Ideathon
+# Aneevarp DocAI - Google Cloud Run Production Dockerfile
+# Built by Aneevarp Solutions for Google Cloud Gen AI Ideathon
 # ==============================================================================
 
 FROM python:3.11-slim

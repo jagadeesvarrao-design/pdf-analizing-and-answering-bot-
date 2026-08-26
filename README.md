@@ -1,7 +1,7 @@
-# 🧠 Aneevalp DocAI — Enterprise Document Intelligence Platform
+# 🧠 Aneevarp DocAI — Enterprise Document Intelligence Platform
 
 <p align="center">
-  <strong>Built by Aneevalp Solutions | Official Submission for Google Cloud Gen AI Ideathon (APAC Edition)</strong>
+  <strong>Built by Aneevarp Solutions | Official Submission for Google Cloud Gen AI Ideathon (APAC Edition)</strong>
 </p>
 
 <p align="center">
@@ -17,9 +17,9 @@
 
 ## 📌 Executive Summary
 
-**Aneevalp DocAI** is an enterprise-grade, multimodal document intelligence platform designed to eliminate the bottleneck of extracting actionable insights from massive, unstructured documents (PDFs, Word files, and Text documents). 
+**Aneevarp DocAI** is an enterprise-grade, multimodal document intelligence platform designed to eliminate the bottleneck of extracting actionable insights from massive, unstructured documents (PDFs, Word files, and Text documents). 
 
-Unlike standard conversational wrappers, Aneevalp DocAI combines **Google Gemini 1.5 Flash**, **FAISS Vector Search**, **Firebase Authentication**, **Cloud Firestore session persistence**, and an innovative **Visual Grounding Engine** that physically crops bounding-box citations from source PDFs in real time to eliminate hallucinations.
+Unlike standard conversational wrappers, Aneevarp DocAI combines **Google Gemini 1.5 Flash**, **FAISS Vector Search**, **Firebase Authentication**, **Cloud Firestore session persistence**, and an innovative **Visual Grounding Engine** that physically crops bounding-box citations from source PDFs in real time to eliminate hallucinations.
 
 ---
 
@@ -46,7 +46,7 @@ graph TD
     classDef gemini fill:#4C1D95,stroke:#EC4899,stroke-width:2px,color:#FDF2F8;
 
     subgraph Client ["Client Layer (Web Interface)"]
-        UI["💻 Aneevalp DocAI UI<br/>(Glassmorphic Responsive Interface)"]
+        UI["💻 Aneevarp DocAI UI<br/>(Glassmorphic Responsive Interface)"]
         FirebaseAuth["🔐 Firebase Web SDK<br/>(Google Sign-In)"]
     end
 
@@ -111,7 +111,7 @@ graph TD
 
 ## 🚀 Google Cloud Run Deployment (Step-by-Step)
 
-Follow these exact commands to build and deploy Aneevalp DocAI to Google Cloud Run:
+Follow these exact commands to build and deploy Aneevarp DocAI to Google Cloud Run:
 
 ### 1. Set Google Cloud Project & Region
 ```bash
@@ -130,21 +130,21 @@ gcloud services enable \
 
 ### 3. Create Artifact Registry Docker Repository
 ```bash
-gcloud artifacts repositories create aneevalp-docai-repo \
+gcloud artifacts repositories create aneevarp-docai-repo \
     --repository-format=docker \
     --location=$REGION \
-    --description="Docker repository for Aneevalp DocAI"
+    --description="Docker repository for Aneevarp DocAI"
 ```
 
 ### 4. Build & Push Container Image with Cloud Build
 ```bash
-gcloud builds submit --tag ${REGION}-docker.pkg.dev/${PROJECT_ID}/aneevalp-docai-repo/docai-app:v1 .
+gcloud builds submit --tag ${REGION}-docker.pkg.dev/${PROJECT_ID}/aneevarp-docai-repo/docai-app:v1 .
 ```
 
 ### 5. Deploy Container to Google Cloud Run
 ```bash
-gcloud run deploy aneevalp-docai \
-    --image=${REGION}-docker.pkg.dev/${PROJECT_ID}/aneevalp-docai-repo/docai-app:v1 \
+gcloud run deploy aneevarp-docai \
+    --image=${REGION}-docker.pkg.dev/${PROJECT_ID}/aneevarp-docai-repo/docai-app:v1 \
     --platform=managed \
     --region=$REGION \
     --allow-unauthenticated \
@@ -176,7 +176,7 @@ PORT=8080
 ```bash
 python -m uvicorn main:app --host 127.0.0.1 --port 8080 --reload
 ```
-Open your browser at `http://127.0.0.1:8080` to access the full Aneevalp DocAI suite.
+Open your browser at `http://127.0.0.1:8080` to access the full Aneevarp DocAI suite.
 
 ---
 
@@ -188,8 +188,8 @@ Checks server status and returns deployment metadata.
   ```json
   {
     "status": "healthy",
-    "service": "Aneevalp DocAI",
-    "organization": "Aneevalp Solutions",
+    "service": "Aneevarp DocAI",
+    "organization": "Aneevarp Solutions",
     "engine": "Google Gemini 1.5 Flash",
     "infrastructure": "Google Cloud Run",
     "version": "2.0.0"
@@ -227,7 +227,7 @@ Performs RAG query against vectorized document index with Gemini 1.5.
 
 ---
 
-## 👥 Built by Aneevalp Solutions
+## 👥 Built by Aneevarp Solutions
 
 Developed with ❤️ for the **Google Cloud Gen AI Ideathon (APAC Edition)**.  
 *Accelerated by Google Cloud Run, Google Gemini 1.5, and Firebase.*

@@ -12,7 +12,7 @@ from utils.rag_engine import process_documents, get_vector_store, process_user_q
 load_dotenv(override=True)
 
 app = FastAPI(
-    title="Aneevalp DocAI API",
+    title="Aneevarp DocAI API",
     description="Enterprise Document Intelligence Platform powered by Google Gemini & Google Cloud Run",
     version="2.0.0"
 )
@@ -36,8 +36,8 @@ async def health_check():
     """Health check endpoint for Cloud Run and monitoring."""
     return {
         "status": "healthy",
-        "service": "Aneevalp DocAI",
-        "organization": "Aneevalp Solutions",
+        "service": "Aneevarp DocAI",
+        "organization": "Aneevarp Solutions",
         "engine": "Google Gemini 1.5 Flash",
         "infrastructure": "Google Cloud Run",
         "version": "2.0.0"
