@@ -38,7 +38,7 @@ async def health_check():
         "status": "healthy",
         "service": "Aneevarp DocAI",
         "organization": "Aneevarp Solutions",
-        "engine": "Google Gemini 1.5 Flash",
+        "engine": "Google Gemini 2.5 Flash",
         "infrastructure": "Google Cloud Run",
         "version": "2.0.0"
     }

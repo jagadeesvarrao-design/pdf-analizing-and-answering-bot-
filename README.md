@@ -19,14 +19,14 @@
 
 **Aneevarp DocAI** is an enterprise-grade, multimodal document intelligence platform designed to eliminate the bottleneck of extracting actionable insights from massive, unstructured documents (PDFs, Word files, and Text documents). 
 
-Unlike standard conversational wrappers, Aneevarp DocAI combines **Google Gemini 1.5 Flash**, **FAISS Vector Search**, **Firebase Authentication**, **Cloud Firestore session persistence**, and an innovative **Visual Grounding Engine** that physically crops bounding-box citations from source PDFs in real time to eliminate hallucinations.
+Unlike standard conversational wrappers, Aneevarp DocAI combines **Google Gemini 2.5 Flash**, **FAISS Vector Search**, **Firebase Authentication**, **Cloud Firestore session persistence**, and an innovative **Visual Grounding Engine** that physically crops bounding-box citations from source PDFs in real time to eliminate hallucinations.
 
 ---
 
 ## 🏆 Key Features & Innovations
 
 - 🔐 **Firebase Google Sign-In & Auth Gate**: Enterprise-secure authentication powered by Firebase Auth. Users maintain secure, isolated document sessions.
-- ⚡ **Google Gemini 1.5 Flash Reasoning**: Powered by Google's latest multimodal LLM with ultra-low latency, 1M+ token context capabilities, and structured JSON outputs.
+- ⚡ **Google Gemini 2.5 Flash Reasoning**: Powered by Google's latest multimodal LLM with ultra-low latency, 1M+ token context capabilities, and structured JSON outputs.
 - 🎯 **Visual Grounding & PDF Bounding-Box Cropping**: When Gemini cites evidence, PyMuPDF calculates exact coordinate bounding boxes on the original PDF page, rendering cropped visual page snippets directly into the chat stream.
 - ☁️ **Cloud Firestore Real-Time Session Persistence**: Past document sessions, question history, and visual evidence are automatically synced and queryable across devices.
 - 🚀 **Serverless Containerization on Google Cloud Run**: Fully containerized Docker microservice with auto-scaling to zero, high concurrency, and zero cold-start latency.
@@ -58,7 +58,7 @@ graph TD
     end
 
     subgraph GoogleCloud ["Google Cloud & Firebase Services"]
-        GeminiAPI["🤖 Google Gemini 1.5 Flash<br/>(Multimodal Reasoning)"]
+        GeminiAPI["🤖 Google Gemini 2.5 Flash<br/>(Multimodal Reasoning)"]
         EmbeddingsAPI["🔢 Gemini Embeddings<br/>(text-embedding-004)"]
         FirestoreDB["🔥 Cloud Firestore<br/>(Sessions & Message History)"]
     end
@@ -99,7 +99,7 @@ graph TD
 | Layer | Technologies |
 | :--- | :--- |
 | **Cloud Hosting & Compute** | **Google Cloud Run**, Artifact Registry, Cloud Build, Docker |
-| **AI & Embeddings** | **Google Gemini 1.5 Flash**, `text-embedding-004`, LangChain |
+| **AI & Embeddings** | **Google Gemini 2.5 Flash**, `text-embedding-004`, LangChain |
 | **Authentication** | **Firebase Auth** (Google Identity Provider) |
 | **Database & Persistence** | **Cloud Firestore** (Real-time NoSQL document store) |
 | **Vector Engine** | **FAISS** (Facebook AI Similarity Search) |

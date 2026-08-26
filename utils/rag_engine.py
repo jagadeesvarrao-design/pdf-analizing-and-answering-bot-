@@ -93,9 +93,9 @@ def get_embeddings_model():
     if not api_key:
         raise ValueError("Google Gemini API Key is missing. Please configure GEMINI_API_KEY in environment variables.")
     try:
-        return GoogleGenerativeAIEmbeddings(model="models/text-embedding-004", google_api_key=api_key)
+        return GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-2", google_api_key=api_key)
     except Exception:
-        return GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
+        return GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001", google_api_key=api_key)
 
 def get_vector_store(documents):
     """Embeds documents into an in-memory & persisted FAISS vector index."""
@@ -105,7 +105,7 @@ def get_vector_store(documents):
     return vector_store
 
 def get_conversational_chain():
-    """Builds the Gemini 1.5 Flash multimodal conversational reasoning chain."""
+    """Builds the Gemini 2.5 Flash multimodal conversational reasoning chain."""
     prompt_template = """
     You are Aneevarp DocAI, an enterprise document intelligence assistant developed by Aneevarp Solutions, powered by Google Gemini and Google Cloud Run.
 
@@ -139,7 +139,7 @@ def get_conversational_chain():
         raise ValueError("Google Gemini API Key is missing. Please set GEMINI_API_KEY.")
 
     model = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash", 
+        model="gemini-2.5-flash", 
         temperature=0.2, 
         google_api_key=api_key,
         model_kwargs={"response_mime_type": "application/json"}
