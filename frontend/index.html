@@ -37,6 +37,12 @@
             </div>
 
             <div class="nav-actions">
+                <!-- Theme Toggle Button -->
+                <button id="landingThemeToggleBtn" class="theme-toggle-btn" title="Toggle Light / Dark Mode" aria-label="Toggle Theme" style="background: rgba(71,101,80,0.08); border: 1px solid rgba(162,188,168,0.4); padding: 8px 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.82rem; color: var(--on-surface);">
+                    <i class="fa-solid fa-moon" id="landingThemeIcon" style="color: var(--primary);"></i>
+                    <span id="landingThemeLabel">Dark</span>
+                </button>
+
                 <a href="https://aneevarpsolutions.vercel.app/" target="_blank" class="parent-portal-link" title="Visit Parent Holding Company">
                     <i class="fa-solid fa-building-columns"></i>
                     <span>Parent Portal</span>
@@ -511,6 +517,38 @@
 
         // Initialize default scenario
         loadScenario('finance');
+
+        // Theme Toggle for Landing Page
+        const landingThemeToggleBtn = document.getElementById('landingThemeToggleBtn');
+        const landingThemeIcon = document.getElementById('landingThemeIcon');
+        const landingThemeLabel = document.getElementById('landingThemeLabel');
+
+        function applyLandingTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('aneevarp_theme', theme);
+            if (theme === 'dark') {
+                if (landingThemeIcon) {
+                    landingThemeIcon.className = 'fa-solid fa-sun';
+                    landingThemeIcon.style.color = '#F59E0B';
+                }
+                if (landingThemeLabel) landingThemeLabel.textContent = 'Light';
+            } else {
+                if (landingThemeIcon) {
+                    landingThemeIcon.className = 'fa-solid fa-moon';
+                    landingThemeIcon.style.color = 'var(--primary)';
+                }
+                if (landingThemeLabel) landingThemeLabel.textContent = 'Dark';
+            }
+        }
+
+        applyLandingTheme(localStorage.getItem('aneevarp_theme') || 'light');
+
+        if (landingThemeToggleBtn) {
+            landingThemeToggleBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme') || 'light';
+                applyLandingTheme(current === 'dark' ? 'light' : 'dark');
+            });
+        }
     </script>
 </body>
 </html>

@@ -41,6 +41,38 @@
     --hero-gradient: linear-gradient(135deg, #FCFAF5 0%, #F4F4F0 50%, #EAE9E4 100%);
 }
 
+[data-theme="dark"] {
+    --ivory-base: #0B100E;
+    --surface-bright: #141C18;
+    --surface-container-low: #101714;
+    --surface-container: #192520;
+    --surface-container-high: #202F28;
+    
+    --slate-deep: #F8FAFC;
+    --on-surface: #F8FAFC;
+    --secondary: #A2BCA8;
+    --tertiary: #CBD5E1;
+    
+    --primary: #476550;
+    --primary-hover: #5A7D65;
+    --primary-container: #7D9D85;
+    --primary-fixed: #C9EBD0;
+    --primary-fixed-dim: #ADCFB5;
+    --on-primary: #FFFFFF;
+    --on-primary-container: #C9EBD0;
+    
+    --sage-muted: #A2BCA8;
+    --glass-border: rgba(162, 188, 168, 0.2);
+    --glass-card-bg: rgba(20, 28, 24, 0.85);
+    --glass-card-hover: rgba(26, 37, 32, 0.95);
+    
+    --gcp-blue: #60A5FA;
+    --gemini-purple: #A78BFA;
+    --gcp-green: #10B981;
+    
+    --hero-gradient: linear-gradient(135deg, #0B100E 0%, #141C18 50%, #192520 100%);
+}
+
 * {
     margin: 0;
     padding: 0;

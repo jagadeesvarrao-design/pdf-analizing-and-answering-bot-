@@ -492,3 +492,40 @@ function escapeHTML(str) {
     );
 }
 
+// ==========================================================================
+// THEME ENGINE (LIGHT & DARK MODE TOGGLE)
+// ==========================================================================
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const themeIcon = document.getElementById('themeIcon');
+const themeLabel = document.getElementById('themeLabel');
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('aneevarp_theme', theme);
+    if (theme === 'dark') {
+        if (themeIcon) {
+            themeIcon.className = 'fa-solid fa-sun';
+            themeIcon.style.color = '#F59E0B';
+        }
+        if (themeLabel) themeLabel.textContent = 'Light';
+    } else {
+        if (themeIcon) {
+            themeIcon.className = 'fa-solid fa-moon';
+            themeIcon.style.color = '#476550';
+        }
+        if (themeLabel) themeLabel.textContent = 'Dark';
+    }
+}
+
+// Initialize theme (default: light to match landing page)
+const savedTheme = localStorage.getItem('aneevarp_theme') || 'light';
+applyTheme(savedTheme);
+
+if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+    });
+}
+

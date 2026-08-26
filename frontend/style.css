@@ -1,39 +1,121 @@
-:root {
-    /* Aneevarp Solutions Official Theme */
-    --ivory-base: #FCFAF5;
-    --slate-deep: #1A1F1F;
-    --bg-main: #0B100E;
-    --bg-surface: rgba(22, 31, 26, 0.82);
-    --bg-surface-elevated: rgba(30, 42, 35, 0.9);
-    --bg-sidebar: rgba(16, 23, 19, 0.95);
-    --text-primary: #F8FAFC;
-    --text-secondary: #A2BCA8;
-    --text-muted: #6B7C70;
+/* ==============================================================================
+   Aneevarp DocAI — Workspace Stylesheet & Dual Theme Engine
+   Brand-aligned with Aneevarp Solutions (https://aneevarpsolutions.vercel.app/)
+   ============================================================================== */
+
+/* ==============================================================================
+   1. COLOR TOKENS & THEME DEFINITIONS
+   ============================================================================== */
+
+/* LIGHT THEME (Default: Matching Aneevarp Solutions Ivory & Forest Sage) */
+:root, [data-theme="light"] {
+    --bg-main: #FCFAF5;
+    --bg-surface: #FFFFFF;
+    --bg-surface-elevated: #F4F4F0;
+    --bg-sidebar: #F7F6F1;
+    --bg-navbar: rgba(252, 250, 245, 0.94);
     
-    /* Primary Brand: Forest Sage & Emerald */
+    --text-primary: #1A1F1F;       /* Deep Slate - 100% visible */
+    --text-secondary: #476550;     /* Forest Sage Green */
+    --text-muted: #596060;         /* Muted Slate - High legibility */
+    --text-dim: #727972;
+    
+    /* Primary Brand Colors */
+    --primary: #476550;
+    --primary-hover: #37503E;
+    --primary-container: #7D9D85;
+    --primary-fixed: #C9EBD0;
+    --primary-fixed-dim: #ADCFB5;
+    --on-primary: #FFFFFF;
+    
+    --sage-muted: #A2BCA8;
+    --border-color: rgba(71, 101, 80, 0.18);
+    --border-hover: #476550;
+    --card-shadow: 0 8px 30px rgba(44, 51, 51, 0.06);
+    --card-shadow-hover: 0 14px 40px rgba(44, 51, 51, 0.1);
+    
+    /* Functional Accents */
+    --gcp-blue: #2563EB;
+    --gemini-purple: #7C3AED;
+    --success-color: #059669;
+    --warning-color: #D97706;
+    --danger-color: #DC2626;
+    
+    --user-msg-bg: #476550;
+    --user-msg-text: #FFFFFF;
+    --ai-msg-bg: #FFFFFF;
+    --ai-msg-text: #1A1F1F;
+    --ai-msg-border: rgba(162, 188, 168, 0.35);
+    
+    --input-bg: #FFFFFF;
+    --input-border: rgba(71, 101, 80, 0.28);
+    --input-text: #1A1F1F;
+}
+
+/* DARK THEME (Deep Forest Obsidian & Glowing Emerald) */
+[data-theme="dark"] {
+    --bg-main: #0B100E;
+    --bg-surface: #141C18;
+    --bg-surface-elevated: #1A2520;
+    --bg-sidebar: #0F1612;
+    --bg-navbar: rgba(15, 22, 18, 0.95);
+    
+    --text-primary: #F8FAFC;       /* Pure Crisp White - 100% visible */
+    --text-secondary: #C9EBD0;     /* Light Emerald Sage */
+    --text-muted: #A2BCA8;         /* Soft Sage Muted */
+    --text-dim: #6B7C70;
+    
+    /* Primary Brand Colors */
     --primary: #476550;
     --primary-hover: #5A7D65;
     --primary-container: #7D9D85;
     --primary-fixed: #C9EBD0;
-    --sage-muted: #A2BCA8;
+    --primary-fixed-dim: #ADCFB5;
+    --on-primary: #FFFFFF;
     
-    /* Google Cloud & AI Gradient Theme */
-    --gcp-blue: #4285F4;
-    --gemini-purple: #8B5CF6;
-    --gemini-gradient: linear-gradient(135deg, #476550 0%, #7D9D85 50%, #A2BCA8 100%);
-    --accent-glow: rgba(71, 101, 80, 0.4);
+    --sage-muted: #A2BCA8;
+    --border-color: rgba(162, 188, 168, 0.2);
+    --border-hover: #7D9D85;
+    --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    --card-shadow-hover: 0 14px 40px rgba(0, 0, 0, 0.6);
+    
+    /* Functional Accents */
+    --gcp-blue: #60A5FA;
+    --gemini-purple: #A78BFA;
     --success-color: #10B981;
     --warning-color: #F59E0B;
     --danger-color: #EF4444;
-    --border-color: rgba(162, 188, 168, 0.2);
-    --border-hover: rgba(71, 101, 80, 0.6);
+    
+    --user-msg-bg: rgba(71, 101, 80, 0.35);
+    --user-msg-text: #F8FAFC;
+    --ai-msg-bg: #1A2520;
+    --ai-msg-text: #F8FAFC;
+    --ai-msg-border: rgba(162, 188, 168, 0.25);
+    
+    --input-bg: #101714;
+    --input-border: rgba(162, 188, 168, 0.25);
+    --input-text: #F8FAFC;
 }
 
+/* ==============================================================================
+   2. GLOBAL BASE STYLES
+   ============================================================================== */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-family: 'Hanken Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+h1, h2, h3, h4, .brand-title {
+    font-family: 'Manrope', sans-serif;
+}
+
+.font-label-caps, .badge, .theme-label {
+    font-family: 'IBM Plex Sans', sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
 body {
@@ -43,18 +125,14 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-image: 
-        radial-gradient(circle at 10% 20%, rgba(71, 101, 80, 0.25), transparent 35%),
-        radial-gradient(circle at 90% 80%, rgba(125, 157, 133, 0.2), transparent 35%),
-        radial-gradient(circle at 50% 50%, rgba(201, 235, 208, 0.05), transparent 50%);
 }
 
-/* ==========================================================================
-   TOP NAVIGATION BAR
-   ========================================================================== */
+/* ==============================================================================
+   3. TOP NAVIGATION BAR
+   ============================================================================== */
 .top-navbar {
-    height: 70px;
-    background: rgba(16, 23, 19, 0.9);
+    height: 72px;
+    background: var(--bg-navbar);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-color);
@@ -82,14 +160,14 @@ body {
     font-family: 'Manrope', sans-serif;
     font-size: 1.35rem;
     font-weight: 800;
-    color: white;
-    box-shadow: 0 4px 15px rgba(71, 101, 80, 0.4);
-    animation: logoGlow 4s ease-in-out infinite alternate;
+    color: var(--on-primary);
+    box-shadow: 0 4px 15px rgba(71, 101, 80, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s ease;
 }
 
-@keyframes logoGlow {
-    from { box-shadow: 0 4px 15px rgba(71, 101, 80, 0.3); }
-    to { box-shadow: 0 4px 22px rgba(125, 157, 133, 0.6); }
+.brand-logo:hover {
+    transform: scale(1.05);
 }
 
 .brand-text {
@@ -105,15 +183,15 @@ body {
 }
 
 .brand-title {
-    font-family: 'Manrope', sans-serif;
     font-size: 1.25rem;
     font-weight: 800;
-    color: #FFFFFF;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
 }
 
 .badge {
-    font-size: 0.72rem;
-    font-weight: 600;
+    font-size: 0.7rem;
+    font-weight: 700;
     padding: 3px 8px;
     border-radius: 6px;
     display: inline-flex;
