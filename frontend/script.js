@@ -475,16 +475,11 @@ processBtn.addEventListener('click', async () => {
                 loadHistoryList();
             }
 
-            // Enable Chat & Reset Window
+            // Enable Chat & Render Workspace
             chatInput.disabled = false;
             sendBtn.disabled = false;
-            chatWindow.innerHTML = '';
-            addSystemMessage(`<strong>${escapeHTML(firstFileName)}</strong> indexed successfully! You can ask questions or click a starter prompt below.`);
-            
-            // Show starter prompts
-            if (suggestedPrompts) {
-                chatWindow.appendChild(suggestedPrompts);
-            }
+            chatInput.placeholder = `Ask any question about ${firstFileName}...`;
+            renderIndexedWorkspace(firstFileName);
 
             if (window.innerWidth <= 768) {
                 setMobileView('chat');
@@ -600,35 +595,109 @@ function resetUploadUI() {
     processBtn.disabled = false;
 }
 
-function renderWelcomeState(customMessage = null) {
+function renderIndexedWorkspace(docName) {
     chatWindow.innerHTML = `
-        <div class="message system-msg">
-            <div class="msg-content">
-                <div class="system-welcome-title">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Welcome to ZenDoc AI
+        <div class="workspace-hero-card" id="workspaceHero">
+            <div class="hero-status-pill">
+                <span class="pulse-dot"></span>
+                <span>Document Grounding Active</span>
+            </div>
+            <div class="hero-doc-badge">
+                <i class="fa-solid fa-file-pdf hero-doc-icon"></i>
+                <div class="hero-doc-details">
+                    <div class="hero-doc-title">${escapeHTML(docName)}</div>
+                    <div class="hero-doc-meta">
+                        <span><i class="fa-solid fa-layer-group"></i> FAISS In-Memory Vectors</span>
+                        <span>•</span>
+                        <span><i class="fa-solid fa-wand-magic-sparkles"></i> Gemini 2.5 Flash</span>
+                    </div>
                 </div>
-                <p>${customMessage || 'Upload any PDF, Word document, or Text file on the left. ZenDoc AI uses <strong>Google Gemini 2.5 Flash</strong> and in-memory <strong>FAISS</strong> vector indexing to deliver instant, cited answers with visual page crops.'}</p>
+            </div>
+            <div class="hero-doc-prompt-heading"><i class="fa-solid fa-lightbulb"></i> Choose a starter prompt or ask a question below:</div>
+            <div class="hero-prompts-grid">
+                <button class="hero-prompt-card prompt-chip" data-prompt="Summarize this document in 5 key executive takeaways.">
+                    <div class="prompt-icon-box"><i class="fa-solid fa-list-check"></i></div>
+                    <div class="prompt-card-text">
+                        <div class="prompt-card-title">Executive Summary</div>
+                        <div class="prompt-card-desc">5 key takeaways & conclusions</div>
+                    </div>
+                    <i class="fa-solid fa-arrow-right prompt-arrow"></i>
+                </button>
+                <button class="hero-prompt-card prompt-chip" data-prompt="Extract all numerical data, statistics, and financial metrics from this document.">
+                    <div class="prompt-icon-box"><i class="fa-solid fa-chart-column"></i></div>
+                    <div class="prompt-card-text">
+                        <div class="prompt-card-title">Data & Metrics</div>
+                        <div class="prompt-card-desc">Financial statistics, numbers & KPIs</div>
+                    </div>
+                    <i class="fa-solid fa-arrow-right prompt-arrow"></i>
+                </button>
+                <button class="hero-prompt-card prompt-chip" data-prompt="What are the critical action items, risks, and recommendations outlined in this document?">
+                    <div class="prompt-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="prompt-card-text">
+                        <div class="prompt-card-title">Risks & Action Items</div>
+                        <div class="prompt-card-desc">Liabilities, obligations & next steps</div>
+                    </div>
+                    <i class="fa-solid fa-arrow-right prompt-arrow"></i>
+                </button>
+                <button class="hero-prompt-card prompt-chip" data-prompt="List the main entities, organizations, and defined terms mentioned in this document.">
+                    <div class="prompt-icon-box"><i class="fa-solid fa-tags"></i></div>
+                    <div class="prompt-card-text">
+                        <div class="prompt-card-title">Entities & Terms</div>
+                        <div class="prompt-card-desc">Organizations, definitions & stakeholders</div>
+                    </div>
+                    <i class="fa-solid fa-arrow-right prompt-arrow"></i>
+                </button>
             </div>
         </div>
-        <div class="suggested-prompts-container" id="suggestedPrompts">
-            <div class="prompts-title"><i class="fa-solid fa-lightbulb"></i> Suggested Starter Prompts:</div>
-            <div class="prompts-grid">
-                <button class="prompt-chip" data-prompt="Summarize this document in 5 key executive takeaways.">
-                    <i class="fa-solid fa-list-check"></i>
-                    <span>Summarize key takeaways</span>
-                </button>
-                <button class="prompt-chip" data-prompt="Extract all numerical data, statistics, and financial metrics from this document.">
-                    <i class="fa-solid fa-chart-column"></i>
-                    <span>Extract key metrics & data</span>
-                </button>
-                <button class="prompt-chip" data-prompt="What are the critical action items, risks, and recommendations outlined in this document?">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    <span>Identify risks & action items</span>
-                </button>
-                <button class="prompt-chip" data-prompt="List the main entities, organizations, and defined terms mentioned in this document.">
-                    <i class="fa-solid fa-tags"></i>
-                    <span>List key terms & entities</span>
-                </button>
+    `;
+}
+
+function renderWelcomeState(customMessage = null) {
+    chatWindow.innerHTML = `
+        <div class="workspace-hero-card">
+            <div class="hero-status-pill" style="background: rgba(71,101,80,0.12); color: var(--primary); border-color: rgba(71,101,80,0.25);">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Enterprise Document Intelligence</span>
+            </div>
+            <div class="hero-doc-badge">
+                <i class="fa-solid fa-file-arrow-up hero-doc-icon"></i>
+                <div class="hero-doc-details">
+                    <div class="hero-doc-title">Ready for Ingestion</div>
+                    <div class="hero-doc-meta">
+                        <span>${customMessage || 'Upload any PDF, Word document, or Text file on the left.'}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-doc-prompt-heading"><i class="fa-solid fa-sparkles"></i> Example Reasoning Workflows:</div>
+            <div class="hero-prompts-grid">
+                <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
+                    <div class="prompt-icon-box"><i class="fa-solid fa-list-check"></i></div>
+                    <div class="prompt-card-text">
+                        <div class="prompt-card-title">Executive Summaries</div>
+                        <div class="prompt-card-desc">Auto-extract key findings & synthesis</div>
+                    </div>
+                </div>
+                <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
+                    <div class="prompt-icon-box"><i class="fa-solid fa-chart-column"></i></div>
+                    <div class="prompt-card-text">
+                        <div class="prompt-card-title">Financial Table Extraction</div>
+                        <div class="prompt-card-desc">Balance sheets, P&L & numerical stats</div>
+                    </div>
+                </div>
+                <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
+                    <div class="prompt-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="prompt-card-text">
+                        <div class="prompt-card-title">Audit & Risk Analysis</div>
+                        <div class="prompt-card-desc">Contractual liabilities & action items</div>
+                    </div>
+                </div>
+                <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
+                    <div class="prompt-icon-box"><i class="fa-solid fa-file-invoice"></i></div>
+                    <div class="prompt-card-text">
+                        <div class="prompt-card-title">Visual Proof Grounding</div>
+                        <div class="prompt-card-desc">Every answer cited with original page crops</div>
+                    </div>
+                </div>
             </div>
         </div>
     `;

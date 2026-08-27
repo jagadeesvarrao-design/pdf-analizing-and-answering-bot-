@@ -681,23 +681,41 @@ body {
 
 #success-section {
     text-align: center;
-    background: rgba(5, 150, 105, 0.08);
-    border: 1px solid rgba(5, 150, 105, 0.25);
-    padding: 24px 16px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    padding: 22px 18px;
     border-radius: 16px;
+    box-shadow: var(--card-shadow);
     animation: fadeIn 0.3s ease;
 }
 
-.success-icon {
-    font-size: 2.8rem;
-    color: var(--success-color);
-    margin-bottom: 10px;
+.success-icon-badge {
+    width: 48px;
+    height: 48px;
+    background: rgba(16, 185, 129, 0.15);
+    color: #10B981;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin: 0 auto 12px;
+    border: 1.5px solid rgba(16, 185, 129, 0.3);
+}
+
+.success-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    font-family: 'Manrope', sans-serif;
 }
 
 .success-desc {
-    font-size: 0.88rem;
-    color: var(--text-primary);
-    line-height: 1.5;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    word-break: break-word;
 }
 
 /* STATUS SPINNER */
@@ -1180,59 +1198,184 @@ body {
     color: var(--primary);
 }
 
-/* Suggested Prompts Grid */
-.suggested-prompts-container {
-    margin-top: 8px;
+/* WORKSPACE HERO CARD (ENTERPRISE POST-UPLOAD & WELCOME) */
+.workspace-hero-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 28px 32px;
+    box-shadow: var(--card-shadow);
+    margin: 8px auto;
+    max-width: 860px;
+    width: 100%;
+    animation: fadeIn 0.35s ease;
 }
 
-.prompts-title {
-    font-size: 0.84rem;
+.hero-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(16, 185, 129, 0.12);
+    color: #10B981;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.76rem;
     font-weight: 800;
-    font-family: 'IBM Plex Sans', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-muted);
-    margin-bottom: 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    margin-bottom: 16px;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: #10B981;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: pulseGlow 1.8s infinite;
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.hero-doc-badge {
     display: flex;
     align-items: center;
-    gap: 6px;
-}
-
-.prompts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 12px;
-}
-
-.prompt-chip {
-    background: var(--bg-surface);
+    gap: 16px;
+    background: var(--primary-light);
     border: 1px solid var(--border-color);
     padding: 14px 18px;
     border-radius: 14px;
-    color: var(--text-primary);
-    font-size: 0.88rem;
-    font-weight: 600;
-    text-align: left;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: var(--card-shadow);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-bottom: 20px;
 }
 
-.prompt-chip i {
-    font-size: 1.1rem;
+.hero-doc-icon {
+    font-size: 1.8rem;
     color: var(--primary);
     flex-shrink: 0;
 }
 
-.prompt-chip:hover {
+.hero-doc-details {
+    overflow: hidden;
+}
+
+.hero-doc-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Manrope', sans-serif;
+}
+
+.hero-doc-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 3px;
+}
+
+.hero-doc-prompt-heading {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 14px;
+}
+
+.hero-prompts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+@media (max-width: 768px) {
+    .hero-prompts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.hero-prompt-card {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.hero-prompt-card:hover {
     background: var(--primary-light);
     border-color: var(--primary);
     transform: translateY(-2px);
     box-shadow: var(--card-shadow-hover);
+}
+
+.prompt-icon-box {
+    width: 40px;
+    height: 40px;
+    background: rgba(71, 101, 80, 0.12);
     color: var(--primary);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.hero-prompt-card:hover .prompt-icon-box {
+    background: var(--primary);
+    color: #FFFFFF;
+}
+
+.prompt-card-text {
+    flex: 1;
+    overflow: hidden;
+}
+
+.prompt-card-title {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.prompt-card-desc {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.prompt-arrow {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    opacity: 0.4;
+    transition: all 0.2s ease;
+}
+
+.hero-prompt-card:hover .prompt-arrow {
+    color: var(--primary);
+    opacity: 1;
+    transform: translateX(3px);
 }
 
 /* Source Image Visual Grounding */

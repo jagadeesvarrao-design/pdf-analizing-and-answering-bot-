@@ -136,8 +136,8 @@
                 </div>
                 
                 <div class="setup-section hidden" id="success-section">
-                    <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
-                    <h3>Document Indexed</h3>
+                    <div class="success-icon-badge"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="success-title">Document Indexed</div>
                     <p class="success-desc" id="successDocName">Your document is vectorized and ready for multi-turn reasoning.</p>
                     <button id="uploadAnotherBtn" class="secondary-btn">
                         <i class="fa-solid fa-arrows-rotate"></i> Upload New Document
@@ -198,36 +198,50 @@
 
             <!-- Chat Window Stream -->
             <div class="chat-window" id="chatWindow">
-                <!-- Welcome Banner -->
-                <div class="message system-msg">
-                    <div class="msg-content">
-                        <div class="system-welcome-title">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Welcome to ZenDoc AI
-                        </div>
-                        <p>Upload any PDF, Word document, or Text file on the left. ZenDoc AI uses <strong>Google Gemini</strong> and in-memory <strong>FAISS</strong> vector indexing to deliver instant, cited answers with visual page crops.</p>
+                <div class="workspace-hero-card">
+                    <div class="hero-status-pill" style="background: rgba(71,101,80,0.12); color: var(--primary); border-color: rgba(71,101,80,0.25);">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Enterprise Document Intelligence</span>
                     </div>
-                </div>
-
-                <!-- Empty State Suggested Prompts -->
-                <div class="suggested-prompts-container" id="suggestedPrompts">
-                    <div class="prompts-title"><i class="fa-solid fa-lightbulb"></i> Suggested Starter Prompts:</div>
-                    <div class="prompts-grid">
-                        <button class="prompt-chip" data-prompt="Summarize this document in 5 key executive takeaways.">
-                            <i class="fa-solid fa-list-check"></i>
-                            <span>Summarize key takeaways</span>
-                        </button>
-                        <button class="prompt-chip" data-prompt="Extract all numerical data, statistics, and financial metrics from this document.">
-                            <i class="fa-solid fa-chart-column"></i>
-                            <span>Extract key metrics & data</span>
-                        </button>
-                        <button class="prompt-chip" data-prompt="What are the critical action items, risks, and recommendations outlined in this document?">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                            <span>Identify risks & action items</span>
-                        </button>
-                        <button class="prompt-chip" data-prompt="List the main entities, organizations, and defined terms mentioned in this document.">
-                            <i class="fa-solid fa-tags"></i>
-                            <span>List key terms & entities</span>
-                        </button>
+                    <div class="hero-doc-badge">
+                        <i class="fa-solid fa-file-arrow-up hero-doc-icon"></i>
+                        <div class="hero-doc-details">
+                            <div class="hero-doc-title">Ready for Ingestion</div>
+                            <div class="hero-doc-meta">
+                                <span>Upload any PDF, Word document, or Text file on the left.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-doc-prompt-heading"><i class="fa-solid fa-sparkles"></i> Example Reasoning Workflows:</div>
+                    <div class="hero-prompts-grid">
+                        <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
+                            <div class="prompt-icon-box"><i class="fa-solid fa-list-check"></i></div>
+                            <div class="prompt-card-text">
+                                <div class="prompt-card-title">Executive Summaries</div>
+                                <div class="prompt-card-desc">Auto-extract key findings & synthesis</div>
+                            </div>
+                        </div>
+                        <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
+                            <div class="prompt-icon-box"><i class="fa-solid fa-chart-column"></i></div>
+                            <div class="prompt-card-text">
+                                <div class="prompt-card-title">Financial Table Extraction</div>
+                                <div class="prompt-card-desc">Balance sheets, P&L & numerical stats</div>
+                            </div>
+                        </div>
+                        <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
+                            <div class="prompt-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="prompt-card-text">
+                                <div class="prompt-card-title">Audit & Risk Analysis</div>
+                                <div class="prompt-card-desc">Contractual liabilities & action items</div>
+                            </div>
+                        </div>
+                        <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
+                            <div class="prompt-icon-box"><i class="fa-solid fa-file-invoice"></i></div>
+                            <div class="prompt-card-text">
+                                <div class="prompt-card-title">Visual Proof Grounding</div>
+                                <div class="prompt-card-desc">Every answer cited with original page crops</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
