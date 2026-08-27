@@ -23,11 +23,11 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] [%(name)s] %(message)s"
 )
-logger = logging.getLogger("AneevarpDocAI")
+logger = logging.getLogger("ZenDocAI")
 
 app = FastAPI(
-    title="Aneevarp DocAI API",
-    description="Enterprise Document Intelligence Platform powered by Google Gemini & Google Cloud Run",
+    title="ZenDoc AI API",
+    description="Enterprise Document Intelligence Platform powered by Google Gemini & Google Cloud Run | Part of the Aneevarp Zen Suite",
     version="2.0.0",
     docs_url="/api/docs" if os.environ.get("ENV") != "production" else None,
     redoc_url=None

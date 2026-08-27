@@ -1,4 +1,4 @@
-// Aneevarp DocAI - Main Client Controller
+// ZenDoc AI - Main Client Controller (Part of the Aneevarp Zen Suite)
 // Built for Google Cloud Gen AI Ideathon
 
 import { 
@@ -54,7 +54,7 @@ const suggestedPrompts = document.getElementById('suggestedPrompts');
 // State Management
 let currentUser = null;
 let currentSessionId = null;
-let activeDocumentName = "Aneevarp DocAI Workspace";
+let activeDocumentName = "ZenDoc AI Workspace";
 let isProcessing = false;
 
 // Determine API Base URL (Relative if hosted unified on Cloud Run, or fallback)
@@ -350,14 +350,14 @@ function resetUploadUI() {
 
 function resetChatUI() {
     currentSessionId = null;
-    activeDocumentName = "Aneevarp DocAI Workspace";
+    activeDocumentName = "ZenDoc AI Workspace";
     activeDocTitle.textContent = activeDocumentName;
     chatInput.disabled = true;
     sendBtn.disabled = true;
     chatWindow.innerHTML = `
         <div class="message system-msg">
             <div class="msg-content">
-                <div class="system-welcome-title"><i class="fa-solid fa-hand-wave"></i> Welcome to Aneevarp DocAI</div>
+                <div class="system-welcome-title"><i class="fa-solid fa-hand-wave"></i> Welcome to ZenDoc AI</div>
                 <p>Upload a document on the left to start a new reasoning session.</p>
             </div>
         </div>
