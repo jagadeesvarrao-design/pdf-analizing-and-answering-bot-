@@ -66,7 +66,11 @@ def process_documents(file_paths, max_pages: int = 150):
                 total_pages = doc_len
                 for page_num in range(total_pages):
                     page = doc.load_page(page_num)
-                    text = page.get_text("text")
+                    
+                    # Extract text blocks preserving tabular structure & layout
+                    blocks = page.get_text("blocks")
+                    page_text_blocks = [b[4].strip() for b in blocks if len(b) > 4 and b[4].strip()]
+                    text = "\n\n".join(page_text_blocks) if page_text_blocks else page.get_text("text")
                     
                     # Extract embedded hyperlinks so Gemini can ground links
                     links = page.get_links()
@@ -82,7 +86,7 @@ def process_documents(file_paths, max_pages: int = 150):
                         for chunk in chunks:
                             documents.append(
                                 Document(
-                                    page_content=chunk, 
+                                    page_content=f"[Document: {os.path.basename(file_path)} | Page {page_num + 1}]\n{chunk}", 
                                     metadata={"source": file_path, "filename": os.path.basename(file_path), "page": page_num}
                                 )
                             )
@@ -248,8 +252,12 @@ def process_user_query(user_question):
     embeddings = get_embeddings_model()
     db = FAISS.load_local("./faiss_index", embeddings, allow_dangerous_deserialization=True)
     
-    # Retrieve top 4 relevant chunks
-    docs = db.similarity_search(user_question, k=4)
+    # Dynamic Top-K chunk retrieval: Expand for broad / analytical questions
+    q_lower = user_question.lower()
+    is_broad_query = any(w in q_lower for w in ["summary", "summarize", "overview", "all", "table", "financial", "compare", "difference", "metrics", "risks", "key terms", "action items", "dossier"])
+    k_val = 8 if is_broad_query else 4
+    
+    docs = db.similarity_search(user_question, k=k_val)
     if not docs:
         return {
             "answer": "No relevant context found in the uploaded document for your query.",
@@ -281,17 +289,27 @@ def process_user_query(user_question):
         answer = response_text
         exact_quote = ""
     
-    # Visual Grounding extraction
+    # Visual Grounding extraction: Search through retrieved docs for best visual crop
+    source_image = None
     best_doc = docs[0]
     source_file = best_doc.metadata.get("source", "")
     filename = best_doc.metadata.get("filename", os.path.basename(source_file) if source_file else "")
     page_num = best_doc.metadata.get("page")
-    
-    source_image = None
     file_ext = os.path.splitext(source_file)[1].lower() if source_file else ""
     
-    if file_ext == '.pdf' and source_file and page_num is not None and page_num >= 0:
-        source_image = get_base64_image(source_file, page_num, exact_quote)
+    # If the first doc is a PDF, crop it; otherwise check if any retrieved doc is a PDF with visual proof
+    for d in docs:
+        s_file = d.metadata.get("source", "")
+        p_num = d.metadata.get("page")
+        if s_file and os.path.splitext(s_file)[1].lower() == '.pdf' and p_num is not None and p_num >= 0:
+            cropped = get_base64_image(s_file, p_num, exact_quote)
+            if cropped:
+                source_image = cropped
+                source_file = s_file
+                filename = d.metadata.get("filename", os.path.basename(s_file))
+                page_num = p_num
+                file_ext = '.pdf'
+                break
     
     return {
         "answer": sanitize_html_output(answer),

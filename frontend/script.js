@@ -860,6 +860,36 @@ function escapeHTML(str) {
 }
 
 // ==========================================================================
+// VISUAL GROUNDING IMAGE LIGHTBOX
+// ==========================================================================
+const imageLightboxModal = document.getElementById('imageLightboxModal');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+const closeLightboxBtn = document.getElementById('closeLightboxBtn');
+
+document.addEventListener('click', (e) => {
+    const cropImg = e.target.closest('.source-image-wrapper img');
+    if (cropImg && imageLightboxModal && lightboxImg) {
+        lightboxImg.src = cropImg.src;
+        const label = cropImg.closest('.source-image-wrapper')?.querySelector('.source-label')?.innerText || "Visual Grounding Citation";
+        if (lightboxCaption) lightboxCaption.textContent = label;
+        imageLightboxModal.classList.add('active');
+    }
+});
+
+if (closeLightboxBtn) {
+    closeLightboxBtn.addEventListener('click', () => {
+        if (imageLightboxModal) imageLightboxModal.classList.remove('active');
+    });
+}
+
+if (imageLightboxModal) {
+    imageLightboxModal.addEventListener('click', (e) => {
+        if (e.target === imageLightboxModal) imageLightboxModal.classList.remove('active');
+    });
+}
+
+// ==========================================================================
 // THEME ENGINE (LIGHT & DARK MODE TOGGLE)
 // ==========================================================================
 const themeToggleBtn = document.getElementById('themeToggleBtn');
