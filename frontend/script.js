@@ -152,6 +152,69 @@ if (upgradePaywallModal) {
     });
 }
 
+// ==========================================================================
+// TOAST & CUSTOM CONFIRMATION DIALOG HELPERS
+// ==========================================================================
+const toastBox = document.getElementById('toastBox');
+const confirmActionModal = document.getElementById('confirmActionModal');
+const confirmModalTitle = document.getElementById('confirmModalTitle');
+const confirmModalSubtitle = document.getElementById('confirmModalSubtitle');
+const confirmModalDesc = document.getElementById('confirmModalDesc');
+const confirmModalIcon = document.getElementById('confirmModalIcon');
+const confirmCancelBtn = document.getElementById('confirmCancelBtn');
+const confirmProceedBtn = document.getElementById('confirmProceedBtn');
+const closeConfirmModalBtn = document.getElementById('closeConfirmModalBtn');
+
+let activeConfirmCallback = null;
+
+function showToast(message, type = 'success') {
+    if (!toastBox) return;
+    const toast = document.createElement('div');
+    toast.className = `toast-item ${type}`;
+    const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+    toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+    toastBox.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(15px)';
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}
+
+function showConfirmDialog({ title, subtitle, desc, icon = 'fa-triangle-exclamation', onConfirm }) {
+    if (!confirmActionModal) return;
+    if (confirmModalTitle) confirmModalTitle.innerHTML = `<i class="fa-solid fa-shield-halved"></i> ${title}`;
+    if (confirmModalSubtitle) confirmModalSubtitle.textContent = subtitle;
+    if (confirmModalDesc) confirmModalDesc.textContent = desc;
+    if (confirmModalIcon) confirmModalIcon.innerHTML = `<i class="fa-solid ${icon}"></i>`;
+    activeConfirmCallback = onConfirm;
+    confirmActionModal.classList.add('active');
+}
+
+if (confirmCancelBtn) {
+    confirmCancelBtn.addEventListener('click', () => {
+        if (confirmActionModal) confirmActionModal.classList.remove('active');
+        activeConfirmCallback = null;
+    });
+}
+
+if (closeConfirmModalBtn) {
+    closeConfirmModalBtn.addEventListener('click', () => {
+        if (confirmActionModal) confirmActionModal.classList.remove('active');
+        activeConfirmCallback = null;
+    });
+}
+
+if (confirmProceedBtn) {
+    confirmProceedBtn.addEventListener('click', () => {
+        if (confirmActionModal) confirmActionModal.classList.remove('active');
+        if (typeof activeConfirmCallback === 'function') {
+            activeConfirmCallback();
+        }
+        activeConfirmCallback = null;
+    });
+}
+
 async function fetchAndRenderQuota() {
     const plan = getActivePlan();
     if (activePlanLabel) activePlanLabel.textContent = plan.title;
@@ -339,7 +402,7 @@ function handleFileSelected() {
 
 processBtn.addEventListener('click', async () => {
     if (fileInput.files.length === 0) {
-        alert('Please select at least one PDF, DOCX, or TXT document.');
+        showToast('Please select at least one PDF, DOCX, or TXT document.', 'error');
         return;
     }
 
@@ -359,7 +422,7 @@ processBtn.addEventListener('click', async () => {
         try {
             await loginWithGoogle();
         } catch (e) {
-            alert("Please sign in with Google to index and save documents.");
+            showToast("Please sign in with Google to index and save documents.", "error");
             return;
         }
     }
@@ -426,6 +489,7 @@ processBtn.addEventListener('click', async () => {
             if (window.innerWidth <= 768) {
                 setMobileView('chat');
             }
+            showToast(`Document "${firstFileName}" indexed successfully!`, "success");
         } else if (response.status === 402 || response.status === 413) {
             const errDetail = typeof data.detail === 'object' ? data.detail : { message: data.detail };
             showPaywall(
@@ -434,11 +498,11 @@ processBtn.addEventListener('click', async () => {
             );
         } else {
             const errMessage = typeof data.detail === 'string' ? data.detail : (data.detail?.message || "Document extraction failed");
-            alert(`Upload Notice: ${errMessage}`);
+            showToast(errMessage, 'error');
         }
     } catch (error) {
         console.error("Upload error:", error);
-        alert(`Error: ${error.message}`);
+        showToast(error.message, 'error');
     } finally {
         statusIndicator.classList.add('status-hidden');
         processBtn.disabled = false;
@@ -463,7 +527,7 @@ if (exportReportBtn) {
         // Collect all chat messages
         const msgNodes = chatWindow.querySelectorAll('.message');
         if (msgNodes.length === 0) {
-            alert("No conversation history to export yet. Ask questions first!");
+            showToast("No conversation history to export yet. Ask questions first!", "error");
             return;
         }
 
@@ -509,12 +573,13 @@ if (exportReportBtn) {
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(downloadUrl);
+                showToast("Executive Dossier downloaded successfully!", "success");
             } else {
                 const errData = await res.json();
                 showPaywall("Export Locked", errData.detail?.message || "Upgrade to ZenDoc Pro to export reports.");
             }
         } catch (e) {
-            alert("Export error: " + e.message);
+            showToast("Export error: " + e.message, "error");
         } finally {
             exportReportBtn.innerHTML = `<i class="fa-solid fa-file-export"></i> <span>Export Report</span>`;
             exportReportBtn.disabled = false;
@@ -535,51 +600,91 @@ function resetUploadUI() {
     processBtn.disabled = false;
 }
 
+function renderWelcomeState(customMessage = null) {
+    chatWindow.innerHTML = `
+        <div class="message system-msg">
+            <div class="msg-content">
+                <div class="system-welcome-title">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Welcome to ZenDoc AI
+                </div>
+                <p>${customMessage || 'Upload any PDF, Word document, or Text file on the left. ZenDoc AI uses <strong>Google Gemini 2.5 Flash</strong> and in-memory <strong>FAISS</strong> vector indexing to deliver instant, cited answers with visual page crops.'}</p>
+            </div>
+        </div>
+        <div class="suggested-prompts-container" id="suggestedPrompts">
+            <div class="prompts-title"><i class="fa-solid fa-lightbulb"></i> Suggested Starter Prompts:</div>
+            <div class="prompts-grid">
+                <button class="prompt-chip" data-prompt="Summarize this document in 5 key executive takeaways.">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Summarize key takeaways</span>
+                </button>
+                <button class="prompt-chip" data-prompt="Extract all numerical data, statistics, and financial metrics from this document.">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Extract key metrics & data</span>
+                </button>
+                <button class="prompt-chip" data-prompt="What are the critical action items, risks, and recommendations outlined in this document?">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Identify risks & action items</span>
+                </button>
+                <button class="prompt-chip" data-prompt="List the main entities, organizations, and defined terms mentioned in this document.">
+                    <i class="fa-solid fa-tags"></i>
+                    <span>List key terms & entities</span>
+                </button>
+            </div>
+        </div>
+    `;
+}
+
 function resetChatUI() {
     currentSessionId = null;
     activeDocumentName = "ZenDoc AI Workspace";
     activeDocTitle.textContent = activeDocumentName;
     chatInput.disabled = true;
     sendBtn.disabled = true;
-    chatWindow.innerHTML = `
-        <div class="message system-msg">
-            <div class="msg-content">
-                <div class="system-welcome-title"><i class="fa-solid fa-hand-wave"></i> Welcome to ZenDoc AI</div>
-                <p>Upload a document on the left to start a new reasoning session.</p>
-            </div>
-        </div>
-    `;
+    renderWelcomeState("Upload a document on the left to start a new reasoning session.");
     resetUploadUI();
 }
 
 const purgeDataBtn = document.getElementById('purgeDataBtn');
 
 if (purgeDataBtn) {
-    purgeDataBtn.addEventListener('click', async () => {
-        if (confirm("🇮🇳 DPDP Act Right to Erasure:\n\nAre you sure you want to permanently purge and erase all document vectors, temporary files, and active session history?")) {
-            try {
-                await fetch(`${API_BASE}/api/session/clear`, { method: 'POST' });
-            } catch (e) {
-                console.warn("Backend session purge error:", e);
-            }
-            if (currentUser && currentSessionId) {
+    purgeDataBtn.addEventListener('click', () => {
+        showConfirmDialog({
+            title: "DPDP Act Right to Erasure",
+            subtitle: "Permanently Purge & Erase Document Data?",
+            desc: "This will permanently erase in-memory vectors, temporary files, and active session history in compliance with Digital Personal Data Protection Act, 2023.",
+            icon: "fa-shield-slash",
+            onConfirm: async () => {
                 try {
-                    await deleteSessionFromFirestore(currentUser.uid, currentSessionId);
-                    loadHistoryList();
+                    await fetch(`${API_BASE}/api/session/clear`, { method: 'POST' });
                 } catch (e) {
-                    console.warn(e);
+                    console.warn("Backend session purge error:", e);
                 }
+                if (currentUser && currentSessionId) {
+                    try {
+                        await deleteSessionFromFirestore(currentUser.uid, currentSessionId);
+                        loadHistoryList();
+                    } catch (e) {
+                        console.warn(e);
+                    }
+                }
+                resetChatUI();
+                showToast("Document vectors and session data permanently erased.");
             }
-            resetChatUI();
-            alert("Document data, in-memory embeddings, and session history have been permanently erased.");
-        }
+        });
     });
 }
 
 newChatBtn.addEventListener('click', () => {
-    if (confirm("Start a new conversation?")) {
-        resetChatUI();
-    }
+    showConfirmDialog({
+        title: "Clear Conversation",
+        subtitle: "Start a Fresh Conversation?",
+        desc: "The current chat messages will be cleared from your view.",
+        icon: "fa-trash-can",
+        onConfirm: () => {
+            resetChatUI();
+            showToast("Conversation cleared.");
+        }
+    });
 });
 
 // ==========================================================================

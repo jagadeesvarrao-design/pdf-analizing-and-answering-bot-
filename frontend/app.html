@@ -269,6 +269,32 @@
         </div>
     </div>
 
+    <!-- CUSTOM CONFIRMATION MODAL -->
+    <div id="confirmActionModal" class="legal-modal-backdrop">
+        <div class="legal-modal-card" style="max-width: 460px;">
+            <div class="legal-modal-header">
+                <h3 id="confirmModalTitle"><i class="fa-solid fa-shield-halved" style="color:var(--primary);"></i> Confirmation</h3>
+                <button class="legal-modal-close-btn" id="closeConfirmModalBtn">&times;</button>
+            </div>
+            <div class="legal-modal-body" style="text-align: center;">
+                <div id="confirmModalIcon" style="font-size: 2.2rem; color: var(--danger-color); margin-bottom: 12px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h4 id="confirmModalSubtitle" style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px;">Are you sure?</h4>
+                <p id="confirmModalDesc" style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 22px; line-height: 1.6;">
+                    This action cannot be undone.
+                </p>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button class="secondary-btn" id="confirmCancelBtn" style="margin-top: 0; width: 45%;">Cancel</button>
+                    <button class="primary-btn" id="confirmProceedBtn" style="width: 55%; background: var(--danger-color);">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastBox" class="toast-container"></div>
+
     <!-- Scripts -->
     <script type="module" src="firebase-config.js"></script>
     <script type="module" src="script.js"></script>
