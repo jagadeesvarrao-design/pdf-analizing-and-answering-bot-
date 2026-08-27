@@ -2781,3 +2781,249 @@ section {
         padding: 10px 12px;
     }
 }
+
+/* ==============================================================================
+   FOUNDER'S LETTER & COMMITMENT SECTION
+   ============================================================================== */
+.founder-section {
+    padding: 70px 20px 40px;
+    background: transparent;
+    position: relative;
+    z-index: 10;
+}
+
+.founder-card {
+    background: var(--surface-bright, #FFFFFF);
+    border: 1px solid rgba(162, 188, 168, 0.4);
+    border-radius: 28px;
+    padding: 48px;
+    box-shadow: 0 12px 40px rgba(71, 101, 80, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .founder-card {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.25);
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.35);
+}
+
+.founder-card-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 48px;
+    align-items: center;
+}
+
+.founder-image-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.founder-avatar-wrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 18px;
+}
+
+.founder-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 24px;
+    border: 3px solid var(--primary);
+    box-shadow: 0 12px 35px rgba(71, 101, 80, 0.25);
+    transition: transform 0.3s ease;
+}
+
+.founder-photo:hover {
+    transform: scale(1.02);
+}
+
+.founder-badge-pill {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--slate-deep);
+    color: #FFFFFF;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 5px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border: 1px solid rgba(162, 188, 168, 0.3);
+}
+
+[data-theme="dark"] .founder-badge-pill {
+    background: var(--primary);
+}
+
+.founder-credentials {
+    margin-top: 10px;
+}
+
+.founder-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--slate-deep);
+    margin-bottom: 4px;
+    font-family: 'Manrope', sans-serif;
+}
+
+[data-theme="dark"] .founder-name {
+    color: #F8FAFC;
+}
+
+.founder-role {
+    font-size: 0.82rem;
+    color: var(--primary);
+    font-weight: 700;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+}
+
+.founder-social-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.founder-social-link {
+    background: rgba(71, 101, 80, 0.08);
+    border: 1px solid rgba(162, 188, 168, 0.35);
+    color: var(--slate-deep);
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.founder-social-link:hover {
+    background: var(--primary);
+    color: #FFFFFF;
+    border-color: var(--primary);
+}
+
+[data-theme="dark"] .founder-social-link {
+    color: #E2E8F0;
+    background: rgba(26, 37, 32, 0.8);
+}
+
+.founder-text-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+}
+
+.founder-quote-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary);
+    font-size: 0.84rem;
+    font-weight: 700;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.founder-heading {
+    font-size: 1.45rem;
+    font-weight: 800;
+    line-height: 1.35;
+    color: var(--slate-deep);
+    font-family: 'Manrope', sans-serif;
+}
+
+[data-theme="dark"] .founder-heading {
+    color: #F8FAFC;
+}
+
+.founder-body-text p {
+    font-size: 0.94rem;
+    line-height: 1.7;
+    color: var(--secondary);
+    margin-bottom: 12px;
+}
+
+.founder-body-text strong {
+    color: var(--slate-deep);
+}
+
+[data-theme="dark"] .founder-body-text strong {
+    color: #F8FAFC;
+}
+
+.founder-guarantee-box {
+    background: rgba(71, 101, 80, 0.08);
+    border: 1px solid rgba(162, 188, 168, 0.35);
+    border-left: 4px solid var(--primary);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 6px;
+}
+
+[data-theme="dark"] .founder-guarantee-box {
+    background: rgba(20, 28, 24, 0.9);
+    border-color: rgba(162, 188, 168, 0.25);
+    border-left-color: var(--primary-fixed);
+}
+
+.guarantee-icon {
+    font-size: 1.8rem;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.guarantee-text {
+    font-size: 0.88rem;
+    color: var(--slate-deep);
+    line-height: 1.5;
+}
+
+[data-theme="dark"] .guarantee-text {
+    color: #E2E8F0;
+}
+
+@media (max-width: 900px) {
+    .founder-card-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        text-align: center;
+    }
+    .founder-text-col {
+        text-align: center;
+    }
+    .founder-heading {
+        font-size: 1.25rem;
+    }
+    .founder-guarantee-box {
+        text-align: left;
+    }
+    .founder-card {
+        padding: 32px 20px;
+    }
+}
