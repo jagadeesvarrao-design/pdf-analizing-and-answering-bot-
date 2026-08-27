@@ -112,8 +112,9 @@
                     <div class="section-label">
                         <i class="fa-solid fa-file-circle-plus"></i> Ingest Document
                     </div>
-                    <div class="limit-info">
-                        <i class="fa-solid fa-shield-halved"></i> Max ~150 Pages or 20MB (PDF, DOCX, TXT)
+                    <div class="limit-info" id="sidebarLimitInfo" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span id="limitInfoText"><i class="fa-solid fa-file-lines"></i> Max 30 Pages (Free)</span>
+                        <span id="quotaRemainingPill" style="background:rgba(71,101,80,0.18); color:var(--primary); padding:2px 8px; border-radius:10px; font-weight:800; font-size:0.72rem;">2/2 Left</span>
                     </div>
                     <div class="file-upload-wrapper" id="dropZone">
                         <input type="file" id="pdfUpload" accept=".pdf,.docx,.txt" multiple>
@@ -182,6 +183,9 @@
                     </div>
                 </div>
                 <div class="chat-header-actions">
+                    <button id="exportReportBtn" class="icon-action-btn export-btn" title="Export Executive Intelligence Dossier (ZenDoc Pro)">
+                        <i class="fa-solid fa-file-export"></i> <span>Export Report</span>
+                    </button>
                     <button id="purgeDataBtn" class="icon-action-btn purge-btn" title="Purge & Erase All Document Data (DPDP Act 2023 Sec 12)">
                         <i class="fa-solid fa-shield-slash"></i> <span>Purge Data (DPDP)</span>
                     </button>
@@ -237,6 +241,32 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- SOFT PAYWALL & UPGRADE MODAL -->
+    <div id="upgradePaywallModal" class="legal-modal-backdrop">
+        <div class="legal-modal-card" style="max-width: 520px; text-align: center;">
+            <div class="legal-modal-header" style="justify-content: center; position: relative;">
+                <h3 style="color: var(--primary); font-size: 1.3rem;"><i class="fa-solid fa-crown" style="color: #F59E0B;"></i> Unlock ZenDoc Pro</h3>
+                <button class="legal-modal-close-btn" id="closePaywallBtn" style="position: absolute; right: 16px;">&times;</button>
+            </div>
+            <div class="legal-modal-body" style="padding: 24px 20px;">
+                <div style="font-size: 2.4rem; color: #F59E0B; margin-bottom: 12px;"><i class="fa-solid fa-sparkles"></i></div>
+                <h4 id="paywallReasonTitle" style="font-size: 1.15rem; font-weight: 800; color: var(--slate-deep); margin-bottom: 8px;">Plan Limit Reached</h4>
+                <p id="paywallReasonDesc" style="font-size: 0.88rem; color: var(--secondary); margin-bottom: 24px; line-height: 1.6;">
+                    Your active plan limit has been reached. Upgrade to ZenDoc Pro or activate an instant 24-Hour Rapid Pass to proceed.
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <a href="index.html#pricing" class="theme-toggle-btn" style="background: var(--primary); color: white; justify-content: center; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 0.95rem; text-decoration: none;">
+                        <i class="fa-solid fa-crown" style="color: #F59E0B;"></i> Upgrade to ZenDoc Pro (₹299 / $8.99)
+                    </a>
+                    <a href="index.html#pricing" class="theme-toggle-btn" style="background: #F59E0B; color: black; justify-content: center; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 0.95rem; text-decoration: none;">
+                        <i class="fa-solid fa-bolt"></i> Get 24-Hour Rapid Pass (₹49 / $0.99)
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->

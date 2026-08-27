@@ -41,10 +41,10 @@ def sanitize_html_output(raw_html: str) -> str:
     cleaned = re.sub(r'javascript\s*:', '', cleaned, flags=re.IGNORECASE)
     return cleaned
 
-def process_documents(file_paths):
+def process_documents(file_paths, max_pages: int = 150):
     """
     Extracts text and embedded links from PDFs, Word docs, and text files.
-    Splits text into chunks for vector indexing with DoS/Bomb protections.
+    Splits text into chunks for vector indexing with DoS/Bomb and Subscription Tier page protections.
     """
     documents = []
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=400)
@@ -55,8 +55,15 @@ def process_documents(file_paths):
             
             if ext == '.pdf':
                 doc = fitz.open(file_path)
-                total_pages = min(len(doc), MAX_PAGES_PER_DOC)
+                doc_len = len(doc)
+                if doc_len > max_pages:
+                    doc.close()
+                    raise ValueError(
+                        f"PAGE_LIMIT_EXCEEDED: File '{os.path.basename(file_path)}' contains {doc_len} pages, "
+                        f"which exceeds your plan limit of {max_pages} pages. Upgrade to ZenDoc Pro to unlock up to 500 pages."
+                    )
                 
+                total_pages = doc_len
                 for page_num in range(total_pages):
                     page = doc.load_page(page_num)
                     text = page.get_text("text")
@@ -110,12 +117,10 @@ def process_documents(file_paths):
                         )
                         
         except Exception as e:
-            print(f"Error processing {file_path}: {e}")
-            raise ValueError(f"Failed to process {os.path.basename(file_path)}: {str(e)}")
+            if "PAGE_LIMIT_EXCEEDED" in str(e):
+                raise
+            print(f"Error reading {file_path}: {e}")
             
-    if not documents:
-        raise ValueError("The uploaded document is either empty or consists solely of non-extractable scanned images. Please upload a digital PDF, DOCX, or TXT file.")
-        
     return documents
 
 def get_embeddings_model():
@@ -138,14 +143,15 @@ def get_vector_store(documents):
 def get_conversational_chain():
     """Builds the Gemini 2.5 Flash multimodal conversational reasoning chain."""
     prompt_template = """
-    You are Aneevarp DocAI, an enterprise document intelligence assistant developed by Aneevarp Solutions, powered by Google Gemini and Google Cloud Run.
+    You are ZenDoc AI, an enterprise document intelligence and reasoning engine developed by Aneevarp Solutions, powered by Google Gemini 2.5 Flash.
 
     Answer the user's question accurately, concisely, and insightfully based ONLY on the provided document context.
 
     Follow these strict formatting standards:
-    - Use <b>bold text</b> for key facts, numbers, dates, and conclusions.
-    - Use clean bullet points (<ul><li>...</li></ul>) or numbered steps (<ol><li>...</li></ol>) to break down information.
-    - Use HTML tables or <code>code snippets</code> if tabular or technical data is present.
+    - Use <b>bold text</b> for key metrics, conclusions, terms, and critical data points.
+    - Use clean bullet points (<ul><li>...</li></ul>) or numbered lists (<ol><li>...</li></ol>) to break down multi-step answers.
+    - Render tabular data or financial balance sheets in clean HTML tables (<table border="1">...</table>) or clean markdown.
+    - If comparing multiple documents, explicitly state the source filename for each point (e.g. <b>[Document A.pdf]</b> vs <b>[Document B.pdf]</b>).
     - If links/URLs are found in the context, render them as clickable links: <a href="..." target="_blank" rel="noopener">link</a>.
     - If the context does NOT contain the answer, politely respond: "I could not find relevant information in the uploaded document. Please check the file or rephrase your question." Do NOT hallucinate.
 

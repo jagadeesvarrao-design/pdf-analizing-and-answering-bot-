@@ -107,29 +107,90 @@ logoutBtn.addEventListener('click', async () => {
     window.location.reload();
 });
 
-// Load Active Plan from localStorage
+// ==========================================================================
+// SUBSCRIPTION & QUOTA MANAGEMENT
+// ==========================================================================
 const activePlanLabel = document.getElementById('activePlanLabel');
 const dropdownPlanStatus = document.getElementById('dropdownPlanStatus');
 const activePlanBtn = document.getElementById('activePlanBtn');
+const limitInfoText = document.getElementById('limitInfoText');
+const quotaRemainingPill = document.getElementById('quotaRemainingPill');
 
-function loadUserPlan() {
+const upgradePaywallModal = document.getElementById('upgradePaywallModal');
+const closePaywallBtn = document.getElementById('closePaywallBtn');
+const paywallReasonTitle = document.getElementById('paywallReasonTitle');
+const paywallReasonDesc = document.getElementById('paywallReasonDesc');
+const exportReportBtn = document.getElementById('exportReportBtn');
+
+function getActivePlan() {
     try {
         const storedPlan = localStorage.getItem('zendoc_active_plan');
         if (storedPlan) {
-            const plan = JSON.parse(storedPlan);
-            if (activePlanLabel) activePlanLabel.textContent = plan.title;
-            if (dropdownPlanStatus) dropdownPlanStatus.textContent = `Plan: ${plan.title}`;
-            if (activePlanBtn) {
-                activePlanBtn.style.background = 'rgba(245, 158, 11, 0.2)';
-                activePlanBtn.style.borderColor = '#F59E0B';
-                activePlanBtn.style.color = '#F59E0B';
+            return JSON.parse(storedPlan);
+        }
+    } catch (e) {
+        console.warn("Error reading stored plan:", e);
+    }
+    return { planId: 'free', title: 'Free Starter' };
+}
+
+function showPaywall(title, desc) {
+    if (paywallReasonTitle) paywallReasonTitle.textContent = title;
+    if (paywallReasonDesc) paywallReasonDesc.textContent = desc;
+    if (upgradePaywallModal) upgradePaywallModal.classList.add('active');
+}
+
+if (closePaywallBtn) {
+    closePaywallBtn.addEventListener('click', () => {
+        if (upgradePaywallModal) upgradePaywallModal.classList.remove('active');
+    });
+}
+
+if (upgradePaywallModal) {
+    upgradePaywallModal.addEventListener('click', (e) => {
+        if (e.target === upgradePaywallModal) upgradePaywallModal.classList.remove('active');
+    });
+}
+
+async function fetchAndRenderQuota() {
+    const plan = getActivePlan();
+    if (activePlanLabel) activePlanLabel.textContent = plan.title;
+    if (dropdownPlanStatus) dropdownPlanStatus.textContent = `Plan: ${plan.title}`;
+    
+    if (plan.planId !== 'free' && activePlanBtn) {
+        activePlanBtn.style.background = 'rgba(245, 158, 11, 0.2)';
+        activePlanBtn.style.borderColor = '#F59E0B';
+        activePlanBtn.style.color = '#F59E0B';
+    }
+
+    try {
+        const headers = {
+            'X-User-Plan': plan.planId,
+            'X-User-Id': currentUser ? currentUser.uid : 'anon_device'
+        };
+        const res = await fetch(`${API_BASE}/api/user/quota`, { headers });
+        if (res.ok) {
+            const data = await res.json();
+            const q = data.quota;
+            if (quotaRemainingPill) {
+                if (q.remaining_today === 'Unlimited') {
+                    quotaRemainingPill.textContent = '👑 Unlimited';
+                    quotaRemainingPill.style.background = 'rgba(245, 158, 11, 0.2)';
+                    quotaRemainingPill.style.color = '#F59E0B';
+                } else {
+                    quotaRemainingPill.textContent = `${q.remaining_today}/${q.max_daily} Left`;
+                }
+            }
+            if (limitInfoText) {
+                limitInfoText.innerHTML = `<i class="fa-solid fa-file-lines"></i> Max ${q.max_pages_per_doc} Pgs • ${q.max_file_size_mb}MB`;
             }
         }
     } catch (e) {
-        console.warn("Could not load stored plan:", e);
+        console.warn("Could not fetch user quota:", e);
     }
 }
-loadUserPlan();
+
+fetchAndRenderQuota();
 
 // ==========================================================================
 // 2. SIDEBAR TABS & HISTORY
@@ -282,6 +343,17 @@ processBtn.addEventListener('click', async () => {
         return;
     }
 
+    const plan = getActivePlan();
+
+    // Multi-document check for Free tier
+    if (fileInput.files.length > 1 && plan.planId === 'free') {
+        showPaywall(
+            "Multi-Document RAG (ZenDoc Pro)",
+            "You selected multiple files. Cross-document comparative intelligence is a ZenDoc Pro feature. Upgrade to analyze up to 5 documents simultaneously."
+        );
+        return;
+    }
+
     if (!currentUser) {
         // Trigger Google Sign In
         try {
@@ -295,7 +367,7 @@ processBtn.addEventListener('click', async () => {
     isProcessing = true;
     processBtn.disabled = true;
     statusIndicator.classList.remove('status-hidden');
-    statusText.textContent = "Extracting & Vectorizing with Gemini...";
+    statusText.textContent = "Extracting & Vectorizing with Gemini 2.5 Flash...";
 
     const formData = new FormData();
     for (let i = 0; i < fileInput.files.length; i++) {
@@ -307,6 +379,10 @@ processBtn.addEventListener('click', async () => {
     try {
         const response = await fetch(`${API_BASE}/api/upload`, {
             method: 'POST',
+            headers: {
+                'X-User-Plan': plan.planId,
+                'X-User-Id': currentUser ? currentUser.uid : 'anon_device'
+            },
             body: formData
         });
 
@@ -316,12 +392,15 @@ processBtn.addEventListener('click', async () => {
             statusIndicator.classList.add('status-hidden');
             uploadSection.classList.add('hidden');
             successSection.classList.remove('hidden');
-            successDocName.textContent = `Indexed: ${firstFileName}`;
+            successDocName.textContent = `Indexed: ${firstFileName} ${fileInput.files.length > 1 ? `(+${fileInput.files.length - 1} more)` : ''}`;
 
             // Initialize Session
             currentSessionId = `session_${Date.now()}`;
             activeDocumentName = firstFileName;
             activeDocTitle.textContent = activeDocumentName;
+
+            // Update Quota display
+            fetchAndRenderQuota();
 
             // Save to Firestore
             if (currentUser) {
@@ -347,17 +426,101 @@ processBtn.addEventListener('click', async () => {
             if (window.innerWidth <= 768) {
                 setMobileView('chat');
             }
+        } else if (response.status === 402 || response.status === 413) {
+            const errDetail = typeof data.detail === 'object' ? data.detail : { message: data.detail };
+            showPaywall(
+                errDetail.code ? errDetail.code.replace(/_/g, ' ') : "Plan Limit Reached",
+                errDetail.message || "Your active plan limit was reached. Upgrade to continue."
+            );
         } else {
-            throw new Error(data.detail || "Document extraction failed");
+            const errMessage = typeof data.detail === 'string' ? data.detail : (data.detail?.message || "Document extraction failed");
+            alert(`Upload Notice: ${errMessage}`);
         }
     } catch (error) {
+        console.error("Upload error:", error);
         alert(`Error: ${error.message}`);
+    } finally {
         statusIndicator.classList.add('status-hidden');
         processBtn.disabled = false;
-    } finally {
         isProcessing = false;
     }
 });
+
+// ==========================================================================
+// 4. EXECUTIVE DOSSIER EXPORT (Pro Feature)
+// ==========================================================================
+if (exportReportBtn) {
+    exportReportBtn.addEventListener('click', async () => {
+        const plan = getActivePlan();
+        if (plan.planId === 'free') {
+            showPaywall(
+                "Executive Report Export (ZenDoc Pro)",
+                "Exporting verified intelligence dossiers to PDF / Markdown is a ZenDoc Pro feature. Upgrade to export your research summaries instantly."
+            );
+            return;
+        }
+
+        // Collect all chat messages
+        const msgNodes = chatWindow.querySelectorAll('.message');
+        if (msgNodes.length === 0) {
+            alert("No conversation history to export yet. Ask questions first!");
+            return;
+        }
+
+        const messagesToExport = [];
+        msgNodes.forEach(node => {
+            const isUser = node.classList.contains('user-msg');
+            const isAi = node.classList.contains('ai-msg');
+            const textContent = node.querySelector('.msg-content')?.innerText || "";
+            const pageBadge = node.querySelector('.receipt-page-badge')?.innerText || "";
+
+            if (isUser) {
+                messagesToExport.push({ type: "user", text: textContent });
+            } else if (isAi) {
+                messagesToExport.push({ type: "ai", text: textContent, page: pageBadge });
+            }
+        });
+
+        try {
+            exportReportBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Exporting...`;
+            exportReportBtn.disabled = true;
+
+            const res = await fetch(`${API_BASE}/api/export/report`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-User-Plan': plan.planId,
+                    'X-User-Id': currentUser ? currentUser.uid : 'anon_device'
+                },
+                body: JSON.stringify({
+                    document_name: activeDocumentName,
+                    messages: messagesToExport
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                const blob = new Blob([data.content], { type: 'text/markdown;charset=utf-8;' });
+                const downloadUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = data.filename || 'ZenDoc_Intelligence_Dossier.md';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(downloadUrl);
+            } else {
+                const errData = await res.json();
+                showPaywall("Export Locked", errData.detail?.message || "Upgrade to ZenDoc Pro to export reports.");
+            }
+        } catch (e) {
+            alert("Export error: " + e.message);
+        } finally {
+            exportReportBtn.innerHTML = `<i class="fa-solid fa-file-export"></i> <span>Export Report</span>`;
+            exportReportBtn.disabled = false;
+        }
+    });
+}
 
 uploadAnotherBtn.addEventListener('click', () => {
     resetUploadUI();
