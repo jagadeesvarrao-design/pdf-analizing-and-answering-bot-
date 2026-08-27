@@ -802,6 +802,10 @@ async function sendMessage() {
     chatInput.disabled = true;
     sendBtn.disabled = true;
 
+    // Remove welcome / hero card when first message is sent
+    const welcomeCards = chatWindow.querySelectorAll('.workspace-hero-card');
+    welcomeCards.forEach(c => c.remove());
+
     // Render User Message
     renderUserMessage(question);
     
