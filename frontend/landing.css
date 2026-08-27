@@ -1662,6 +1662,450 @@ section {
 }
 
 /* ==============================================================================
+   PRICING & MONETIZATION SECTION (Aneevarp Solutions Style)
+   ============================================================================== */
+.pricing-section {
+    padding: 90px 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.pricing-controls-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 50px;
+}
+
+.pricing-switch-box {
+    background: var(--surface-container-low);
+    border: 1px solid rgba(162, 188, 168, 0.4);
+    border-radius: 30px;
+    padding: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.pricing-pill-btn {
+    background: transparent;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 24px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: var(--secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.pricing-pill-btn.active {
+    background: var(--primary);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(71, 101, 80, 0.3);
+}
+
+.discount-badge {
+    background: #059669;
+    color: white;
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    max-width: 1300px;
+    margin: 0 auto;
+    align-items: stretch;
+}
+
+.pricing-card {
+    background: var(--surface-bright, #FFFFFF);
+    border: 1px solid var(--sage-muted);
+    border-radius: 24px;
+    padding: 32px 26px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 10px 30px rgba(44, 51, 51, 0.04);
+    text-align: left;
+}
+
+.pricing-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(71, 101, 80, 0.12);
+}
+
+[data-theme="dark"] .pricing-card {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .pricing-card:hover {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 25px rgba(71, 101, 80, 0.2);
+}
+
+/* Featured / Most Popular Tier */
+.pricing-card.featured {
+    border: 2px solid var(--primary);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(244, 244, 240, 0.95) 100%);
+    box-shadow: 0 15px 45px rgba(71, 101, 80, 0.18);
+    transform: scale(1.03);
+}
+
+[data-theme="dark"] .pricing-card.featured {
+    background: linear-gradient(180deg, #17221D 0%, #121A16 100%);
+    border-color: var(--primary-fixed-dim);
+}
+
+.pricing-card.featured:hover {
+    transform: scale(1.05) translateY(-6px);
+}
+
+/* Rapid Pass & Suite Card Styling */
+.pricing-card.rapid-pass {
+    border-color: rgba(245, 158, 11, 0.5);
+}
+.pricing-card.suite-card {
+    border-color: rgba(124, 58, 237, 0.45);
+}
+
+.pricing-badge-tag {
+    position: absolute;
+    top: -12px;
+    right: 24px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pricing-badge-tag.gold {
+    background: #F59E0B;
+    color: #000000;
+}
+.pricing-badge-tag.green {
+    background: var(--primary);
+    color: #FFFFFF;
+}
+.pricing-badge-tag.purple {
+    background: #7C3AED;
+    color: #FFFFFF;
+}
+
+.pricing-card-header {
+    margin-bottom: 20px;
+}
+
+.tier-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.tier-icon {
+    font-size: 1.3rem;
+    color: var(--primary);
+}
+
+.tier-name {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--slate-deep);
+}
+
+.tier-tagline {
+    font-size: 0.82rem;
+    color: var(--secondary);
+    line-height: 1.5;
+}
+
+.pricing-price-box {
+    margin: 20px 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(162, 188, 168, 0.25);
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.price-currency {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.price-amount {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--slate-deep);
+    font-family: 'Manrope', sans-serif;
+    line-height: 1;
+}
+
+.price-period {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.pricing-features-list {
+    list-style: none;
+    margin: 0 0 28px 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pricing-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.86rem;
+    color: var(--slate-deep);
+    line-height: 1.5;
+}
+
+.pricing-feature-item i {
+    font-size: 0.95rem;
+    color: var(--primary);
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.pricing-feature-item.highlight-feature {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.pricing-cta-btn {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pricing-cta-btn.primary {
+    background: var(--primary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(71, 101, 80, 0.3);
+}
+
+.pricing-cta-btn.primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(71, 101, 80, 0.4);
+}
+
+.pricing-cta-btn.secondary {
+    background: transparent;
+    border: 1.5px solid var(--primary);
+    color: var(--primary);
+}
+
+.pricing-cta-btn.secondary:hover {
+    background: rgba(71, 101, 80, 0.1);
+    transform: translateY(-2px);
+}
+
+.pricing-cta-btn.gold-btn {
+    background: #F59E0B;
+    color: #000000;
+    border: none;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.pricing-cta-btn.gold-btn:hover {
+    background: #D97706;
+    transform: translateY(-2px);
+}
+
+.pricing-cta-btn.purple-btn {
+    background: #7C3AED;
+    color: #FFFFFF;
+    border: none;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+.pricing-cta-btn.purple-btn:hover {
+    background: #6D28D9;
+    transform: translateY(-2px);
+}
+
+/* ==============================================================================
+   CHECKOUT & PAYMENT MODAL (Simulated Razorpay / Stripe Gateway)
+   ============================================================================== */
+.checkout-card {
+    max-width: 580px;
+}
+
+.checkout-summary-box {
+    background: var(--surface-container-low);
+    border: 1px solid rgba(162, 188, 168, 0.35);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.checkout-plan-info h4 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--slate-deep);
+    margin-bottom: 4px;
+}
+
+.checkout-plan-info p {
+    font-size: 0.8rem;
+    color: var(--secondary);
+    margin: 0;
+}
+
+.checkout-amount-display {
+    text-align: right;
+}
+
+.checkout-price-main {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--primary);
+}
+
+.payment-method-selector {
+    margin-bottom: 20px;
+}
+
+.method-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--secondary);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.payment-methods-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.pay-method-btn {
+    background: var(--surface-bright, #FFFFFF);
+    border: 1px solid rgba(162, 188, 168, 0.4);
+    border-radius: 12px;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--slate-deep);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .pay-method-btn {
+    background: #101714;
+    border-color: rgba(162, 188, 168, 0.2);
+}
+
+.pay-method-btn i {
+    font-size: 1.25rem;
+    color: var(--primary);
+}
+
+.pay-method-btn.active {
+    border-color: var(--primary);
+    background: rgba(71, 101, 80, 0.12);
+    color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary);
+}
+
+.checkout-input-group {
+    margin-bottom: 16px;
+}
+
+.checkout-input-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--slate-deep);
+    margin-bottom: 6px;
+}
+
+.checkout-input-group input, 
+.checkout-input-group textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(162, 188, 168, 0.4);
+    background: var(--surface-container-low);
+    color: var(--slate-deep);
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.checkout-input-group input:focus, 
+.checkout-input-group textarea:focus {
+    border-color: var(--primary);
+}
+
+.secure-payment-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: var(--secondary);
+    margin-top: 14px;
+}
+
+.secure-payment-notice i {
+    color: #059669;
+}
+
+/* ==============================================================================
    CTA BANNER (Matching Aneevarp Slate Deep / Emerald Style)
    ============================================================================== */
 .cta-section {

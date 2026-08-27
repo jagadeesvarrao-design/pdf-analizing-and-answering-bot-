@@ -34,6 +34,7 @@
                 <a href="#pipeline">How It Works</a>
                 <a href="#demo">Live Sandbox</a>
                 <a href="#architecture">Architecture</a>
+                <a href="#pricing">Pricing</a>
             </div>
 
             <div class="nav-actions">
@@ -104,6 +105,7 @@
                 <a href="#pipeline" class="mobile-nav-item"><i class="fa-solid fa-diagram-project"></i> How It Works</a>
                 <a href="#demo" class="mobile-nav-item"><i class="fa-solid fa-play"></i> Live Sandbox</a>
                 <a href="#architecture" class="mobile-nav-item"><i class="fa-solid fa-server"></i> Architecture</a>
+                <a href="#pricing" class="mobile-nav-item"><i class="fa-solid fa-tags"></i> Pricing</a>
                 <div class="mobile-drawer-divider"></div>
                 <a href="https://aneevarpsolutions.vercel.app/" target="_blank" class="mobile-nav-item"><i class="fa-solid fa-building-columns"></i> Parent Holding Portal</a>
                 <a href="https://github.com/jagadeesvarrao-design/pdf-analizing-and-answering-bot-" target="_blank" class="mobile-nav-item"><i class="fa-brands fa-github"></i> GitHub Repository</a>
@@ -433,6 +435,197 @@
         </div>
     </section>
 
+    <!-- PRICING & PLANS SECTION -->
+    <section id="pricing" class="pricing-section">
+        <div class="section-container">
+            <span class="section-badge"><i class="fa-solid fa-tags"></i> Transparent & Flexible Pricing</span>
+            <h2 class="section-title">Invest in Instant Clarity, Zero Hallucination</h2>
+            <p class="section-subtitle">
+                Choose the plan that fits your workflow. 1-Click instant UPI in India or Global Cards.
+            </p>
+
+            <!-- Pricing Controls: Currency & Billing Cycle -->
+            <div class="pricing-controls-container">
+                <!-- Currency Toggle -->
+                <div class="pricing-switch-box">
+                    <button id="currInrBtn" class="pricing-pill-btn active" data-currency="INR">
+                        <span>🇮🇳 India (INR ₹)</span>
+                    </button>
+                    <button id="currUsdBtn" class="pricing-pill-btn" data-currency="USD">
+                        <span>🌐 Global (USD $)</span>
+                    </button>
+                </div>
+
+                <!-- Billing Frequency Toggle -->
+                <div class="pricing-switch-box">
+                    <button id="cycleMonthlyBtn" class="pricing-pill-btn active" data-cycle="monthly">
+                        <span>Monthly</span>
+                    </button>
+                    <button id="cycleAnnualBtn" class="pricing-pill-btn" data-cycle="annual">
+                        <span>Annual</span>
+                        <span class="discount-badge">Save 20%</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 5-Tier Pricing Cards Grid -->
+            <div class="pricing-grid">
+                <!-- Tier 1: Free Starter -->
+                <div class="pricing-card">
+                    <div class="pricing-card-header">
+                        <div class="tier-title-row">
+                            <i class="fa-solid fa-paper-plane tier-icon"></i>
+                            <h3 class="tier-name">Free Starter</h3>
+                        </div>
+                        <p class="tier-tagline">Perfect for first-time visitors and casual document questions.</p>
+                    </div>
+
+                    <div class="pricing-price-box">
+                        <span class="price-currency" data-currency-symbol>₹</span>
+                        <span class="price-amount" data-plan="free">0</span>
+                        <span class="price-period">/ forever</span>
+                    </div>
+
+                    <ul class="pricing-features-list">
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span><strong>2 documents</strong> per day</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Up to <strong>30 pages</strong> per file</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Standard Gemini 2.5 Flash reasoning</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Visual page crop citations</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>In-memory DPDP Act session isolation</span></li>
+                    </ul>
+
+                    <a href="app.html" class="pricing-cta-btn secondary">
+                        <span>Start Free Now</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Tier 2: 24-Hour Rapid Pass -->
+                <div class="pricing-card rapid-pass">
+                    <div class="pricing-badge-tag gold">⚡ Instant 24h Pass</div>
+                    <div class="pricing-card-header">
+                        <div class="tier-title-row">
+                            <i class="fa-solid fa-bolt tier-icon" style="color:#F59E0B;"></i>
+                            <h3 class="tier-name">24h Rapid Pass</h3>
+                        </div>
+                        <p class="tier-tagline">For single-deal audits, exam cramming, or urgent reviews.</p>
+                    </div>
+
+                    <div class="pricing-price-box">
+                        <span class="price-currency" data-currency-symbol>₹</span>
+                        <span class="price-amount" data-plan="pass" data-inr="49" data-usd="0.99">49</span>
+                        <span class="price-period">/ 24 hours</span>
+                    </div>
+
+                    <ul class="pricing-features-list">
+                        <li class="pricing-feature-item highlight-feature"><i class="fa-solid fa-check"></i> <span><strong>UNLIMITED documents</strong> for 24h</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Up to <strong>150 pages</strong> per file</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>High-res visual bounding box receipts</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Priority Google Cloud Run queue</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Instant 1-click UPI & Card unlock</span></li>
+                    </ul>
+
+                    <button class="pricing-cta-btn gold-btn open-checkout-btn" data-plan-id="rapid_pass" data-plan-title="24-Hour Rapid Pass" data-inr-price="49" data-usd-price="0.99" data-period="24 hours">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Unlock 24h Pass</span>
+                    </button>
+                </div>
+
+                <!-- Tier 3: ZenDoc Pro -->
+                <div class="pricing-card featured">
+                    <div class="pricing-badge-tag green">⭐ Most Popular</div>
+                    <div class="pricing-card-header">
+                        <div class="tier-title-row">
+                            <i class="fa-solid fa-wand-magic-sparkles tier-icon"></i>
+                            <h3 class="tier-name">ZenDoc Pro</h3>
+                        </div>
+                        <p class="tier-tagline">For lawyers, CAs, researchers, financial analysts & power users.</p>
+                    </div>
+
+                    <div class="pricing-price-box">
+                        <span class="price-currency" data-currency-symbol>₹</span>
+                        <span class="price-amount" data-plan="pro" data-inr-monthly="299" data-inr-annual="199" data-usd-monthly="8.99" data-usd-annual="5.75">299</span>
+                        <span class="price-period" data-period-label>/ month</span>
+                    </div>
+
+                    <ul class="pricing-features-list">
+                        <li class="pricing-feature-item highlight-feature"><i class="fa-solid fa-check"></i> <span><strong>UNLIMITED uploads</strong> every month</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Up to <strong>500 pages</strong> per document</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span><strong>Multi-Doc RAG</strong>: Cross-compare 5 files</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Cloud Firestore history sync across devices</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Advanced financial balance sheet extractor</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>1-click export to PDF / Word reports</span></li>
+                    </ul>
+
+                    <button class="pricing-cta-btn primary open-checkout-btn" data-plan-id="zendoc_pro" data-plan-title="ZenDoc Pro" data-inr-price="299" data-usd-price="8.99" data-period="month">
+                        <i class="fa-solid fa-crown"></i>
+                        <span>Upgrade to Pro</span>
+                    </button>
+                </div>
+
+                <!-- Tier 4: Zen Suite Ultimate -->
+                <div class="pricing-card suite-card">
+                    <div class="pricing-badge-tag purple">👑 3-in-1 Ecosystem</div>
+                    <div class="pricing-card-header">
+                        <div class="tier-title-row">
+                            <i class="fa-solid fa-gem tier-icon" style="color:#7C3AED;"></i>
+                            <h3 class="tier-name">Zen Suite Ultimate</h3>
+                        </div>
+                        <p class="tier-tagline">The complete career & intelligence stack by Aneevarp Solutions.</p>
+                    </div>
+
+                    <div class="pricing-price-box">
+                        <span class="price-currency" data-currency-symbol>₹</span>
+                        <span class="price-amount" data-plan="suite" data-inr-monthly="599" data-inr-annual="415" data-usd-monthly="15.99" data-usd-annual="10.75">599</span>
+                        <span class="price-period" data-period-label>/ month</span>
+                    </div>
+
+                    <ul class="pricing-features-list">
+                        <li class="pricing-feature-item highlight-feature"><i class="fa-solid fa-check"></i> <span><strong>🧠 ZenDoc AI Pro</strong> (Unlimited 500-pg docs)</span></li>
+                        <li class="pricing-feature-item highlight-feature"><i class="fa-solid fa-check"></i> <span><strong>📄 ZenResume Pro</strong> (Unlimited ATS resumes)</span></li>
+                        <li class="pricing-feature-item highlight-feature"><i class="fa-solid fa-check"></i> <span><strong>🎯 ZenScout Pro</strong> (Senior Manager AI Mock Interviews)</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Single unified Google account sync</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Dedicated priority customer support</span></li>
+                    </ul>
+
+                    <button class="pricing-cta-btn purple-btn open-checkout-btn" data-plan-id="zen_suite" data-plan-title="Zen Suite Ultimate (ZenDoc + ZenResume + ZenScout)" data-inr-price="599" data-usd-price="15.99" data-period="month">
+                        <i class="fa-solid fa-sparkles"></i>
+                        <span>Get Zen Suite Access</span>
+                    </button>
+                </div>
+
+                <!-- Tier 5: Enterprise & Teams -->
+                <div class="pricing-card">
+                    <div class="pricing-card-header">
+                        <div class="tier-title-row">
+                            <i class="fa-solid fa-building tier-icon"></i>
+                            <h3 class="tier-name">Enterprise & Teams</h3>
+                        </div>
+                        <p class="tier-tagline">For law firms, audit companies, universities & large teams.</p>
+                    </div>
+
+                    <div class="pricing-price-box">
+                        <span class="price-amount" style="font-size: 2.2rem;">Custom</span>
+                        <span class="price-period">/ Invoiced</span>
+                    </div>
+
+                    <ul class="pricing-features-list">
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Multi-seat admin dashboard with RBAC</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Shared team document knowledge vaults</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Single Sign-On (SSO / Azure AD / Okta)</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>Dedicated Private Cloud Run instance</span></li>
+                        <li class="pricing-feature-item"><i class="fa-solid fa-check"></i> <span>99.9% uptime SLA & Custom REST API</span></li>
+                    </ul>
+
+                    <button class="pricing-cta-btn secondary" id="openEnterpriseBtn">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>Contact Enterprise Sales</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- CTA BANNER -->
     <section class="cta-section">
         <div class="cta-container">
@@ -584,7 +777,141 @@
                 <button class="dpdp-btn-accept" data-close="grievanceModal">Close</button>
             </div>
         </div>
-    </div>    <!-- Interactive Landing Page & Auth Controller Script -->
+    </div>
+
+    <!-- 4. CHECKOUT & SECURE PAYMENT MODAL (UPI & Cards) -->
+    <div id="checkoutModal" class="legal-modal-backdrop">
+        <div class="legal-modal-card checkout-card">
+            <div class="legal-modal-header">
+                <h3><i class="fa-solid fa-lock" style="color:var(--primary);"></i> Secure Instant Checkout</h3>
+                <button class="legal-modal-close-btn" data-close="checkoutModal">&times;</button>
+            </div>
+            <div class="legal-modal-body">
+                <div class="checkout-summary-box">
+                    <div class="checkout-plan-info">
+                        <h4 id="checkoutPlanTitle">ZenDoc Pro</h4>
+                        <p id="checkoutPlanSubtitle">Unlimited 500-page document analysis with Visual Proof</p>
+                    </div>
+                    <div class="checkout-amount-display">
+                        <div class="checkout-price-main" id="checkoutPriceDisplay">₹299</div>
+                        <span style="font-size:0.75rem; color:var(--secondary);" id="checkoutBillingPeriod">/ month</span>
+                    </div>
+                </div>
+
+                <div class="payment-method-selector">
+                    <div class="method-label">Select Payment Method</div>
+                    <div class="payment-methods-grid">
+                        <button class="pay-method-btn active" data-method="upi" id="payMethodUpi">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                            <span>UPI / QR</span>
+                        </button>
+                        <button class="pay-method-btn" data-method="card" id="payMethodCard">
+                            <i class="fa-regular fa-credit-card"></i>
+                            <span>Cards</span>
+                        </button>
+                        <button class="pay-method-btn" data-method="netbanking" id="payMethodNetbanking">
+                            <i class="fa-solid fa-building-columns"></i>
+                            <span>NetBanking</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- UPI Details View -->
+                <div id="upiPaymentView">
+                    <div class="checkout-input-group">
+                        <label for="upiIdInput">Enter UPI VPA (GPay, PhonePe, Paytm, BHIM):</label>
+                        <input type="text" id="upiIdInput" placeholder="yourname@okhdfcbank or yourname@paytm">
+                    </div>
+                </div>
+
+                <!-- Card Details View (Hidden by default) -->
+                <div id="cardPaymentView" class="hidden">
+                    <div class="checkout-input-group">
+                        <label for="cardNumberInput">Card Number:</label>
+                        <input type="text" id="cardNumberInput" placeholder="4111 2222 3333 4444" maxlength="19">
+                    </div>
+                    <div style="display:flex; gap:12px;">
+                        <div class="checkout-input-group" style="flex:1;">
+                            <label>Expiry (MM/YY):</label>
+                            <input type="text" placeholder="12/28" maxlength="5">
+                        </div>
+                        <div class="checkout-input-group" style="flex:1;">
+                            <label>CVV:</label>
+                            <input type="password" placeholder="123" maxlength="4">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NetBanking Details View (Hidden by default) -->
+                <div id="netbankingPaymentView" class="hidden">
+                    <div class="checkout-input-group">
+                        <label>Select Bank:</label>
+                        <select id="bankSelect" style="width:100%; padding:12px; border-radius:10px; border:1.5px solid rgba(162,188,168,0.4); background:var(--surface-container-low); color:var(--slate-deep);">
+                            <option>HDFC Bank</option>
+                            <option>State Bank of India (SBI)</option>
+                            <option>ICICI Bank</option>
+                            <option>Axis Bank</option>
+                            <option>Kotak Mahindra Bank</option>
+                            <option>Other Indian Banks / Global Wire</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="secure-payment-notice">
+                    <i class="fa-solid fa-shield-check"></i>
+                    <span>256-Bit TLS Encryption • Instant Plan Activation • GST Invoicing</span>
+                </div>
+            </div>
+            <div class="legal-modal-footer" style="display:flex; gap:10px; justify-content:flex-end;">
+                <button class="pricing-cta-btn secondary" data-close="checkoutModal" style="width:auto; padding:12px 20px;">Cancel</button>
+                <button class="pricing-cta-btn primary" id="confirmPaymentBtn" style="width:auto; padding:12px 28px;">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Complete & Activate</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. ENTERPRISE SALES CONTACT MODAL -->
+    <div id="enterpriseModal" class="legal-modal-backdrop">
+        <div class="legal-modal-card">
+            <div class="legal-modal-header">
+                <h3><i class="fa-solid fa-building"></i> Enterprise & Custom Team Invoicing</h3>
+                <button class="legal-modal-close-btn" data-close="enterpriseModal">&times;</button>
+            </div>
+            <div class="legal-modal-body">
+                <p>Deploy ZenDoc AI with dedicated Private Tenant isolation, SSO SAML 2.0 integration, and shared team document knowledge vaults.</p>
+                
+                <form id="enterpriseInquiryForm">
+                    <div class="checkout-input-group">
+                        <label>Company / Organization Name:</label>
+                        <input type="text" required placeholder="e.g. Acme Legal LLP / FinTech Corp">
+                    </div>
+                    <div class="checkout-input-group">
+                        <label>Official Work Email:</label>
+                        <input type="email" required placeholder="you@company.com">
+                    </div>
+                    <div class="checkout-input-group">
+                        <label>Expected Team Seats / Document Volume:</label>
+                        <input type="text" required placeholder="e.g. 25 Team Seats, ~5,000 documents/mo">
+                    </div>
+                    <div class="checkout-input-group">
+                        <label>Key Requirements / Security Compliance (e.g. On-Prem, SSO, Custom NDA):</label>
+                        <textarea rows="3" placeholder="Describe any specific enterprise integrations, SSO requirements, or custom DPA needed."></textarea>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                        <button type="button" class="pricing-cta-btn secondary" data-close="enterpriseModal" style="width:auto; padding:12px 20px;">Cancel</button>
+                        <button type="submit" class="pricing-cta-btn primary" style="width:auto; padding:12px 28px;">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Request Enterprise Quote</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Landing Page & Auth Controller Script -->
     <script type="module">
         import { 
             loginWithGoogle, 
@@ -845,7 +1172,195 @@
         });
 
         // ==========================================================================
-        // 5. MOBILE NAVIGATION DRAWER TOGGLE
+        // 5. PRICING & PAYMENT CONTROLLER
+        // ==========================================================================
+        let currentCurrency = "INR";
+        let currentBillingCycle = "monthly"; // "monthly" or "annual"
+        let selectedPlan = {
+            id: "zendoc_pro",
+            title: "ZenDoc Pro",
+            priceInr: 299,
+            priceUsd: 8.99,
+            period: "month"
+        };
+
+        const currInrBtn = document.getElementById('currInrBtn');
+        const currUsdBtn = document.getElementById('currUsdBtn');
+        const cycleMonthlyBtn = document.getElementById('cycleMonthlyBtn');
+        const cycleAnnualBtn = document.getElementById('cycleAnnualBtn');
+
+        const checkoutModal = document.getElementById('checkoutModal');
+        const enterpriseModal = document.getElementById('enterpriseModal');
+        const openEnterpriseBtn = document.getElementById('openEnterpriseBtn');
+        const checkoutPlanTitle = document.getElementById('checkoutPlanTitle');
+        const checkoutPlanSubtitle = document.getElementById('checkoutPlanSubtitle');
+        const checkoutPriceDisplay = document.getElementById('checkoutPriceDisplay');
+        const checkoutBillingPeriod = document.getElementById('checkoutBillingPeriod');
+        const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
+
+        // Payment Method Views
+        const payMethodUpi = document.getElementById('payMethodUpi');
+        const payMethodCard = document.getElementById('payMethodCard');
+        const payMethodNetbanking = document.getElementById('payMethodNetbanking');
+        const upiPaymentView = document.getElementById('upiPaymentView');
+        const cardPaymentView = document.getElementById('cardPaymentView');
+        const netbankingPaymentView = document.getElementById('netbankingPaymentView');
+
+        function updatePricingDisplay() {
+            const symbol = currentCurrency === "INR" ? "₹" : "$";
+            document.querySelectorAll('[data-currency-symbol]').forEach(el => el.textContent = symbol);
+
+            // Update Rapid Pass
+            const passEl = document.querySelector('[data-plan="pass"]');
+            if (passEl) {
+                passEl.textContent = currentCurrency === "INR" ? passEl.getAttribute('data-inr') : passEl.getAttribute('data-usd');
+            }
+
+            // Update ZenDoc Pro
+            const proEl = document.querySelector('[data-plan="pro"]');
+            if (proEl) {
+                if (currentCurrency === "INR") {
+                    proEl.textContent = currentBillingCycle === "monthly" ? proEl.getAttribute('data-inr-monthly') : proEl.getAttribute('data-inr-annual');
+                } else {
+                    proEl.textContent = currentBillingCycle === "monthly" ? proEl.getAttribute('data-usd-monthly') : proEl.getAttribute('data-usd-annual');
+                }
+            }
+
+            // Update Zen Suite
+            const suiteEl = document.querySelector('[data-plan="suite"]');
+            if (suiteEl) {
+                if (currentCurrency === "INR") {
+                    suiteEl.textContent = currentBillingCycle === "monthly" ? suiteEl.getAttribute('data-inr-monthly') : suiteEl.getAttribute('data-inr-annual');
+                } else {
+                    suiteEl.textContent = currentBillingCycle === "monthly" ? suiteEl.getAttribute('data-usd-monthly') : suiteEl.getAttribute('data-usd-annual');
+                }
+            }
+
+            // Update Period Labels
+            document.querySelectorAll('[data-period-label]').forEach(el => {
+                el.textContent = currentBillingCycle === "monthly" ? "/ month" : "/ month (billed annually)";
+            });
+        }
+
+        if (currInrBtn && currUsdBtn) {
+            currInrBtn.addEventListener('click', () => {
+                currentCurrency = "INR";
+                currInrBtn.classList.add('active');
+                currUsdBtn.classList.remove('active');
+                updatePricingDisplay();
+            });
+
+            currUsdBtn.addEventListener('click', () => {
+                currentCurrency = "USD";
+                currUsdBtn.classList.add('active');
+                currInrBtn.classList.remove('active');
+                updatePricingDisplay();
+            });
+        }
+
+        if (cycleMonthlyBtn && cycleAnnualBtn) {
+            cycleMonthlyBtn.addEventListener('click', () => {
+                currentBillingCycle = "monthly";
+                cycleMonthlyBtn.classList.add('active');
+                cycleAnnualBtn.classList.remove('active');
+                updatePricingDisplay();
+            });
+
+            cycleAnnualBtn.addEventListener('click', () => {
+                currentBillingCycle = "annual";
+                cycleAnnualBtn.classList.add('active');
+                cycleMonthlyBtn.classList.remove('active');
+                updatePricingDisplay();
+            });
+        }
+
+        // Open Checkout Modal
+        document.querySelectorAll('.open-checkout-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const planId = btn.getAttribute('data-plan-id');
+                const title = btn.getAttribute('data-plan-title');
+                const inrPrice = btn.getAttribute('data-inr-price');
+                const usdPrice = btn.getAttribute('data-usd-price');
+                const period = btn.getAttribute('data-period');
+
+                let finalPrice = currentCurrency === "INR" ? inrPrice : usdPrice;
+                let finalSymbol = currentCurrency === "INR" ? "₹" : "$";
+
+                // Adjust for annual discount if applicable
+                if (currentBillingCycle === "annual" && planId !== "rapid_pass") {
+                    if (planId === "zendoc_pro") finalPrice = currentCurrency === "INR" ? "199" : "5.75";
+                    if (planId === "zen_suite") finalPrice = currentCurrency === "INR" ? "415" : "10.75";
+                }
+
+                selectedPlan = {
+                    id: planId,
+                    title: title,
+                    price: finalPrice,
+                    currency: currentCurrency,
+                    period: period
+                };
+
+                if (checkoutPlanTitle) checkoutPlanTitle.textContent = title;
+                if (checkoutPriceDisplay) checkoutPriceDisplay.textContent = `${finalSymbol}${finalPrice}`;
+                if (checkoutBillingPeriod) checkoutBillingPeriod.textContent = ` / ${period}${currentBillingCycle === 'annual' && planId !== 'rapid_pass' ? ' (Annual)' : ''}`;
+
+                openModal(checkoutModal);
+            });
+        });
+
+        // Payment Method Tabs
+        function switchPayMethod(method) {
+            [payMethodUpi, payMethodCard, payMethodNetbanking].forEach(b => b?.classList.remove('active'));
+            [upiPaymentView, cardPaymentView, netbankingPaymentView].forEach(v => v?.classList.add('hidden'));
+
+            if (method === 'upi') {
+                payMethodUpi?.classList.add('active');
+                upiPaymentView?.classList.remove('hidden');
+            } else if (method === 'card') {
+                payMethodCard?.classList.add('active');
+                cardPaymentView?.classList.remove('hidden');
+            } else if (method === 'netbanking') {
+                payMethodNetbanking?.classList.add('active');
+                netbankingPaymentView?.classList.remove('hidden');
+            }
+        }
+
+        if (payMethodUpi) payMethodUpi.addEventListener('click', () => switchPayMethod('upi'));
+        if (payMethodCard) payMethodCard.addEventListener('click', () => switchPayMethod('card'));
+        if (payMethodNetbanking) payMethodNetbanking.addEventListener('click', () => switchPayMethod('netbanking'));
+
+        // Confirm Payment & Plan Activation
+        if (confirmPaymentBtn) {
+            confirmPaymentBtn.addEventListener('click', () => {
+                confirmPaymentBtn.disabled = true;
+                confirmPaymentBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing...`;
+
+                setTimeout(() => {
+                    // Store active plan in localStorage
+                    localStorage.setItem('zendoc_active_plan', JSON.stringify({
+                        planId: selectedPlan.id,
+                        title: selectedPlan.title,
+                        activatedAt: new Date().toISOString(),
+                        status: 'active'
+                    }));
+
+                    alert(`🎉 Payment Successful!\n\nYour plan "${selectedPlan.title}" has been activated instantly on your account.`);
+                    closeModal(checkoutModal);
+                    confirmPaymentBtn.disabled = false;
+                    confirmPaymentBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> Complete & Activate`;
+                    
+                    // Redirect to workspace with unlocked plan
+                    window.location.href = "app.html";
+                }, 1200);
+            });
+        }
+
+        if (openEnterpriseBtn && enterpriseModal) {
+            openEnterpriseBtn.addEventListener('click', () => openModal(enterpriseModal));
+        }
+
+        // ==========================================================================
+        // 6. MOBILE NAVIGATION DRAWER TOGGLE
         // ==========================================================================
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileMenuIcon = document.getElementById('mobileMenuIcon');

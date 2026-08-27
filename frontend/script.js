@@ -107,6 +107,30 @@ logoutBtn.addEventListener('click', async () => {
     window.location.reload();
 });
 
+// Load Active Plan from localStorage
+const activePlanLabel = document.getElementById('activePlanLabel');
+const dropdownPlanStatus = document.getElementById('dropdownPlanStatus');
+const activePlanBtn = document.getElementById('activePlanBtn');
+
+function loadUserPlan() {
+    try {
+        const storedPlan = localStorage.getItem('zendoc_active_plan');
+        if (storedPlan) {
+            const plan = JSON.parse(storedPlan);
+            if (activePlanLabel) activePlanLabel.textContent = plan.title;
+            if (dropdownPlanStatus) dropdownPlanStatus.textContent = `Plan: ${plan.title}`;
+            if (activePlanBtn) {
+                activePlanBtn.style.background = 'rgba(245, 158, 11, 0.2)';
+                activePlanBtn.style.borderColor = '#F59E0B';
+                activePlanBtn.style.color = '#F59E0B';
+            }
+        }
+    } catch (e) {
+        console.warn("Could not load stored plan:", e);
+    }
+}
+loadUserPlan();
+
 // ==========================================================================
 // 2. SIDEBAR TABS & HISTORY
 // ==========================================================================
