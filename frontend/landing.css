@@ -329,6 +329,56 @@ h1, h2, h3, h4, .font-headline {
     box-shadow: 0 8px 25px rgba(71, 101, 80, 0.35);
 }
 
+/* THEME TOGGLE BUTTON */
+.theme-toggle-btn {
+    background: var(--surface-bright, #FFFFFF);
+    border: 1px solid rgba(162, 188, 168, 0.45);
+    color: var(--slate-deep);
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    font-family: 'IBM Plex Sans', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+}
+
+.theme-toggle-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(71, 101, 80, 0.15);
+}
+
+.theme-toggle-btn i {
+    font-size: 0.95rem;
+    transition: transform 0.3s ease, color 0.2s ease;
+}
+
+.theme-toggle-btn:hover i {
+    transform: rotate(15deg);
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.3);
+    color: #F8FAFC;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover {
+    background: #192520;
+    border-color: var(--primary-fixed-dim);
+    color: var(--primary-fixed);
+}
+
 /* Google Sign-In Button */
 .google-auth-btn {
     background: var(--surface-bright, #FFFFFF);
@@ -347,6 +397,7 @@ h1, h2, h3, h4, .font-headline {
     gap: 8px;
     transition: all 0.2s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    white-space: nowrap;
 }
 
 .google-auth-btn img {
@@ -359,6 +410,31 @@ h1, h2, h3, h4, .font-headline {
     border-color: var(--primary);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(71, 101, 80, 0.15);
+}
+
+[data-theme="dark"] .google-auth-btn {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.3);
+    color: #F8FAFC;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .google-auth-btn:hover {
+    background: #192520;
+    border-color: var(--primary-fixed-dim);
+    color: var(--primary-fixed);
+}
+
+[data-theme="dark"] .parent-portal-link {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.3);
+    color: #CBD5E1;
+}
+
+[data-theme="dark"] .parent-portal-link:hover {
+    background: #192520;
+    border-color: var(--primary-fixed-dim);
+    color: var(--primary-fixed);
 }
 
 /* User Profile */
@@ -713,6 +789,19 @@ h1, h2, h3, h4, .font-headline {
     transform: translateY(-2px);
 }
 
+[data-theme="dark"] .secondary-hero-btn {
+    background: rgba(20, 28, 24, 0.85);
+    color: #F8FAFC;
+    border-color: rgba(162, 188, 168, 0.35);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .secondary-hero-btn:hover {
+    background: rgba(26, 37, 32, 0.95);
+    border-color: var(--primary-fixed-dim);
+    color: var(--primary-fixed);
+}
+
 .hero-tech-row {
     display: flex;
     justify-content: center;
@@ -734,9 +823,31 @@ h1, h2, h3, h4, .font-headline {
     align-items: center;
     gap: 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease;
 }
+
 .tech-tag i {
     color: var(--primary);
+}
+
+[data-theme="dark"] .tech-tag {
+    background: rgba(20, 28, 24, 0.85);
+    border-color: rgba(162, 188, 168, 0.3);
+    color: #E2E8F0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .tech-tag i {
+    color: #A2BCA8;
+}
+
+[data-theme="dark"] .hero-badge {
+    background: rgba(71, 101, 80, 0.25);
+    border-color: rgba(162, 188, 168, 0.35);
+}
+
+[data-theme="dark"] .hero-badge .badge-text {
+    color: #C9EBD0;
 }
 
 /* ==============================================================================
@@ -1027,6 +1138,103 @@ h1, h2, h3, h4, .font-headline {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 600;
     color: var(--slate-deep);
+}
+
+/* DARK MODE VISUALIZER OVERRIDES */
+[data-theme="dark"] .hero-visualizer-card {
+    background: rgba(20, 28, 24, 0.95);
+    border-color: rgba(162, 188, 168, 0.25);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 0 0 30px rgba(71, 101, 80, 0.15);
+}
+
+[data-theme="dark"] .visualizer-header {
+    background: #101714;
+    border-bottom-color: rgba(162, 188, 168, 0.2);
+}
+
+[data-theme="dark"] .mock-pdf-page {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.25);
+}
+
+[data-theme="dark"] .mock-line {
+    background: #202F28;
+}
+
+[data-theme="dark"] .mock-line.highlighted-line {
+    background: rgba(71, 101, 80, 0.25);
+    border-color: var(--primary-fixed-dim);
+}
+
+[data-theme="dark"] .table-row span {
+    background: #202F28;
+}
+
+[data-theme="dark"] .mock-chat-bubble {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.25);
+}
+
+[data-theme="dark"] .chat-user-query {
+    background: rgba(71, 101, 80, 0.25);
+    color: var(--primary-fixed);
+}
+
+[data-theme="dark"] .chat-ai-response {
+    background: #101714;
+    border-color: rgba(162, 188, 168, 0.2);
+}
+
+[data-theme="dark"] .mock-crop-container {
+    background: #101714;
+    border-color: rgba(71, 101, 80, 0.4);
+}
+
+[data-theme="dark"] .mock-crop-image {
+    background: rgba(71, 101, 80, 0.15);
+}
+
+[data-theme="dark"] .sandbox-window {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.25);
+}
+
+[data-theme="dark"] .sandbox-left {
+    background: #101714;
+    border-color: rgba(162, 188, 168, 0.2);
+}
+
+[data-theme="dark"] .sandbox-right {
+    background: #101714;
+    border-color: rgba(162, 188, 168, 0.2);
+}
+
+[data-theme="dark"] .quick-btn {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.25);
+    color: #E2E8F0;
+}
+
+[data-theme="dark"] .quick-btn:hover,
+[data-theme="dark"] .quick-btn.active {
+    background: rgba(71, 101, 80, 0.3);
+    border-color: var(--primary-fixed-dim);
+    color: #FFFFFF;
+}
+
+[data-theme="dark"] .feature-card {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.25);
+}
+
+[data-theme="dark"] .arch-diagram-card {
+    background: #141C18;
+    border-color: rgba(162, 188, 168, 0.25);
+}
+
+[data-theme="dark"] .arch-node {
+    background: #101714;
+    border-color: rgba(162, 188, 168, 0.2);
 }
 
 /* ==============================================================================
