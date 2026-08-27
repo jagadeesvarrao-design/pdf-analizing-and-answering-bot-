@@ -645,32 +645,55 @@ function resetChatUI() {
 }
 
 const purgeDataBtn = document.getElementById('purgeDataBtn');
+const purgeExplainModal = document.getElementById('purgeExplainModal');
+const closePurgeModalBtn = document.getElementById('closePurgeModalBtn');
+const cancelPurgeBtn = document.getElementById('cancelPurgeBtn');
+const confirmPurgeBtn = document.getElementById('confirmPurgeBtn');
 
-if (purgeDataBtn) {
+if (purgeDataBtn && purgeExplainModal) {
     purgeDataBtn.addEventListener('click', () => {
-        showConfirmDialog({
-            title: "DPDP Act Right to Erasure",
-            subtitle: "Permanently Purge & Erase Document Data?",
-            desc: "This will permanently erase in-memory vectors, temporary files, and active session history in compliance with Digital Personal Data Protection Act, 2023.",
-            icon: "fa-shield-slash",
-            onConfirm: async () => {
-                try {
-                    await fetch(`${API_BASE}/api/session/clear`, { method: 'POST' });
-                } catch (e) {
-                    console.warn("Backend session purge error:", e);
-                }
-                if (currentUser && currentSessionId) {
-                    try {
-                        await deleteSessionFromFirestore(currentUser.uid, currentSessionId);
-                        loadHistoryList();
-                    } catch (e) {
-                        console.warn(e);
-                    }
-                }
-                resetChatUI();
-                showToast("Document vectors and session data permanently erased.");
+        purgeExplainModal.classList.add('active');
+    });
+}
+
+if (closePurgeModalBtn) {
+    closePurgeModalBtn.addEventListener('click', () => {
+        if (purgeExplainModal) purgeExplainModal.classList.remove('active');
+    });
+}
+
+if (cancelPurgeBtn) {
+    cancelPurgeBtn.addEventListener('click', () => {
+        if (purgeExplainModal) purgeExplainModal.classList.remove('active');
+    });
+}
+
+if (purgeExplainModal) {
+    purgeExplainModal.addEventListener('click', (e) => {
+        if (e.target === purgeExplainModal) purgeExplainModal.classList.remove('active');
+    });
+}
+
+if (confirmPurgeBtn) {
+    confirmPurgeBtn.addEventListener('click', async () => {
+        if (purgeExplainModal) purgeExplainModal.classList.remove('active');
+        try {
+            confirmPurgeBtn.disabled = true;
+            await fetch(`${API_BASE}/api/session/clear`, { method: 'POST' });
+        } catch (e) {
+            console.warn("Backend session purge error:", e);
+        }
+        if (currentUser && currentSessionId) {
+            try {
+                await deleteSessionFromFirestore(currentUser.uid, currentSessionId);
+                loadHistoryList();
+            } catch (e) {
+                console.warn(e);
             }
-        });
+        }
+        resetChatUI();
+        confirmPurgeBtn.disabled = false;
+        showToast("All document vectors, temporary files, and session history permanently erased.", "success");
     });
 }
 
