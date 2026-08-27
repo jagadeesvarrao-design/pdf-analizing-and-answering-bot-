@@ -902,6 +902,9 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    margin-top: 4px;
+}
+
 .chat-header-actions {
     display: flex;
     align-items: center;
