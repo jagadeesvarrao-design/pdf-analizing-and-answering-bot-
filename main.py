@@ -44,11 +44,25 @@ ALLOWED_MIME_TYPES = {
 }
 
 # ==============================================================================
-# 1. SECURITY HEADERS MIDDLEWARE (Industry Best-Practice)
+# 1. CORS POLICY CONFIGURATION (Universal Origin & Preflight Support)
+# ==============================================================================
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
+
+# ==============================================================================
+# 2. SECURITY HEADERS MIDDLEWARE (Industry Best-Practice)
 # ==============================================================================
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
     """Applies strict OWASP security headers to every HTTP response."""
+    if request.method == "OPTIONS":
+        return await call_next(request)
     response: Response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
@@ -56,23 +70,14 @@ async def add_security_headers(request: Request, call_next):
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
-    response.headers["Content-Security-Policy"] = (
-        "default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; "
-        "script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com; "
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
-        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; "
-        "img-src 'self' data: blob: https:; "
-        "connect-src 'self' https://generativelanguage.googleapis.com https://identitytoolkit.googleapis.com https://firestore.googleapis.com https:; "
-        "frame-ancestors 'none';"
-    )
     return response
 
 # ==============================================================================
-# 2. IN-MEMORY RATE LIMITING (DoS & Brute-Force Prevention)
+# 3. IN-MEMORY RATE LIMITING (DoS & Brute-Force Prevention)
 # ==============================================================================
 class SimpleRateLimiter:
     """Sliding-window IP rate limiter without external Redis dependency."""
-    def __init__(self, requests_per_minute: int = 45):
+    def __init__(self, requests_per_minute: int = 60):
         self.requests_per_minute = requests_per_minute
         self.requests: Dict[str, List[float]] = defaultdict(list)
 
@@ -87,14 +92,15 @@ class SimpleRateLimiter:
         self.requests[client_ip].append(now)
         return True
 
-rate_limiter = SimpleRateLimiter(requests_per_minute=45)
+rate_limiter = SimpleRateLimiter(requests_per_minute=60)
 
 @app.middleware("http")
 async def rate_limiting_middleware(request: Request, call_next):
-    """Enforces rate limits on all /api/ endpoints."""
+    """Enforces rate limits on all /api/ endpoints while allowing preflight OPTIONS."""
+    if request.method == "OPTIONS":
+        return await call_next(request)
     if request.url.path.startswith("/api/"):
         client_ip = request.client.host if request.client else "unknown"
-        # Forwarded-For support behind Cloud Run load balancer
         forwarded_for = request.headers.get("x-forwarded-for")
         if forwarded_for:
             client_ip = forwarded_for.split(",")[0].strip()
@@ -111,19 +117,10 @@ async def rate_limiting_middleware(request: Request, call_next):
             )
     return await call_next(request)
 
-# ==============================================================================
-# 3. CORS POLICY CONFIGURATION
-# ==============================================================================
-allowed_origins_env = os.environ.get("ALLOWED_ORIGINS", "*")
-allowed_origins = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=allowed_origins if allowed_origins else ["*"],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
-)
+@app.options("/{full_path:path}")
+async def options_preflight_handler(full_path: str):
+    """Global OPTIONS preflight fallback handler returning 200 OK."""
+    return Response(status_code=200)
 
 # ==============================================================================
 # 4. SUBSCRIPTION & TIER QUOTA MANAGEMENT ENGINE
