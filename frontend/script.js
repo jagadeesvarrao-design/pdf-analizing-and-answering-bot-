@@ -597,55 +597,49 @@ function resetUploadUI() {
 
 function renderIndexedWorkspace(docName) {
     chatWindow.innerHTML = `
-        <div class="workspace-hero-card" id="workspaceHero">
-            <div class="hero-status-pill">
+        <div class="workspace-hero-clean" id="workspaceHero">
+            <div class="hero-brand-badge active-doc-badge">
                 <span class="pulse-dot"></span>
                 <span>Document Grounding Active</span>
             </div>
-            <div class="hero-doc-badge">
-                <i class="fa-solid fa-file-pdf hero-doc-icon"></i>
-                <div class="hero-doc-details">
-                    <div class="hero-doc-title">${escapeHTML(docName)}</div>
-                    <div class="hero-doc-meta">
-                        <span><i class="fa-solid fa-layer-group"></i> FAISS In-Memory Vectors</span>
-                        <span>•</span>
-                        <span><i class="fa-solid fa-wand-magic-sparkles"></i> Gemini 2.5 Flash</span>
-                    </div>
-                </div>
+            <div class="hero-active-doc-pill">
+                <i class="fa-solid fa-file-pdf" style="color:var(--primary);"></i>
+                <span>${escapeHTML(docName)}</span>
+                <span class="badge-gemini" style="font-size:0.72rem; padding:2px 8px; border-radius:6px; font-weight:700;"><i class="fa-solid fa-wand-magic-sparkles"></i> Gemini 2.5</span>
             </div>
-            <div class="hero-doc-prompt-heading"><i class="fa-solid fa-lightbulb"></i> Choose a starter prompt or ask a question below:</div>
-            <div class="hero-prompts-grid">
-                <button class="hero-prompt-card prompt-chip" data-prompt="Summarize this document in 5 key executive takeaways.">
-                    <div class="prompt-icon-box"><i class="fa-solid fa-list-check"></i></div>
-                    <div class="prompt-card-text">
-                        <div class="prompt-card-title">Executive Summary</div>
-                        <div class="prompt-card-desc">5 key takeaways & conclusions</div>
+            <p class="hero-main-subtitle" style="margin-bottom: 16px;">Ask any question about your document or choose a starter analysis prompt below:</p>
+            <div class="hero-capabilities-grid">
+                <button class="hero-cap-card prompt-chip clickable" data-prompt="Summarize this document in 5 key executive takeaways.">
+                    <div class="cap-icon-box"><i class="fa-solid fa-list-check"></i></div>
+                    <div class="cap-card-info">
+                        <div class="cap-card-name">Executive Summary</div>
+                        <div class="cap-card-hint">5 key takeaways & conclusions</div>
                     </div>
-                    <i class="fa-solid fa-arrow-right prompt-arrow"></i>
+                    <i class="fa-solid fa-arrow-right cap-arrow"></i>
                 </button>
-                <button class="hero-prompt-card prompt-chip" data-prompt="Extract all numerical data, statistics, and financial metrics from this document.">
-                    <div class="prompt-icon-box"><i class="fa-solid fa-chart-column"></i></div>
-                    <div class="prompt-card-text">
-                        <div class="prompt-card-title">Data & Metrics</div>
-                        <div class="prompt-card-desc">Financial statistics, numbers & KPIs</div>
+                <button class="hero-cap-card prompt-chip clickable" data-prompt="Extract all numerical data, statistics, and financial metrics from this document.">
+                    <div class="cap-icon-box"><i class="fa-solid fa-chart-column"></i></div>
+                    <div class="cap-card-info">
+                        <div class="cap-card-name">Data & Metrics</div>
+                        <div class="cap-card-hint">Financial stats, numbers & KPIs</div>
                     </div>
-                    <i class="fa-solid fa-arrow-right prompt-arrow"></i>
+                    <i class="fa-solid fa-arrow-right cap-arrow"></i>
                 </button>
-                <button class="hero-prompt-card prompt-chip" data-prompt="What are the critical action items, risks, and recommendations outlined in this document?">
-                    <div class="prompt-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    <div class="prompt-card-text">
-                        <div class="prompt-card-title">Risks & Action Items</div>
-                        <div class="prompt-card-desc">Liabilities, obligations & next steps</div>
+                <button class="hero-cap-card prompt-chip clickable" data-prompt="What are the critical action items, risks, and recommendations outlined in this document?">
+                    <div class="cap-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="cap-card-info">
+                        <div class="cap-card-name">Risks & Action Items</div>
+                        <div class="cap-card-hint">Liabilities, obligations & next steps</div>
                     </div>
-                    <i class="fa-solid fa-arrow-right prompt-arrow"></i>
+                    <i class="fa-solid fa-arrow-right cap-arrow"></i>
                 </button>
-                <button class="hero-prompt-card prompt-chip" data-prompt="List the main entities, organizations, and defined terms mentioned in this document.">
-                    <div class="prompt-icon-box"><i class="fa-solid fa-tags"></i></div>
-                    <div class="prompt-card-text">
-                        <div class="prompt-card-title">Entities & Terms</div>
-                        <div class="prompt-card-desc">Organizations, definitions & stakeholders</div>
+                <button class="hero-cap-card prompt-chip clickable" data-prompt="List the main entities, organizations, and defined terms mentioned in this document.">
+                    <div class="cap-icon-box"><i class="fa-solid fa-tags"></i></div>
+                    <div class="cap-card-info">
+                        <div class="cap-card-name">Entities & Terms</div>
+                        <div class="cap-card-hint">Organizations & defined terms</div>
                     </div>
-                    <i class="fa-solid fa-arrow-right prompt-arrow"></i>
+                    <i class="fa-solid fa-arrow-right cap-arrow"></i>
                 </button>
             </div>
         </div>
@@ -654,48 +648,41 @@ function renderIndexedWorkspace(docName) {
 
 function renderWelcomeState(customMessage = null) {
     chatWindow.innerHTML = `
-        <div class="workspace-hero-card">
-            <div class="hero-status-pill" style="background: rgba(71,101,80,0.12); color: var(--primary); border-color: rgba(71,101,80,0.25);">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                <span>Enterprise Document Intelligence</span>
+        <div class="workspace-hero-clean" id="workspaceHero">
+            <div class="hero-brand-badge">
+                <span class="pulse-dot"></span>
+                <span>ZenDoc AI • Document Intelligence</span>
             </div>
-            <div class="hero-doc-badge">
-                <i class="fa-solid fa-file-arrow-up hero-doc-icon"></i>
-                <div class="hero-doc-details">
-                    <div class="hero-doc-title">Ready for Ingestion</div>
-                    <div class="hero-doc-meta">
-                        <span>${customMessage || 'Upload any PDF, Word document, or Text file on the left.'}</span>
+            <h1 class="hero-main-title">What would you like to analyze?</h1>
+            <p class="hero-main-subtitle">${customMessage || 'Upload any PDF, Word document, or Text file on the left to start multi-turn reasoning with visual page citations.'}</p>
+            
+            <div class="hero-capabilities-grid">
+                <div class="hero-cap-card">
+                    <div class="cap-icon-box"><i class="fa-solid fa-list-check"></i></div>
+                    <div class="cap-card-info">
+                        <div class="cap-card-name">Executive Summaries</div>
+                        <div class="cap-card-hint">Key takeaways & conclusions</div>
                     </div>
                 </div>
-            </div>
-            <div class="hero-doc-prompt-heading"><i class="fa-solid fa-sparkles"></i> Example Reasoning Workflows:</div>
-            <div class="hero-prompts-grid">
-                <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
-                    <div class="prompt-icon-box"><i class="fa-solid fa-list-check"></i></div>
-                    <div class="prompt-card-text">
-                        <div class="prompt-card-title">Executive Summaries</div>
-                        <div class="prompt-card-desc">Auto-extract key findings & synthesis</div>
+                <div class="hero-cap-card">
+                    <div class="cap-icon-box"><i class="fa-solid fa-chart-column"></i></div>
+                    <div class="cap-card-info">
+                        <div class="cap-card-name">Financial Tables & KPIs</div>
+                        <div class="cap-card-hint">Balance sheets, P&L & stats</div>
                     </div>
                 </div>
-                <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
-                    <div class="prompt-icon-box"><i class="fa-solid fa-chart-column"></i></div>
-                    <div class="prompt-card-text">
-                        <div class="prompt-card-title">Financial Table Extraction</div>
-                        <div class="prompt-card-desc">Balance sheets, P&L & numerical stats</div>
+                <div class="hero-cap-card">
+                    <div class="cap-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="cap-card-info">
+                        <div class="cap-card-name">Audit & Risk Analysis</div>
+                        <div class="cap-card-hint">Liabilities & action items</div>
                     </div>
                 </div>
-                <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
-                    <div class="prompt-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    <div class="prompt-card-text">
-                        <div class="prompt-card-title">Audit & Risk Analysis</div>
-                        <div class="prompt-card-desc">Contractual liabilities & action items</div>
-                    </div>
-                </div>
-                <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
-                    <div class="prompt-icon-box"><i class="fa-solid fa-file-invoice"></i></div>
-                    <div class="prompt-card-text">
-                        <div class="prompt-card-title">Visual Proof Grounding</div>
-                        <div class="prompt-card-desc">Every answer cited with original page crops</div>
+                <div class="hero-cap-card">
+                    <div class="cap-icon-box"><i class="fa-solid fa-file-invoice"></i></div>
+                    <div class="cap-card-info">
+                        <div class="cap-card-name">Visual Proof Grounding</div>
+                        <div class="cap-card-hint">Cited with original page crops</div>
                     </div>
                 </div>
             </div>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZenDoc AI - Enterprise Document Intelligence | Aneevarp Solutions</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📄</text></svg>">
-    <link rel="stylesheet" href="style.css?v=2.2.0">
+    <link rel="stylesheet" href="style.css?v=3.1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Manrope:wght@600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -144,6 +144,15 @@
                     </button>
                 </div>
 
+                <!-- Engine Highlights Feature Box -->
+                <div class="sidebar-feature-box">
+                    <div class="feature-box-title"><i class="fa-solid fa-bolt"></i> Engine Highlights</div>
+                    <div class="feature-item"><i class="fa-solid fa-circle-check"></i> <span>Google Gemini 2.5 Flash</span></div>
+                    <div class="feature-item"><i class="fa-solid fa-circle-check"></i> <span>In-Memory FAISS Vector Privacy</span></div>
+                    <div class="feature-item"><i class="fa-solid fa-circle-check"></i> <span>Automatic Balance Sheet & OCR</span></div>
+                    <div class="feature-item"><i class="fa-solid fa-circle-check"></i> <span>DPDP Act 2023 Sec 12 Zero-Retention</span></div>
+                </div>
+
                 <div id="status-indicator" class="status-hidden">
                     <div class="spinner"></div>
                     <span id="status-text">Embedding with Gemini...</span>
@@ -198,48 +207,41 @@
 
             <!-- Chat Window Stream -->
             <div class="chat-window" id="chatWindow">
-                <div class="workspace-hero-card">
-                    <div class="hero-status-pill" style="background: rgba(71,101,80,0.12); color: var(--primary); border-color: rgba(71,101,80,0.25);">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span>Enterprise Document Intelligence</span>
+                <div class="workspace-hero-clean" id="workspaceHero">
+                    <div class="hero-brand-badge">
+                        <span class="pulse-dot"></span>
+                        <span>ZenDoc AI • Document Intelligence</span>
                     </div>
-                    <div class="hero-doc-badge">
-                        <i class="fa-solid fa-file-arrow-up hero-doc-icon"></i>
-                        <div class="hero-doc-details">
-                            <div class="hero-doc-title">Ready for Ingestion</div>
-                            <div class="hero-doc-meta">
-                                <span>Upload any PDF, Word document, or Text file on the left.</span>
+                    <h1 class="hero-main-title">What would you like to analyze?</h1>
+                    <p class="hero-main-subtitle">Upload any PDF, Word document, or Text file on the left to start multi-turn reasoning with visual page citations.</p>
+                    
+                    <div class="hero-capabilities-grid">
+                        <div class="hero-cap-card">
+                            <div class="cap-icon-box"><i class="fa-solid fa-list-check"></i></div>
+                            <div class="cap-card-info">
+                                <div class="cap-card-name">Executive Summaries</div>
+                                <div class="cap-card-hint">Key takeaways & conclusions</div>
                             </div>
                         </div>
-                    </div>
-                    <div class="hero-doc-prompt-heading"><i class="fa-solid fa-sparkles"></i> Example Reasoning Workflows:</div>
-                    <div class="hero-prompts-grid">
-                        <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
-                            <div class="prompt-icon-box"><i class="fa-solid fa-list-check"></i></div>
-                            <div class="prompt-card-text">
-                                <div class="prompt-card-title">Executive Summaries</div>
-                                <div class="prompt-card-desc">Auto-extract key findings & synthesis</div>
+                        <div class="hero-cap-card">
+                            <div class="cap-icon-box"><i class="fa-solid fa-chart-column"></i></div>
+                            <div class="cap-card-info">
+                                <div class="cap-card-name">Financial Tables & KPIs</div>
+                                <div class="cap-card-hint">Balance sheets, P&L & stats</div>
                             </div>
                         </div>
-                        <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
-                            <div class="prompt-icon-box"><i class="fa-solid fa-chart-column"></i></div>
-                            <div class="prompt-card-text">
-                                <div class="prompt-card-title">Financial Table Extraction</div>
-                                <div class="prompt-card-desc">Balance sheets, P&L & numerical stats</div>
+                        <div class="hero-cap-card">
+                            <div class="cap-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="cap-card-info">
+                                <div class="cap-card-name">Audit & Risk Analysis</div>
+                                <div class="cap-card-hint">Liabilities & action items</div>
                             </div>
                         </div>
-                        <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
-                            <div class="prompt-icon-box"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                            <div class="prompt-card-text">
-                                <div class="prompt-card-title">Audit & Risk Analysis</div>
-                                <div class="prompt-card-desc">Contractual liabilities & action items</div>
-                            </div>
-                        </div>
-                        <div class="hero-prompt-card" style="cursor:default; opacity:0.85;">
-                            <div class="prompt-icon-box"><i class="fa-solid fa-file-invoice"></i></div>
-                            <div class="prompt-card-text">
-                                <div class="prompt-card-title">Visual Proof Grounding</div>
-                                <div class="prompt-card-desc">Every answer cited with original page crops</div>
+                        <div class="hero-cap-card">
+                            <div class="cap-icon-box"><i class="fa-solid fa-file-invoice"></i></div>
+                            <div class="cap-card-info">
+                                <div class="cap-card-name">Visual Proof Grounding</div>
+                                <div class="cap-card-hint">Cited with original page crops</div>
                             </div>
                         </div>
                     </div>
@@ -375,6 +377,6 @@
 
     <!-- Scripts -->
     <script type="module" src="firebase-config.js"></script>
-    <script type="module" src="script.js"></script>
+    <script type="module" src="script.js?v=3.1.0"></script>
 </body>
 </html>
