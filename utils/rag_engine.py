@@ -127,21 +127,28 @@ def process_documents(file_paths, max_pages: int = 150):
             
     return documents
 
+GLOBAL_VECTOR_STORE = None
+
 def get_embeddings_model():
-    """Initializes Google GenAI Embeddings with automatic fallback."""
+    """Initializes Google GenAI Embeddings (text-embedding-004 / embedding-001)."""
     api_key = get_api_key()
     if not api_key:
         raise ValueError("Google Gemini API Key is missing. Please configure GEMINI_API_KEY in environment variables.")
     try:
-        return GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-2", google_api_key=api_key)
+        return GoogleGenerativeAIEmbeddings(model="models/text-embedding-004", google_api_key=api_key)
     except Exception:
-        return GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001", google_api_key=api_key)
+        return GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
 
 def get_vector_store(documents):
     """Embeds documents into an in-memory & persisted FAISS vector index."""
+    global GLOBAL_VECTOR_STORE
     embeddings = get_embeddings_model()
     vector_store = FAISS.from_documents(documents, embedding=embeddings)
-    vector_store.save_local("./faiss_index")
+    GLOBAL_VECTOR_STORE = vector_store
+    try:
+        vector_store.save_local("./faiss_index")
+    except Exception as e:
+        print(f"Warning saving local faiss index: {e}")
     return vector_store
 
 def get_conversational_chain():
@@ -240,7 +247,20 @@ def get_base64_image(pdf_path, page_num, quote=""):
 
 def process_user_query(user_question):
     """Performs semantic vector search in FAISS and invokes Gemini conversational reasoning."""
-    if not os.path.exists("./faiss_index"):
+    global GLOBAL_VECTOR_STORE
+    db = GLOBAL_VECTOR_STORE
+    
+    if db is None:
+        if os.path.exists("./faiss_index"):
+            try:
+                embeddings = get_embeddings_model()
+                db = FAISS.load_local("./faiss_index", embeddings, allow_dangerous_deserialization=True)
+                GLOBAL_VECTOR_STORE = db
+            except Exception as e:
+                print(f"Error loading faiss_index from disk: {e}")
+                db = None
+                
+    if db is None:
         return {
             "answer": "<b>No active document found.</b> Please upload a PDF, Word, or Text document first.",
             "source_image": None,
@@ -248,9 +268,6 @@ def process_user_query(user_question):
             "file_type": None,
             "filename": None
         }
-        
-    embeddings = get_embeddings_model()
-    db = FAISS.load_local("./faiss_index", embeddings, allow_dangerous_deserialization=True)
     
     # Dynamic Top-K chunk retrieval: Expand for broad / analytical questions
     q_lower = user_question.lower()

@@ -789,8 +789,8 @@ async function sendMessage() {
     chatInput.disabled = true;
     sendBtn.disabled = true;
 
-    // Remove welcome / hero card when first message is sent
-    const welcomeCards = chatWindow.querySelectorAll('.workspace-hero-card');
+    // Remove welcome / hero clean card when first message is sent
+    const welcomeCards = chatWindow.querySelectorAll('.workspace-hero-clean, .workspace-hero-card, #workspaceHero');
     welcomeCards.forEach(c => c.remove());
 
     // Render User Message
@@ -860,6 +860,7 @@ async function sendMessage() {
             </div>
         `, null, null, null);
     } finally {
+        isProcessing = false;
         chatInput.disabled = false;
         sendBtn.disabled = false;
         chatInput.focus();
