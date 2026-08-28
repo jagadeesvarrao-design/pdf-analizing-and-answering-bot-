@@ -246,23 +246,37 @@ def get_base64_image(pdf_path, page_num, quote=""):
         return None
 
 def process_user_query(user_question):
-    """Performs semantic vector search in FAISS and invokes Gemini conversational reasoning."""
+    """Performs semantic vector search in FAISS and invokes Gemini conversational reasoning with self-healing recovery."""
     global GLOBAL_VECTOR_STORE
     db = GLOBAL_VECTOR_STORE
     
-    if db is None:
-        if os.path.exists("./faiss_index"):
+    # 1. Try loading from persisted FAISS index
+    if db is None and os.path.exists("./faiss_index"):
+        try:
+            embeddings = get_embeddings_model()
+            db = FAISS.load_local("./faiss_index", embeddings, allow_dangerous_deserialization=True)
+            GLOBAL_VECTOR_STORE = db
+        except Exception as e:
+            print(f"Error loading faiss_index from disk: {e}")
+            db = None
+            
+    # 2. Self-healing auto-recovery: If index was evicted, re-index active files from temp_pdfs on the fly
+    if db is None and os.path.exists("./temp_pdfs"):
+        files = [os.path.join("./temp_pdfs", f) for f in os.listdir("./temp_pdfs") if os.path.isfile(os.path.join("./temp_pdfs", f))]
+        if files:
             try:
-                embeddings = get_embeddings_model()
-                db = FAISS.load_local("./faiss_index", embeddings, allow_dangerous_deserialization=True)
-                GLOBAL_VECTOR_STORE = db
+                print(f"Self-healing: Re-indexing {len(files)} files from temp_pdfs...")
+                docs = process_documents(files)
+                if docs:
+                    db = get_vector_store(docs)
+                    GLOBAL_VECTOR_STORE = db
             except Exception as e:
-                print(f"Error loading faiss_index from disk: {e}")
+                print(f"Self-healing re-index error: {e}")
                 db = None
                 
     if db is None:
         return {
-            "answer": "<b>No active document found.</b> Please upload a PDF, Word, or Text document first.",
+            "answer": "<b>No active document found in session.</b> Please upload a PDF, Word, or Text document on the left to start reasoning.",
             "source_image": None,
             "page": None,
             "file_type": None,
