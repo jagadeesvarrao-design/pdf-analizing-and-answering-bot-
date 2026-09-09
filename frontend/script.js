@@ -131,7 +131,7 @@ function getActivePlan() {
     } catch (e) {
         console.warn("Error reading stored plan:", e);
     }
-    return { planId: 'zendoc_pro', title: 'ZenDoc Pro (Unlocked)' };
+    return { planId: 'free', title: 'Free Starter' };
 }
 
 function showPaywall(title, desc) {
@@ -143,6 +143,16 @@ function showPaywall(title, desc) {
 if (closePaywallBtn) {
     closePaywallBtn.addEventListener('click', () => {
         if (upgradePaywallModal) upgradePaywallModal.classList.remove('active');
+    });
+}
+
+if (activePlanBtn) {
+    activePlanBtn.addEventListener('click', () => {
+        const plan = getActivePlan();
+        showPaywall(
+            `Active Plan: ${plan.title}`,
+            "Upgrade your plan or activate an instant 24-Hour Rapid Pass to unlock higher page limits, multi-document cross-comparison, and dossier exports."
+        );
     });
 }
 
