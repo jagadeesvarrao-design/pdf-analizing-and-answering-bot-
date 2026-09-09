@@ -131,7 +131,7 @@ function getActivePlan() {
     } catch (e) {
         console.warn("Error reading stored plan:", e);
     }
-    return { planId: 'free', title: 'Free Starter' };
+    return { planId: 'zendoc_pro', title: 'ZenDoc Pro (Unlocked)' };
 }
 
 function showPaywall(title, desc) {

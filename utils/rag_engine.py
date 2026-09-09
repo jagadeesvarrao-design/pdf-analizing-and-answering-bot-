@@ -41,6 +41,29 @@ def sanitize_html_output(raw_html: str) -> str:
     cleaned = re.sub(r'javascript\s*:', '', cleaned, flags=re.IGNORECASE)
     return cleaned
 
+def perform_gemini_ocr_on_page(page) -> str:
+    """Performs high-accuracy multimodal OCR on scanned or canvas-rendered PDF pages."""
+    try:
+        api_key = get_api_key()
+        if not api_key:
+            return ""
+        pix = page.get_pixmap(dpi=150)
+        img_bytes = pix.tobytes("png")
+        from google import genai
+        from google.genai import types
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model='models/gemini-3.6-flash',
+            contents=[
+                types.Part.from_bytes(data=img_bytes, mime_type='image/png'),
+                'Extract all text, headers, sections, bullet points, links, numbers, and details from this document page verbatim. Maintain full structural accuracy.'
+            ]
+        )
+        return response.text.strip() if response and response.text else ""
+    except Exception as e:
+        print(f"Gemini OCR fallback error: {e}")
+        return ""
+
 def process_documents(file_paths, max_pages: int = 150):
     """
     Extracts text and embedded links from PDFs, Word docs, and text files.
@@ -71,6 +94,13 @@ def process_documents(file_paths, max_pages: int = 150):
                     blocks = page.get_text("blocks")
                     page_text_blocks = [b[4].strip() for b in blocks if len(b) > 4 and b[4].strip()]
                     text = "\n\n".join(page_text_blocks) if page_text_blocks else page.get_text("text")
+                    
+                    # If page has no selectable text stream (scanned/canvas image PDF), trigger Gemini OCR
+                    if not text or len(text.strip()) < 25:
+                        print(f"Image/Scanned page detected ({os.path.basename(file_path)} p.{page_num + 1}). Performing Gemini OCR...")
+                        ocr_text = perform_gemini_ocr_on_page(page)
+                        if ocr_text:
+                            text = ocr_text
                     
                     # Extract embedded hyperlinks so Gemini can ground links
                     links = page.get_links()
@@ -130,14 +160,14 @@ def process_documents(file_paths, max_pages: int = 150):
 GLOBAL_VECTOR_STORE = None
 
 def get_embeddings_model():
-    """Initializes Google GenAI Embeddings (text-embedding-004 / embedding-001)."""
+    """Initializes Google GenAI Embeddings (gemini-embedding-001 / gemini-embedding-2)."""
     api_key = get_api_key()
     if not api_key:
         raise ValueError("Google Gemini API Key is missing. Please configure GEMINI_API_KEY in environment variables.")
     try:
-        return GoogleGenerativeAIEmbeddings(model="models/text-embedding-004", google_api_key=api_key)
+        return GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001", google_api_key=api_key)
     except Exception:
-        return GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
+        return GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-2", google_api_key=api_key)
 
 def get_vector_store(documents):
     """Embeds documents into an in-memory & persisted FAISS vector index."""
@@ -186,12 +216,20 @@ def get_conversational_chain():
     if not api_key:
         raise ValueError("Google Gemini API Key is missing. Please set GEMINI_API_KEY.")
 
-    model = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", 
-        temperature=0.2, 
-        google_api_key=api_key,
-        model_kwargs={"response_mime_type": "application/json"}
-    )
+    try:
+        model = ChatGoogleGenerativeAI(
+            model="gemini-3.6-flash", 
+            temperature=0.2, 
+            google_api_key=api_key,
+            model_kwargs={"response_mime_type": "application/json"}
+        )
+    except Exception:
+        model = ChatGoogleGenerativeAI(
+            model="gemini-flash-latest", 
+            temperature=0.2, 
+            google_api_key=api_key,
+            model_kwargs={"response_mime_type": "application/json"}
+        )
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
     return prompt | model
 
@@ -303,10 +341,20 @@ def process_user_query(user_question):
     
     response = chain.invoke({"context": context_text, "question": user_question})
     
-    # Parse JSON output safely
-    response_text = response.content.strip()
+    # Parse LLM response content safely (handles string and list of blocks)
+    raw_content = response.content
+    if isinstance(raw_content, list):
+        response_text = "".join([
+            block.get("text", "") if isinstance(block, dict) else getattr(block, "text", str(block))
+            for block in raw_content
+        ]).strip()
+    else:
+        response_text = str(raw_content).strip()
+        
     if response_text.startswith("```json"):
         response_text = response_text[7:]
+    if response_text.startswith("```"):
+        response_text = response_text[3:]
     if response_text.endswith("```"):
         response_text = response_text[:-3]
     response_text = response_text.strip()

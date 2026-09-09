@@ -127,39 +127,39 @@ async def options_preflight_handler(full_path: str):
 # ==============================================================================
 TIER_CONFIGS = {
     "free": {
-        "title": "Free Starter",
-        "max_docs_per_day": 2,
-        "max_pages_per_doc": 30,
-        "max_file_size_mb": 10,
-        "multi_doc_allowed": False,
-        "max_files_per_batch": 1,
-        "export_allowed": False
+        "title": "ZenDoc Pro (Unrestricted)",
+        "max_docs_per_day": 99999,
+        "max_pages_per_doc": 1000,
+        "max_file_size_mb": 100,
+        "multi_doc_allowed": True,
+        "max_files_per_batch": 20,
+        "export_allowed": True
     },
     "rapid_pass": {
         "title": "24-Hour Rapid Pass",
-        "max_docs_per_day": 9999,
-        "max_pages_per_doc": 150,
-        "max_file_size_mb": 25,
+        "max_docs_per_day": 99999,
+        "max_pages_per_doc": 1000,
+        "max_file_size_mb": 100,
         "multi_doc_allowed": True,
-        "max_files_per_batch": 3,
+        "max_files_per_batch": 20,
         "export_allowed": True
     },
     "zendoc_pro": {
         "title": "ZenDoc Pro",
-        "max_docs_per_day": 9999,
-        "max_pages_per_doc": 500,
-        "max_file_size_mb": 50,
+        "max_docs_per_day": 99999,
+        "max_pages_per_doc": 1000,
+        "max_file_size_mb": 100,
         "multi_doc_allowed": True,
-        "max_files_per_batch": 5,
+        "max_files_per_batch": 20,
         "export_allowed": True
     },
     "zen_suite": {
         "title": "Zen Suite Ultimate",
-        "max_docs_per_day": 9999,
-        "max_pages_per_doc": 500,
-        "max_file_size_mb": 50,
+        "max_docs_per_day": 99999,
+        "max_pages_per_doc": 1000,
+        "max_file_size_mb": 100,
         "multi_doc_allowed": True,
-        "max_files_per_batch": 5,
+        "max_files_per_batch": 20,
         "export_allowed": True
     },
     "enterprise": {

@@ -10,6 +10,7 @@ venv.bak/
 # Project Specific
 temp_pdfs/
 chroma_db/
+faiss_index/
 *.pdf
 *.docx
 *.txt
