@@ -661,10 +661,12 @@ function renderWelcomeState(customMessage = null) {
         <div class="workspace-hero-clean" id="workspaceHero">
             <div class="hero-brand-badge">
                 <span class="pulse-dot"></span>
-                <span>ZenDoc AI • Document Intelligence</span>
+                <a href="https://aneevarpsolutions.vercel.app/" target="_blank" style="color:inherit; text-decoration:none; display:inline-flex; align-items:center; gap:5px;" title="Visit Aneevarp Solutions">
+                    <span>ZenDoc AI • Flagship Product of <strong>Aneevarp Solutions</strong> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75em;"></i></span>
+                </a>
             </div>
             <h1 class="hero-main-title">What would you like to analyze?</h1>
-            <p class="hero-main-subtitle">${customMessage || 'Upload any PDF, Word document, or Text file on the left to start multi-turn reasoning with visual page citations.'}</p>
+            <p class="hero-main-subtitle">${customMessage || 'An enterprise document intelligence workspace engineered by <strong>Aneevarp Solutions</strong>. Upload any PDF, Word document, or Text file on the left to start multi-turn reasoning with visual page citations.'}</p>
             
             <div class="hero-capabilities-grid">
                 <div class="hero-cap-card">
@@ -897,7 +899,7 @@ function renderAiMessage(htmlContent, sourceImage, pageNum, fileType) {
     
     let fullHtml = `
         <div class="ai-statutory-label">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> AI-Synthesized (Gemini 2.5 Flash) • Grounded in Context
+            <i class="fa-solid fa-wand-magic-sparkles"></i> ZenDoc AI by <a href="https://aneevarpsolutions.vercel.app/" target="_blank" style="color:inherit; text-decoration:underline; font-weight:700;">Aneevarp Solutions</a> • Gemini Grounded
         </div>
         <div class="msg-content">${htmlContent}
     `;

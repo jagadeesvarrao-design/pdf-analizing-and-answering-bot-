@@ -125,6 +125,74 @@ body {
 }
 
 /* ==============================================================================
+   CORPORATE ANNOUNCEMENT RIBBON (ANEEVARP SOLUTIONS)
+   ============================================================================== */
+.corporate-announcement-bar {
+    width: 100%;
+    background: linear-gradient(90deg, #18281F 0%, #263C2E 50%, #18281F 100%);
+    color: #F8FAFC;
+    font-size: 0.76rem;
+    font-weight: 600;
+    font-family: 'IBM Plex Sans', sans-serif;
+    padding: 6px 16px;
+    border-bottom: 1px solid rgba(162, 188, 168, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 101;
+    flex-shrink: 0;
+}
+
+.announcement-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+.corp-badge {
+    background: rgba(71, 101, 80, 0.45);
+    border: 1px solid rgba(162, 188, 168, 0.45);
+    color: #C9EBD0;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.corp-text strong {
+    color: #C9EBD0;
+    font-weight: 800;
+}
+
+.corp-link {
+    color: #FBBF24;
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    transition: all 0.2s ease;
+}
+
+.corp-link:hover {
+    background: rgba(245, 158, 11, 0.3);
+    color: #FDE68A;
+    transform: translateY(-1px);
+}
+
+/* ==============================================================================
    3. TOP NAVIGATION BAR
    ============================================================================== */
 .top-navbar {
