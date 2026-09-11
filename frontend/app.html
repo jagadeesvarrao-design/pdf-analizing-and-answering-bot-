@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZenDoc AI - Enterprise Document Intelligence | Aneevarp Solutions</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📄</text></svg>">
-    <link rel="stylesheet" href="style.css?v=3.5.0">
+    <link rel="stylesheet" href="style.css?v=3.6.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500;600;700&family=Manrope:wght@600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -156,6 +156,25 @@
                         <i class="fa-solid fa-microchip"></i>
                         <span>Vectorize & Index with Gemini</span>
                     </button>
+
+                    <!-- Instant Interactive Sample Documents -->
+                    <div class="sample-docs-section">
+                        <div class="sample-docs-label"><i class="fa-solid fa-wand-magic-sparkles"></i> Or Load Sample Document:</div>
+                        <div class="sample-docs-grid">
+                            <button class="sample-doc-chip" data-sample="financial" type="button" title="Load sample financial earnings report">
+                                <i class="fa-solid fa-chart-line"></i>
+                                <span>📈 Q4 Financial Report (2026)</span>
+                            </button>
+                            <button class="sample-doc-chip" data-sample="legal" type="button" title="Load sample SaaS enterprise agreement">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                                <span>⚖️ SaaS Enterprise Agreement</span>
+                            </button>
+                            <button class="sample-doc-chip" data-sample="tech" type="button" title="Load sample AI whitepaper">
+                                <i class="fa-solid fa-robot"></i>
+                                <span>📑 AI Architecture Whitepaper</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="setup-section hidden" id="success-section">
@@ -278,11 +297,24 @@
 
             <!-- Chat Input Area -->
             <div class="chat-input-area">
-                <div class="input-wrapper">
-                    <input type="text" id="chatInput" placeholder="Ask any question about your document..." disabled>
-                    <button id="sendBtn" class="send-btn" disabled title="Send message">
-                        <i class="fa-solid fa-arrow-up"></i>
-                    </button>
+                <div class="chat-input-container-col">
+                    <div class="input-wrapper">
+                        <input type="text" id="chatInput" placeholder="Ask any question about your document..." disabled>
+                        <button id="voiceInputBtn" class="voice-input-btn" type="button" disabled title="Click to speak your question (Voice Input)">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        <button id="sendBtn" class="send-btn" disabled title="Send message">
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                    </div>
+                    <div class="chat-input-footer">
+                        <i class="fa-solid fa-building-columns" style="color:var(--primary);"></i>
+                        <span>ZenDoc AI by <a href="https://aneevarpsolutions.vercel.app/" target="_blank">Aneevarp Solutions</a></span>
+                        <span>•</span>
+                        <span>Google Gemini 2.5 Flash</span>
+                        <span>•</span>
+                        <span>DPDP Act 2023 Zero-Retention</span>
+                    </div>
                 </div>
             </div>
         </main>
@@ -405,6 +437,6 @@
 
     <!-- Scripts -->
     <script type="module" src="firebase-config.js"></script>
-    <script type="module" src="script.js?v=3.5.0"></script>
+    <script type="module" src="script.js?v=3.6.0"></script>
 </body>
 </html>

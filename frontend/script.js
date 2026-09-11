@@ -896,12 +896,18 @@ function renderUserMessage(text) {
 function renderAiMessage(htmlContent, sourceImage, pageNum, fileType) {
     const msg = document.createElement('div');
     msg.classList.add('message', 'ai-msg');
+    const msgId = `ai_msg_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     
     let fullHtml = `
         <div class="ai-statutory-label">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> ZenDoc AI by <a href="https://aneevarpsolutions.vercel.app/" target="_blank" style="color:inherit; text-decoration:underline; font-weight:700;">Aneevarp Solutions</a> • Gemini Grounded
+            <div class="ai-statutory-label-left">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> ZenDoc AI by <a href="https://aneevarpsolutions.vercel.app/" target="_blank" style="color:inherit; text-decoration:underline; font-weight:700;">Aneevarp Solutions</a> • Gemini Grounded
+            </div>
+            <button class="copy-answer-btn" data-target="${msgId}" title="Copy answer text">
+                <i class="fa-regular fa-copy"></i> <span>Copy</span>
+            </button>
         </div>
-        <div class="msg-content">${htmlContent}
+        <div class="msg-content" id="${msgId}">${htmlContent}
     `;
     if (fileType === '.pdf' && sourceImage && pageNum !== null && pageNum !== undefined) {
         fullHtml += `
@@ -1030,4 +1036,196 @@ if (viewBtnChat) {
 if (window.innerWidth <= 768) {
     setMobileView('docs');
 }
+
+// ==========================================================================
+// 8. INTERACTIVE SAMPLE DOCUMENTS & ONE-CLICK VECTORIZATION
+// ==========================================================================
+const SAMPLE_DOCUMENTS = {
+    financial: {
+        filename: "Aneevarp_Q4_2026_Earnings_Report.txt",
+        content: `ANEEVARP SOLUTIONS - Q4 2026 FINANCIAL EARNINGS REPORT
+Corporate Entity: Aneevarp Solutions (Visakhapatnam, AP, India)
+Reporting Period: Q4 FY2026 (Ended August 2026)
+
+EXECUTIVE SUMMARY:
+Aneevarp Solutions achieved record performance in Q4 2026 driven by exponential enterprise adoption of ZenDoc AI, ZenResume, and ZenScout.
+- Annual Recurring Revenue (ARR) grew by 142% year-over-year reaching $18.4M.
+- Net Profit Margin expanded to 34.8% up from 22.1% in Q4 2025.
+- Gross Merchandise Value (GMV) processed through Aneevarp Zen Suite exceeded $64.2M.
+
+REVENUE BREAKDOWN BY PRODUCT:
+1. ZenDoc AI (Enterprise Document Intelligence & Grounding): $9.8M (53.2% of total ARR)
+2. ZenResume (AI ATS Resume & Career Engine): $5.2M (28.3% of total ARR)
+3. ZenScout (Senior AI Mock Interviews & Career Simulator): $3.4M (18.5% of total ARR)
+
+GEOGRAPHICAL EXPANSION:
+- India & APAC Region: 62% of revenue contribution ($11.4M), driven by rapid 1-click UPI checkout.
+- North America & Europe: 38% of revenue ($7.0M), driven by enterprise legal and audit subscriptions.
+
+REGULATORY COMPLIANCE & SECURITY:
+All cloud processing complies strictly with the Digital Personal Data Protection (DPDP) Act 2023. Zero user document data was permanently stored without consent, maintaining a 100% zero-breach record throughout FY26.`
+    },
+    legal: {
+        filename: "Aneevarp_Enterprise_SaaS_Agreement_2026.txt",
+        content: `MASTER SOFTWARE-AS-A-SERVICE (SaaS) AGREEMENT
+Effective Date: September 1, 2026
+Between: ANEEVARP SOLUTIONS ("Provider", "Data Fiduciary") and ENTERPRISE CLIENT ("Client", "Data Principal")
+
+1. SCOPE OF SERVICES
+Provider grants Client a non-exclusive, non-transferable license to access the ZenDoc AI enterprise platform for document intelligence, vector semantic indexing, and visual citation extraction.
+
+2. SERVICE LEVEL AGREEMENT (SLA) & UPTIME
+Provider guarantees 99.95% system availability for cloud vectorization endpoints hosted on Google Cloud Run and Cloud Firestore infrastructure. Scheduled maintenance windows shall not exceed 2 hours per calendar month.
+
+3. DATA PRIVACY & STATUTORY COMPLIANCE
+3.1 Section 12 DPDP Act 2023 Compliance: Client retains absolute ownership of all uploaded documents. All vector embeddings stored in in-memory FAISS indices are instantly erased upon session termination or manual data purge invocation.
+3.2 Provider warrants that Client documents are never used to train foundational AI models.
+
+4. LIMITATION OF LIABILITY & INDEMNIFICATION
+Provider's total liability shall not exceed the aggregate fees paid by Client during the preceding twelve (12) month period.
+
+5. GOVERNING LAW & JURISDICTION
+This Agreement is governed by the laws of India. Courts in Visakhapatnam and the High Court of Andhra Pradesh hold exclusive jurisdiction.`
+    },
+    tech: {
+        filename: "ZenDoc_AI_Multimodal_Architecture_Whitepaper.txt",
+        content: `ANEEVARP SOLUTIONS RESEARCH LABS
+TECHNICAL WHITEPAPER: MULTIMODAL GROUNDED RAG IN ZENDOC AI
+
+1. ABSTRACT
+ZenDoc AI introduces a dual-phase retrieval architecture combining high-dimensional Google Gemini embeddings (3072d / 768d) with localized PyMuPDF visual bounding box synthesis.
+
+2. PIPELINE SPECIFICATION
+- Step 1: Chunk ingestion with recursive character boundary splitting (4000-char window, 400-char overlap).
+- Step 2: In-Memory FAISS (Facebook AI Similarity Search) indexing using inner-product cosine similarity.
+- Step 3: Multimodal Vision OCR Fallback: Scanned/image documents are rasterized at 150 DPI and transcribed via Google Gemini 3.6 Flash.
+- Step 4: Visual Grounding Receipt: The exact source paragraph coordinates [x0, y0, x1, y1] are computed and cropped into high-resolution receipts presented alongside the LLM response.
+
+3. BENCHMARKS & LATENCY
+- Mean Retrieval Time (Top-4 Chunks): 42ms
+- LLM Time-To-First-Token (Gemini 2.5 Flash): 480ms
+- Visual Grounding Crop Latency: 12ms
+- System Security: OWASP Top-10 Hardened, Rate Limited & DPDP Compliant`
+    }
+};
+
+document.querySelectorAll('.sample-doc-chip').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const sampleType = btn.getAttribute('data-sample');
+        const docData = SAMPLE_DOCUMENTS[sampleType];
+        if (!docData) return;
+
+        const blob = new Blob([docData.content], { type: 'text/plain' });
+        const file = new File([blob], docData.filename, { type: 'text/plain' });
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+
+        // Trigger visual filename display
+        if (fileNameDisplay && fileNameContainer) {
+            fileNameDisplay.textContent = docData.filename;
+            fileNameContainer.classList.remove('hidden');
+        }
+
+        showToast(`Loaded sample "${docData.filename}". Indexing now...`, 'success');
+        
+        // Auto-trigger vectorization
+        processBtn.click();
+    });
+});
+
+// ==========================================================================
+// 9. ONE-CLICK COPY ANSWER TO CLIPBOARD
+// ==========================================================================
+document.addEventListener('click', async (e) => {
+    const copyBtn = e.target.closest('.copy-answer-btn');
+    if (!copyBtn) return;
+
+    const targetId = copyBtn.getAttribute('data-target');
+    const contentElem = document.getElementById(targetId);
+    if (!contentElem) return;
+
+    try {
+        const text = contentElem.innerText || contentElem.textContent;
+        await navigator.clipboard.writeText(text);
+        
+        const originalHtml = copyBtn.innerHTML;
+        copyBtn.innerHTML = `<i class="fa-solid fa-check" style="color:#10B981;"></i> <span style="color:#10B981;">Copied!</span>`;
+        copyBtn.style.borderColor = '#10B981';
+        
+        setTimeout(() => {
+            copyBtn.innerHTML = originalHtml;
+            copyBtn.style.borderColor = '';
+        }, 2000);
+    } catch (err) {
+        showToast("Could not copy to clipboard", "error");
+    }
+});
+
+// ==========================================================================
+// 10. SPEECH-TO-TEXT VOICE DICTATION
+// ==========================================================================
+const voiceInputBtn = document.getElementById('voiceInputBtn');
+let recognition = null;
+let isListening = false;
+
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => {
+        isListening = true;
+        if (voiceInputBtn) {
+            voiceInputBtn.classList.add('listening');
+            voiceInputBtn.title = "Listening... Speak your question now";
+        }
+        showToast("Listening... Speak your question now", "success");
+    };
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        if (transcript && chatInput) {
+            chatInput.value = transcript;
+            chatInput.focus();
+        }
+    };
+
+    recognition.onerror = (event) => {
+        console.warn("Speech recognition error:", event.error);
+        if (voiceInputBtn) voiceInputBtn.classList.remove('listening');
+        isListening = false;
+    };
+
+    recognition.onend = () => {
+        isListening = false;
+        if (voiceInputBtn) {
+            voiceInputBtn.classList.remove('listening');
+            voiceInputBtn.title = "Click to speak your question (Voice Input)";
+        }
+    };
+
+    if (voiceInputBtn) {
+        voiceInputBtn.addEventListener('click', () => {
+            if (chatInput.disabled) return;
+            if (isListening) {
+                recognition.stop();
+            } else {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    console.warn(e);
+                }
+            }
+        });
+    }
+} else {
+    if (voiceInputBtn) {
+        voiceInputBtn.style.display = 'none';
+    }
+}
+
 
