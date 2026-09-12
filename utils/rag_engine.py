@@ -29,16 +29,41 @@ def get_api_key():
     return key.strip('"').strip("'").strip()
 
 def sanitize_html_output(raw_html: str) -> str:
-    """Sanitizes AI-generated HTML to prevent XSS payloads while preserving clean formatting."""
+    """
+    Sanitizes AI-generated HTML against XSS payloads, DOM clobbering, and malicious schemes.
+    Preserves safe formatting (<b>, <i>, <strong>, <em>, <ul>, <ol>, <li>, <table>, <tr>, <th>, <td>, <p>, <br>, <a>).
+    """
     if not raw_html:
         return ""
-    # Strip script tags, iframes, object/embeds, and inline event handlers
-    cleaned = re.sub(r'<\s*script[^>]*>.*?<\s*/\s*script\s*>', '', raw_html, flags=re.DOTALL | re.IGNORECASE)
-    cleaned = re.sub(r'<\s*iframe[^>]*>.*?<\s*/\s*iframe\s*>', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
-    cleaned = re.sub(r'<\s*object[^>]*>.*?<\s*/\s*object\s*>', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
-    cleaned = re.sub(r'<\s*embed[^>]*>.*?', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
-    cleaned = re.sub(r'on\w+\s*=\s*["\'][^"\']*["\']', '', cleaned, flags=re.IGNORECASE)
-    cleaned = re.sub(r'javascript\s*:', '', cleaned, flags=re.IGNORECASE)
+    
+    # 1. Strip dangerous tags and their contents
+    dangerous_tags = ['script', 'iframe', 'object', 'embed', 'applet', 'meta', 'link', 
+                      'style', 'form', 'input', 'button', 'textarea', 'select', 'svg', 
+                      'math', 'base', 'xml', 'frameset', 'frame']
+    cleaned = raw_html
+    for tag in dangerous_tags:
+        cleaned = re.sub(rf'<\s*{tag}\b[^>]*>.*?<\s*/\s*{tag}\s*>', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
+        cleaned = re.sub(rf'<\s*{tag}\b[^>]*\/?\s*>', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
+        
+    # 2. Strip all inline DOM event handlers (e.g. onload=, onclick=, onerror=)
+    cleaned = re.sub(r'(?i)\bon[a-z]+\s*=\s*(?:["\'][^"\']*["\']|[^\s>]+)', '', cleaned)
+    
+    # 3. Strip dangerous protocol schemes (javascript:, data:, vbscript:, file:)
+    cleaned = re.sub(r'(?i)(?:href|src)\s*=\s*["\']\s*(?:javascript|data|vbscript|file):[^"\']*["\']', '', cleaned)
+    
+    # 4. Enforce secure anchor attributes (rel="noopener noreferrer") on any remaining links
+    def sanitize_anchor(match):
+        attrs = match.group(1)
+        href_match = re.search(r'href\s*=\s*["\']([^"\']+)["\']', attrs, re.IGNORECASE)
+        if not href_match:
+            return "<a>"
+        href_url = href_match.group(1).strip()
+        # Allow only http://, https:// or relative paths
+        if not (href_url.startswith("http://") or href_url.startswith("https://") or href_url.startswith("/")):
+            return "<a>"
+        return f'<a href="{href_url}" target="_blank" rel="noopener noreferrer">'
+
+    cleaned = re.sub(r'<a\b([^>]*)>', sanitize_anchor, cleaned, flags=re.IGNORECASE)
     return cleaned
 
 def perform_gemini_ocr_on_page(page) -> str:
@@ -157,7 +182,12 @@ def process_documents(file_paths, max_pages: int = 150):
             
     return documents
 
-GLOBAL_VECTOR_STORE = None
+SESSION_VECTOR_STORES: Dict[str, Any] = {}
+
+def sanitize_session_id(session_id: str) -> str:
+    """Sanitizes session ID against directory traversal."""
+    clean = re.sub(r'[^a-zA-Z0-9_\-]', '', str(session_id or 'default'))
+    return clean if clean else "default_session"
 
 def get_embeddings_model():
     """Initializes Google GenAI Embeddings (gemini-embedding-001 / gemini-embedding-2)."""
@@ -169,17 +199,29 @@ def get_embeddings_model():
     except Exception:
         return GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-2", google_api_key=api_key)
 
-def get_vector_store(documents):
-    """Embeds documents into an in-memory & persisted FAISS vector index."""
-    global GLOBAL_VECTOR_STORE
+def get_vector_store(documents, session_id: str = "default"):
+    """Embeds documents into an isolated, per-session FAISS vector index."""
+    safe_sid = sanitize_session_id(session_id)
     embeddings = get_embeddings_model()
     vector_store = FAISS.from_documents(documents, embedding=embeddings)
-    GLOBAL_VECTOR_STORE = vector_store
+    SESSION_VECTOR_STORES[safe_sid] = vector_store
+    
+    session_faiss_dir = os.path.join("./faiss_index", safe_sid)
     try:
-        vector_store.save_local("./faiss_index")
+        os.makedirs(session_faiss_dir, exist_ok=True)
+        vector_store.save_local(session_faiss_dir)
     except Exception as e:
-        print(f"Warning saving local faiss index: {e}")
+        print(f"Warning saving local faiss index for session {safe_sid}: {e}")
     return vector_store
+
+def clear_session_vector_store(session_id: str = "default"):
+    """Safely purges in-memory and on-disk FAISS index for a session."""
+    safe_sid = sanitize_session_id(session_id)
+    if safe_sid in SESSION_VECTOR_STORES:
+        del SESSION_VECTOR_STORES[safe_sid]
+    session_faiss_dir = os.path.join("./faiss_index", safe_sid)
+    if os.path.exists(session_faiss_dir):
+        shutil.rmtree(session_faiss_dir, ignore_errors=True)
 
 def get_conversational_chain():
     """Builds the Gemini 2.5 Flash multimodal conversational reasoning chain."""
@@ -283,33 +325,49 @@ def get_base64_image(pdf_path, page_num, quote=""):
         print(f"Error rendering visual bounding box: {e}")
         return None
 
-def process_user_query(user_question):
-    """Performs semantic vector search in FAISS and invokes Gemini conversational reasoning with self-healing recovery."""
-    global GLOBAL_VECTOR_STORE
-    db = GLOBAL_VECTOR_STORE
+def process_user_query(user_question: str, session_id: str = "default", temp_dir_path: str = None):
+    """Performs semantic vector search in isolated FAISS session index and invokes Gemini conversational reasoning."""
+    safe_sid = sanitize_session_id(session_id)
+    db = SESSION_VECTOR_STORES.get(safe_sid)
+    session_faiss_dir = os.path.join("./faiss_index", safe_sid)
     
-    # 1. Try loading from persisted FAISS index
-    if db is None and os.path.exists("./faiss_index"):
-        try:
-            embeddings = get_embeddings_model()
-            db = FAISS.load_local("./faiss_index", embeddings, allow_dangerous_deserialization=True)
-            GLOBAL_VECTOR_STORE = db
-        except Exception as e:
-            print(f"Error loading faiss_index from disk: {e}")
-            db = None
+    # 1. Try loading from persisted per-session FAISS index with file integrity checks
+    if db is None and os.path.exists(session_faiss_dir):
+        faiss_file = os.path.join(session_faiss_dir, "index.faiss")
+        pkl_file = os.path.join(session_faiss_dir, "index.pkl")
+        if os.path.exists(faiss_file) and os.path.exists(pkl_file) and os.path.getsize(faiss_file) > 0 and os.path.getsize(pkl_file) > 0:
+            try:
+                embeddings = get_embeddings_model()
+                db = FAISS.load_local(session_faiss_dir, embeddings, allow_dangerous_deserialization=True)
+                SESSION_VECTOR_STORES[safe_sid] = db
+            except Exception as e:
+                print(f"Error loading session faiss_index from disk ({safe_sid}): {e}")
+                db = None
             
-    # 2. Self-healing auto-recovery: If index was evicted, re-index active files from temp_pdfs on the fly
-    if db is None and os.path.exists("./temp_pdfs"):
-        files = [os.path.join("./temp_pdfs", f) for f in os.listdir("./temp_pdfs") if os.path.isfile(os.path.join("./temp_pdfs", f))]
+    # 2. Self-healing auto-recovery from session temp directory
+    session_temp_dir = temp_dir_path or os.path.join("./temp_pdfs", safe_sid)
+    if db is None and os.path.exists(session_temp_dir):
+        files = [os.path.join(session_temp_dir, f) for f in os.listdir(session_temp_dir) if os.path.isfile(os.path.join(session_temp_dir, f))]
         if files:
             try:
-                print(f"Self-healing: Re-indexing {len(files)} files from temp_pdfs...")
+                print(f"Self-healing: Re-indexing {len(files)} files for session {safe_sid}...")
                 docs = process_documents(files)
                 if docs:
-                    db = get_vector_store(docs)
-                    GLOBAL_VECTOR_STORE = db
+                    db = get_vector_store(docs, session_id=safe_sid)
             except Exception as e:
-                print(f"Self-healing re-index error: {e}")
+                print(f"Self-healing re-index error ({safe_sid}): {e}")
+                db = None
+
+    # Fallback to root temp_pdfs if needed
+    if db is None and os.path.exists("./temp_pdfs"):
+        root_files = [os.path.join("./temp_pdfs", f) for f in os.listdir("./temp_pdfs") if os.path.isfile(os.path.join("./temp_pdfs", f))]
+        if root_files:
+            try:
+                docs = process_documents(root_files)
+                if docs:
+                    db = get_vector_store(docs, session_id=safe_sid)
+            except Exception as e:
+                print(f"Fallback re-index error: {e}")
                 db = None
                 
     if db is None:

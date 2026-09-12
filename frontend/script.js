@@ -57,6 +57,13 @@ let currentSessionId = null;
 let activeDocumentName = "ZenDoc AI Workspace";
 let isProcessing = false;
 
+// Cryptographically secure client session token for multi-tenant backend isolation
+let clientSessionId = localStorage.getItem('zendoc_client_session_id');
+if (!clientSessionId) {
+    clientSessionId = 'sess_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now();
+    localStorage.setItem('zendoc_client_session_id', clientSessionId);
+}
+
 // Determine API Base URL (Relative if hosted unified on Cloud Run, or fallback)
 const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname.endsWith(".run.app")) 
     ? "" 
@@ -454,7 +461,8 @@ processBtn.addEventListener('click', async () => {
             method: 'POST',
             headers: {
                 'X-User-Plan': plan.planId,
-                'X-User-Id': currentUser ? currentUser.uid : 'anon_device'
+                'X-User-Id': currentUser ? currentUser.uid : 'anon_device',
+                'X-Session-Id': clientSessionId
             },
             body: formData
         });
@@ -559,7 +567,8 @@ if (exportReportBtn) {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-User-Plan': plan.planId,
-                    'X-User-Id': currentUser ? currentUser.uid : 'anon_device'
+                    'X-User-Id': currentUser ? currentUser.uid : 'anon_device',
+                    'X-Session-Id': clientSessionId
                 },
                 body: JSON.stringify({
                     document_name: activeDocumentName,
@@ -747,7 +756,12 @@ if (confirmPurgeBtn) {
         if (purgeExplainModal) purgeExplainModal.classList.remove('active');
         try {
             confirmPurgeBtn.disabled = true;
-            await fetch(`${API_BASE}/api/session/clear`, { method: 'POST' });
+            await fetch(`${API_BASE}/api/session/clear`, { 
+                method: 'POST',
+                headers: {
+                    'X-Session-Id': clientSessionId
+                }
+            });
         } catch (e) {
             console.warn("Backend session purge error:", e);
         }
@@ -835,7 +849,10 @@ async function sendMessage() {
     try {
         const response = await fetch(`${API_BASE}/api/chat`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-Session-Id': clientSessionId
+            },
             body: JSON.stringify({ question: question })
         });
 
@@ -893,10 +910,39 @@ function renderUserMessage(text) {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
+function clientSanitizeHTML(rawHtml) {
+    if (!rawHtml) return "";
+    try {
+        const temp = document.createElement('template');
+        temp.innerHTML = rawHtml;
+        const dangerous = temp.content.querySelectorAll('script, iframe, object, embed, style, meta, link, base, form, input, button, textarea, svg, math');
+        dangerous.forEach(el => el.remove());
+        const all = temp.content.querySelectorAll('*');
+        all.forEach(el => {
+            const attrs = Array.from(el.attributes);
+            attrs.forEach(attr => {
+                const attrName = attr.name.toLowerCase();
+                const attrVal = (attr.value || "").toLowerCase().trim();
+                if (attrName.startsWith('on') || attrVal.startsWith('javascript:') || attrVal.startsWith('data:text/html') || attrVal.startsWith('vbscript:')) {
+                    el.removeAttribute(attr.name);
+                }
+            });
+            if (el.tagName.toLowerCase() === 'a') {
+                el.setAttribute('target', '_blank');
+                el.setAttribute('rel', 'noopener noreferrer');
+            }
+        });
+        return temp.innerHTML;
+    } catch (e) {
+        return escapeHTML(rawHtml);
+    }
+}
+
 function renderAiMessage(htmlContent, sourceImage, pageNum, fileType) {
     const msg = document.createElement('div');
     msg.classList.add('message', 'ai-msg');
     const msgId = `ai_msg_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    const safeContent = clientSanitizeHTML(htmlContent);
     
     let fullHtml = `
         <div class="ai-statutory-label">
@@ -907,7 +953,7 @@ function renderAiMessage(htmlContent, sourceImage, pageNum, fileType) {
                 <i class="fa-regular fa-copy"></i> <span>Copy</span>
             </button>
         </div>
-        <div class="msg-content" id="${msgId}">${htmlContent}
+        <div class="msg-content" id="${msgId}">${safeContent}
     `;
     if (fileType === '.pdf' && sourceImage && pageNum !== null && pageNum !== undefined) {
         fullHtml += `
@@ -927,7 +973,7 @@ function renderAiMessage(htmlContent, sourceImage, pageNum, fileType) {
 function addSystemMessage(html) {
     const msg = document.createElement('div');
     msg.classList.add('message', 'system-msg');
-    msg.innerHTML = `<div class="msg-content">${html}</div>`;
+    msg.innerHTML = `<div class="msg-content">${clientSanitizeHTML(html)}</div>`;
     chatWindow.appendChild(msg);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }

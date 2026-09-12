@@ -13,7 +13,13 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
-from utils.rag_engine import process_documents, get_vector_store, process_user_query
+from utils.rag_engine import (
+    process_documents, 
+    get_vector_store, 
+    process_user_query, 
+    clear_session_vector_store,
+    sanitize_session_id
+)
 
 # Load environment configuration safely
 load_dotenv(override=True)
@@ -44,23 +50,29 @@ ALLOWED_MIME_TYPES = {
 }
 
 # ==============================================================================
-# 1. CORS POLICY CONFIGURATION (Universal Origin & Preflight Support)
+# 1. CORS POLICY CONFIGURATION (Strict Origin Whitelist & Preflight Support)
 # ==============================================================================
+raw_origins = os.environ.get(
+    "ALLOWED_ORIGINS",
+    "https://pdf-analizing-and-answering-bot.vercel.app,https://aneevarpsolutions.vercel.app,http://localhost:3000,http://localhost:5173,http://localhost:8000,http://127.0.0.1:8000,http://localhost:8080,http://127.0.0.1:8080"
+)
+ALLOWED_ORIGINS = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
 )
 
 # ==============================================================================
-# 2. SECURITY HEADERS MIDDLEWARE (Industry Best-Practice)
+# 2. SECURITY HEADERS MIDDLEWARE (Industry Best-Practice & Strict CSP)
 # ==============================================================================
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
-    """Applies strict OWASP security headers to every HTTP response."""
+    """Applies strict OWASP security headers & Content Security Policy to every HTTP response."""
     if request.method == "OPTIONS":
         return await call_next(request)
     response: Response = await call_next(request)
@@ -70,6 +82,17 @@ async def add_security_headers(request: Request, call_next):
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com https://cdnjs.cloudflare.com; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
+        "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; "
+        "img-src 'self' data: https:; "
+        "connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.onrender.com https://pdf-analizing-and-answering-bot-1.onrender.com wss://*.firebaseio.com; "
+        "frame-src https://*.firebaseapp.com https://*.google.com; "
+        "object-src 'none'; "
+        "base-uri 'self';"
+    )
     return response
 
 # ==============================================================================
@@ -296,7 +319,7 @@ async def get_user_quota(request: Request):
 
 @app.post("/api/upload")
 async def upload_document(request: Request, files: List[UploadFile] = File(...)):
-    """Uploads, validates, and vectorizes documents with Tier quota enforcement."""
+    """Uploads, validates, and vectorizes documents with Tier quota & Session isolation."""
     correlation_id = str(uuid.uuid4())
     if not files:
         raise HTTPException(status_code=400, detail="No files uploaded.")
@@ -304,6 +327,8 @@ async def upload_document(request: Request, files: List[UploadFile] = File(...))
     user_plan = request.headers.get("X-User-Plan", "free")
     client_ip = request.client.host if request.client else "unknown"
     user_id = request.headers.get("X-User-Id", client_ip)
+    raw_session_id = request.headers.get("X-Session-Id", correlation_id)
+    session_id = sanitize_session_id(raw_session_id)
 
     # 1. Enforce Tier upload allowance & multi-file limits
     tier_config = subscription_manager.check_and_record_upload(user_id=user_id, plan_id=user_plan, file_count=len(files))
@@ -311,9 +336,10 @@ async def upload_document(request: Request, files: List[UploadFile] = File(...))
     max_pages = tier_config["max_pages_per_doc"]
 
     try:
-        os.makedirs(TEMP_PDF_DIR, exist_ok=True)
-        safe_clean_dir(TEMP_PDF_DIR)
-        safe_clean_dir("./faiss_index")
+        session_temp_dir = os.path.join(TEMP_PDF_DIR, session_id)
+        os.makedirs(session_temp_dir, exist_ok=True)
+        safe_clean_dir(session_temp_dir)
+        clear_session_vector_store(session_id)
         
         file_paths = []
         file_names = []
@@ -339,7 +365,7 @@ async def upload_document(request: Request, files: List[UploadFile] = File(...))
                 
             # Rewind and stream to disk with tier size limiting
             await file.seek(0)
-            file_path = os.path.join(TEMP_PDF_DIR, safe_name)
+            file_path = os.path.join(session_temp_dir, safe_name)
             
             file_size = 0
             with open(file_path, "wb") as f:
@@ -347,7 +373,8 @@ async def upload_document(request: Request, files: List[UploadFile] = File(...))
                     file_size += len(chunk)
                     if file_size > max_file_size_bytes:
                         f.close()
-                        os.remove(file_path)
+                        if os.path.exists(file_path):
+                            os.remove(file_path)
                         raise HTTPException(
                             status_code=413, 
                             detail={
@@ -362,7 +389,7 @@ async def upload_document(request: Request, files: List[UploadFile] = File(...))
             file_paths.append(file_path)
             file_names.append(safe_name)
             
-        logger.info(f"[{correlation_id}] Processing {len(file_paths)} files for plan '{user_plan}' (Max pages: {max_pages})")
+        logger.info(f"[{correlation_id}] Processing {len(file_paths)} files for session '{session_id}' (Plan: '{user_plan}', Max pages: {max_pages})")
         documents = process_documents(file_paths, max_pages=max_pages)
         
         if not documents:
@@ -371,7 +398,7 @@ async def upload_document(request: Request, files: List[UploadFile] = File(...))
                 detail="Could not extract readable text. The document may be empty or password protected."
             )
             
-        get_vector_store(documents)
+        get_vector_store(documents, session_id=session_id)
         
         quota_status = subscription_manager.get_user_quota(user_id=user_id, plan_id=user_plan)
         return {
@@ -379,6 +406,7 @@ async def upload_document(request: Request, files: List[UploadFile] = File(...))
             "message": f"Successfully processed {len(files)} document(s).",
             "files": file_names,
             "total_chunks": len(documents),
+            "session_id": session_id,
             "quota": quota_status,
             "correlation_id": correlation_id
         }
@@ -396,7 +424,7 @@ async def upload_document(request: Request, files: List[UploadFile] = File(...))
                     "plan": user_plan
                 }
             )
-        raise HTTPException(status_code=400, detail=err_str)
+        raise HTTPException(status_code=400, detail="Invalid request parameters.")
     except Exception as e:
         logger.error(f"[{correlation_id}] Unexpected error in upload: {e}", exc_info=True)
         raise HTTPException(
@@ -405,22 +433,23 @@ async def upload_document(request: Request, files: List[UploadFile] = File(...))
         )
 
 @app.post("/api/chat")
-async def chat_with_document(request: ChatRequest):
-    """Queries the vectorized document context with Google Gemini 2.5 Flash."""
+async def chat_with_document(request: Request, chat_req: ChatRequest):
+    """Queries the session-isolated vectorized document context with Google Gemini 2.5 Flash."""
     correlation_id = str(uuid.uuid4())
-    sanitized_question = request.question.strip()
+    sanitized_question = chat_req.question.strip()
+    session_id = sanitize_session_id(request.headers.get("X-Session-Id", "default"))
     
     if not sanitized_question:
         raise HTTPException(status_code=400, detail="Question cannot be empty.")
         
     try:
-        response_data = process_user_query(sanitized_question)
-        return {"status": "success", "correlation_id": correlation_id, **response_data}
+        response_data = process_user_query(sanitized_question, session_id=session_id)
+        return {"status": "success", "session_id": session_id, "correlation_id": correlation_id, **response_data}
     except HTTPException:
         raise
     except ValueError as ve:
         logger.warning(f"[{correlation_id}] Chat validation error: {ve}")
-        raise HTTPException(status_code=400, detail=str(ve))
+        raise HTTPException(status_code=400, detail="Unable to process query with current context.")
     except Exception as e:
         logger.error(f"[{correlation_id}] Chat error: {e}", exc_info=True)
         raise HTTPException(
@@ -483,12 +512,19 @@ def safe_clean_dir(dir_path: str):
             logger.debug(f"Could not remove {item_path}: {e}")
 
 @app.post("/api/session/clear")
-async def clear_active_session():
-    """Cleans up in-memory vector indexes and temporary files."""
+async def clear_active_session(request: Request):
+    """Cleans up session-isolated in-memory vector indexes and temporary files."""
+    session_id = sanitize_session_id(request.headers.get("X-Session-Id", "default"))
     try:
-        safe_clean_dir(TEMP_PDF_DIR)
-        safe_clean_dir("./faiss_index")
-        return {"status": "success", "message": "Session cleared."}
+        clear_session_vector_store(session_id)
+        session_temp_dir = os.path.join(TEMP_PDF_DIR, session_id)
+        if os.path.exists(session_temp_dir):
+            safe_clean_dir(session_temp_dir)
+            try:
+                os.rmdir(session_temp_dir)
+            except Exception:
+                pass
+        return {"status": "success", "session_id": session_id, "message": "Session cleared."}
     except Exception as e:
         logger.error(f"Error clearing session: {e}")
         return {"status": "error", "message": "Could not clear session storage."}
