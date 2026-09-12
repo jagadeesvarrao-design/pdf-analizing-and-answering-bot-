@@ -77,7 +77,7 @@ async def add_security_headers(request: Request, call_next):
 # ==============================================================================
 class SimpleRateLimiter:
     """Sliding-window IP rate limiter without external Redis dependency."""
-    def __init__(self, requests_per_minute: int = 60):
+    def __init__(self, requests_per_minute: int = 30):
         self.requests_per_minute = requests_per_minute
         self.requests: Dict[str, List[float]] = defaultdict(list)
 
@@ -92,7 +92,7 @@ class SimpleRateLimiter:
         self.requests[client_ip].append(now)
         return True
 
-rate_limiter = SimpleRateLimiter(requests_per_minute=60)
+rate_limiter = SimpleRateLimiter(requests_per_minute=30)
 
 @app.middleware("http")
 async def rate_limiting_middleware(request: Request, call_next):
